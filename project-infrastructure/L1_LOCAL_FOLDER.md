@@ -9,7 +9,7 @@ Use this scenario when the project primarily lives in a normal local filesystem 
 
 The local folder is the working environment and default canonical location for project memory. A new agent should be able to read the project-memory files defined in `COMMON.md`, understand the existing folder structure, locate relevant artifacts, and continue without relying on previous chat history.
 
-No GitHub, Google Drive, Yandex Disk, MCP, or connector is required by this scenario.
+No GitHub, Google Drive, Yandex Disk, MCP, or connector is required by this scenario after the standard has been read.
 
 ## Brownfield-first rule
 
@@ -155,32 +155,47 @@ Backup or synchronization is strongly recommended when the local folder is canon
 
 ## Bootstrap procedure
 
-When initializing an **existing** project with Scenario L1:
+When Scenario L1 is requested, the agent must first determine whether the target is brownfield or greenfield.
 
-1. Read `COMMON.md` and this scenario.
-2. Inspect the existing folder and infer its current organization without changing it.
-3. Identify likely authoritative documents, data, outputs, linked files, and application-specific dependencies.
-4. Create or complete the core files defined in `COMMON.md`: `README.md`, `AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, and `SOURCES.md`.
-5. Create `.ai/` and only the subdirectories that are useful for the project; normally start with `plans/`, `decisions/`, `research/`, `work/`, and `generated/`.
-6. Populate project-memory files from evidence already present in the project.
-7. Mark missing information explicitly as unknown, assumption, or task rather than guessing.
-8. Register important existing artifacts in `SOURCES.md` using their **current** relative paths.
-9. Do not move or rename existing files solely to make the structure look standardized.
-10. Summarize the current state in `STATE.md` and supported next actions in `TASKS.md`.
-11. Verify that a fresh agent can continue by following `AGENTS.md` without reading the originating chat.
+### Existing project / brownfield
 
-For a genuinely new empty project, use the same memory files and `.ai/` namespace, then create domain directories only as needed.
+1. Inspect the existing folder and infer its current organization without changing it.
+2. Identify likely authoritative documents, data, outputs, linked files, and application-specific dependencies.
+3. Create or complete the core files defined in `COMMON.md`: `README.md`, `AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, and `SOURCES.md`.
+4. Create `.ai/` and only the subdirectories useful for the project; normally use `plans/`, `decisions/`, `research/`, `work/`, and `generated/`.
+5. Populate project-memory files from evidence already present in the project.
+6. Mark missing information explicitly as unknown, assumption, needs-validation, or task rather than guessing.
+7. Register important existing artifacts in `SOURCES.md` using their current relative paths.
+8. Do not move or rename existing files solely to make the structure look standardized.
+9. Summarize the current state in `STATE.md` and supported next actions in `TASKS.md`.
+10. Verify that a fresh agent can continue by following `AGENTS.md` without reading the originating chat.
 
-## Invocation
+### New project / greenfield
 
-Existing project (default L1 case):
+1. Create the same project-memory files and `.ai/` namespace.
+2. Create domain directories only when they are actually useful for the project.
+3. Record known objectives, constraints, sources, assumptions, and initial tasks without inventing unavailable project facts.
+4. Leave the project ready for later agents to continue through `AGENTS.md`.
 
-> Read `PROJECT_INFRASTRUCTURE.md`, `project-infrastructure/COMMON.md`, and `project-infrastructure/L1_LOCAL_FOLDER.md`. Apply Scenario L1 to this existing project. Preserve the user's current folder structure and file locations; add the project-memory infrastructure and organize agent-owned files under `.ai/`. Populate everything from existing evidence and do not invent missing facts.
+## Completion report
 
-New empty project:
+After initialization or restructuring, report concisely:
 
-> Read `PROJECT_INFRASTRUCTURE.md`, `project-infrastructure/COMMON.md`, and `project-infrastructure/L1_LOCAL_FOLDER.md`. Apply Scenario L1 as a greenfield project, create only domain-appropriate folders that are actually needed, and initialize the project-memory infrastructure.
+- whether the project was treated as brownfield or greenfield;
+- which project-memory files and `.ai/` directories were created or updated;
+- the main canonical sources identified;
+- the reconstructed current state;
+- important unknowns/assumptions;
+- structural issues noticed but deliberately left unchanged.
 
-Existing initialized project:
+## Minimal invocation
 
-> Read `AGENTS.md`, restore the current project context, and continue task `T-XXX`.
+The intended user prompt is deliberately short:
+
+> Apply project infrastructure scenario **L1** to this folder using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
+
+All operational details are defined in the GitHub standard and must not need to be repeated by the user.
+
+For an existing initialized project:
+
+> Read `AGENTS.md`, restore the current project context, and continue with my request.
