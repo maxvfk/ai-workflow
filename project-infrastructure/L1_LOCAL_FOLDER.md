@@ -9,7 +9,19 @@ Use this scenario when the project primarily lives in a normal local filesystem 
 
 The local folder is the working environment and default canonical location for project memory. A new agent should be able to read the project-memory files defined in `COMMON.md`, understand the existing folder structure, locate relevant artifacts, and continue without relying on previous chat history.
 
-No GitHub, Google Drive, Yandex Disk, MCP, or connector is required by this scenario after the standard has been read.
+The GitHub project-infrastructure standard is required only for initialization, validation, repair, or migration. **Normal L1 work must remain possible with the local project folder alone.**
+
+## Self-contained L1 runtime
+
+After bootstrap, an L1 project must contain enough local information that an agent without GitHub access can continue safely.
+
+For ordinary work:
+
+- `AGENTS.md` is the runtime entry point;
+- root project-memory files are the current project source of truth;
+- L1-specific runtime rules must be copied into `AGENTS.md` during bootstrap/migration;
+- agents must not need to read the GitHub copy of `COMMON.md` or `L1_LOCAL_FOLDER.md`;
+- the local infrastructure snapshot is for audit, repair, or migration only and is not part of normal startup.
 
 ## Brownfield-first rule
 
@@ -53,6 +65,11 @@ Existing-Project/
 ├── SOURCES.md
 │
 └── .ai/
+    ├── infrastructure/
+    │   ├── MANIFEST.md
+    │   └── standard/
+    │       ├── COMMON.md
+    │       └── L1_LOCAL_FOLDER.md
     ├── plans/
     │   ├── active/
     │   └── completed/
@@ -68,13 +85,77 @@ The `.ai/` directory is for **agent-owned support material**, not for relocating
 
 ### `.ai/` directory roles
 
+- `.ai/infrastructure/` — installed infrastructure metadata and local standard snapshot.
 - `.ai/plans/` — plans for complex or multi-session work.
 - `.ai/decisions/` — decision records whose rationale may matter later.
 - `.ai/research/` — intermediate research notes and evidence syntheses.
 - `.ai/work/` — temporary or disposable working files and intermediate processing artifacts.
 - `.ai/generated/` — generated deliverables that have not yet been reviewed and promoted into the user's normal project structure.
 
-For Scenario L1 brownfield projects, the decision and plan records described in `COMMON.md` should normally use `.ai/decisions/` and `.ai/plans/` rather than introducing a new top-level `docs/` hierarchy into an established folder.
+For Scenario L1 brownfield projects, decision and plan records should normally use `.ai/decisions/` and `.ai/plans/` rather than introducing a new top-level `docs/` hierarchy into an established folder.
+
+## Infrastructure manifest and local snapshot
+
+During bootstrap or an explicit infrastructure migration, create or update:
+
+```text
+.ai/infrastructure/MANIFEST.md
+.ai/infrastructure/standard/COMMON.md
+.ai/infrastructure/standard/L1_LOCAL_FOLDER.md
+```
+
+The two files under `standard/` should be exact local copies of the common and L1 instructions that were applied during the most recent initialization/migration, whenever the bootstrap agent can retrieve them.
+
+`MANIFEST.md` should record, when known:
+
+```markdown
+# Project infrastructure manifest
+
+Scenario: L1
+Standard source: maxvfk/ai-workflow
+Standard version: <version if defined>
+Standard commit/ref: <commit/ref if known>
+Initialized: YYYY-MM-DD
+Last infrastructure update: YYYY-MM-DD
+Runtime entry point: ../../AGENTS.md
+Local standard snapshot: ./standard/
+```
+
+If a version or commit cannot be established, record it as `unknown` rather than inventing one.
+
+### Authority rules
+
+For **normal project work**:
+
+1. `AGENTS.md` defines installed runtime behavior.
+2. Current project-memory files define current project state.
+3. The local standard snapshot is not loaded unless needed for infrastructure work.
+
+For **infrastructure repair or migration**:
+
+1. the local manifest/snapshot describes the previously installed specification;
+2. the explicitly selected newer GitHub standard is the target specification;
+3. project-specific runtime rules and user-owned content must be preserved unless the migration explicitly changes them.
+
+The snapshot must never be treated as a second copy of current project state.
+
+## Required L1 runtime rules in `AGENTS.md`
+
+During L1 bootstrap/migration, `AGENTS.md` must include a concise L1 runtime section containing at least:
+
+- `Scenario: L1`;
+- installed standard version/commit when known;
+- path to `.ai/infrastructure/MANIFEST.md`;
+- statement that normal work does not require GitHub or the local standard snapshot;
+- preserve the user's existing file/folder structure unless explicitly asked to reorganize it;
+- user-owned files must not be moved, renamed, regrouped, or converted merely to fit the infrastructure;
+- temporary/intermediate agent files belong under `.ai/work/` where practical;
+- unreviewed generated deliverables belong under `.ai/generated/`;
+- accepted/generated artifacts should be promoted into the user's normal structure only when their long-term location is clear, with `SOURCES.md` / `STATE.md` updated as appropriate;
+- decisions and plans use `.ai/decisions/` and `.ai/plans/`;
+- the project must remain continuable by another agent without previous chat history or external-standard access.
+
+These rules must be present locally because future agents may have no GitHub access.
 
 ## Ownership and promotion rules
 
@@ -115,7 +196,7 @@ reports/
 
 Do not create these mechanically. Prefer names and organization appropriate to the real engineering, research, document, or software project.
 
-Even in a greenfield project, keep the project-memory files at root and use `.ai/` for agent-specific planning, research, temporary work, and unreviewed generated outputs.
+Even in a greenfield project, keep the project-memory files at root and use `.ai/` for infrastructure metadata, agent-specific planning, research, temporary work, and unreviewed generated outputs.
 
 ## Source locations
 
@@ -144,6 +225,7 @@ Use an absolute path only when an important source necessarily lives outside the
 - Treat raw source or experimental data as immutable by default unless the project explicitly defines otherwise.
 - Register important user artifacts and accepted generated outputs in `SOURCES.md` without requiring them to be moved.
 - Preserve linked/dependent file structures for CAD and similar applications; use application-native packaging mechanisms when relocation is explicitly required.
+- Do not load `.ai/infrastructure/standard/` during routine work.
 
 ## Git and backup
 
@@ -159,34 +241,40 @@ When Scenario L1 is requested, the agent must first determine whether the target
 
 ### Existing project / brownfield
 
-1. Inspect the existing folder and infer its current organization without changing it.
-2. Identify likely authoritative documents, data, outputs, linked files, and application-specific dependencies.
-3. Create or complete the core files defined in `COMMON.md`: `README.md`, `AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, and `SOURCES.md`.
-4. Create `.ai/` and only the subdirectories useful for the project; normally use `plans/`, `decisions/`, `research/`, `work/`, and `generated/`.
-5. Populate project-memory files from evidence already present in the project.
-6. Mark missing information explicitly as unknown, assumption, needs-validation, or task rather than guessing.
-7. Register important existing artifacts in `SOURCES.md` using their current relative paths.
-8. Do not move or rename existing files solely to make the structure look standardized.
-9. Summarize the current state in `STATE.md` and supported next actions in `TASKS.md`.
-10. Verify that a fresh agent can continue by following `AGENTS.md` without reading the originating chat.
+1. Read the external index, `COMMON.md`, and this scenario while bootstrap access is available.
+2. Inspect the existing folder and infer its current organization without changing it.
+3. Identify likely authoritative documents, data, outputs, linked files, and application-specific dependencies.
+4. Create or complete the core project-memory files defined in `COMMON.md`.
+5. Create `.ai/infrastructure/`, `.ai/infrastructure/standard/`, and only the additional `.ai/` subdirectories useful for the project.
+6. Save the applied `COMMON.md` and `L1_LOCAL_FOLDER.md` under `.ai/infrastructure/standard/` and create/update `MANIFEST.md`.
+7. Ensure `AGENTS.md` contains the required L1 runtime rules and infrastructure metadata so normal future work does not depend on GitHub.
+8. Populate project-memory files from evidence already present in the project.
+9. Mark missing information explicitly as unknown, assumption, needs-validation, or task rather than guessing.
+10. Register important existing artifacts in `SOURCES.md` using their current relative paths.
+11. Do not move or rename existing files solely to make the structure look standardized.
+12. Summarize the current state in `STATE.md` and supported next actions in `TASKS.md`.
+13. Verify that a fresh agent with access only to the project folder can continue by following `AGENTS.md`, without previous chat history or GitHub access.
 
 ### New project / greenfield
 
-1. Create the same project-memory files and `.ai/` namespace.
+1. Create the same project-memory files, infrastructure manifest/snapshot, and `.ai/` namespace.
 2. Create domain directories only when they are actually useful for the project.
 3. Record known objectives, constraints, sources, assumptions, and initial tasks without inventing unavailable project facts.
-4. Leave the project ready for later agents to continue through `AGENTS.md`.
+4. Ensure `AGENTS.md` contains the L1 runtime rules.
+5. Leave the project ready for a later offline/local agent to continue through `AGENTS.md` alone.
 
 ## Completion report
 
 After initialization or restructuring, report concisely:
 
 - whether the project was treated as brownfield or greenfield;
-- which project-memory files and `.ai/` directories were created or updated;
+- which project-memory and `.ai/` infrastructure files/directories were created or updated;
+- which standard source/version/commit was recorded, if known;
 - the main canonical sources identified;
 - the reconstructed current state;
 - important unknowns/assumptions;
-- structural issues noticed but deliberately left unchanged.
+- structural issues noticed but deliberately left unchanged;
+- confirmation that normal future work no longer requires GitHub access.
 
 ## Minimal invocation
 
@@ -194,8 +282,8 @@ The intended user prompt is deliberately short:
 
 > Apply project infrastructure scenario **L1** to this folder using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
 
-All operational details are defined in the GitHub standard and must not need to be repeated by the user.
+All bootstrap details are defined in the GitHub standard and must not need to be repeated by the user.
 
-For an existing initialized project:
+After bootstrap, routine work uses only the project itself:
 
 > Read `AGENTS.md`, restore the current project context, and continue with my request.
