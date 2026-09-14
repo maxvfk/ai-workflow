@@ -5,14 +5,21 @@
 
 > Core principle: **project state lives in project files, not in chat history.** Chat history may provide useful context, but it is not the canonical source of truth.
 
-## How to use this standard
+## Bootstrap contract
 
-1. Read [`project-infrastructure/COMMON.md`](project-infrastructure/COMMON.md).
-2. Select the scenario matching the project's actual storage and execution environment.
-3. Read only that scenario file unless another scenario is directly relevant.
-4. Initialize or update the project according to the selected scenario.
+This file is the single external entry point for project initialization.
 
-This keeps startup context small: agents do not need to load rules for unrelated storage systems.
+When a user asks an agent to initialize or adapt a project using a scenario ID, the agent must:
+
+1. read this index;
+2. read [`project-infrastructure/COMMON.md`](project-infrastructure/COMMON.md);
+3. read the selected scenario file;
+4. inspect the target project environment;
+5. apply the selected scenario completely, including its bootstrap, preservation, project-memory, validation, and handoff rules.
+
+The user should **not** need to repeat scenario details in the prompt or enumerate the linked files manually.
+
+If a scenario distinguishes brownfield from greenfield projects, the agent must make that determination from the target folder and follow the scenario rules unless the user explicitly overrides it.
 
 ## Scenarios
 
@@ -30,15 +37,19 @@ Choose the scenario according to **where the canonical project state lives and h
 
 If a project combines several environments, start with the closest primary scenario and add only the specific rules needed from another scenario. Do not duplicate canonical project state between scenarios.
 
-## Invocation examples
+## Minimal invocation
 
-New local-folder project:
+For a new or existing local-folder project:
 
-> Read `PROJECT_INFRASTRUCTURE.md`, then `project-infrastructure/COMMON.md` and `project-infrastructure/L1_LOCAL_FOLDER.md`. Initialize this project from the existing files. Do not invent missing facts.
+> Apply project infrastructure scenario **L1** to this folder using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
 
-Existing initialized project:
+That is intentionally sufficient. The agent must follow the Bootstrap contract above and retrieve the linked common/scenario instructions itself.
 
-> Read `AGENTS.md`, restore the current project context, and continue task `T-XXX`.
+For an already initialized project:
+
+> Read `AGENTS.md`, restore the current project context, and continue with my request.
+
+A task ID may be added when useful, for example `continue task T-017`.
 
 ## Compatibility
 
