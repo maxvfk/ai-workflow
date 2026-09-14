@@ -30,7 +30,7 @@ If the agent cannot access the private repository, the user may provide local co
 - `project-infrastructure/COMMON.md`;
 - `project-infrastructure/L1_LOCAL_FOLDER.md`.
 
-Treat those supplied files as the bootstrap specification. Record whatever version and commit/ref information is available. Do not invent missing provenance.
+Treat those supplied files as the bootstrap specification. Record whatever version/commit/ref information is available. Do not invent missing provenance.
 
 After successful bootstrap, both access modes produce the same self-contained local runtime.
 
@@ -54,15 +54,27 @@ Default behavior:
 
 During initialization, do not move, rename, regroup, convert, or otherwise reorganize existing user files/directories unless explicitly requested.
 
-This is especially important for linked Office files, CAD assemblies and dependent parts, scripts using relative paths, established report/experiment/reference structures, and files used by external applications or collaborators.
+This is especially important for linked Office files, CAD assemblies/dependent parts, scripts using relative paths, established report/experiment/reference structures, and files used by external applications/collaborators.
 
 If the structure is inconvenient, document the issue and propose a reorganization separately rather than performing one silently.
 
-## Project-memory profile selection
+## Project-memory profile and language
 
-Use the Minimal/Standard rules from `COMMON.md` rather than creating every possible root file automatically.
+Use the Minimal/Standard profile rules from `COMMON.md` rather than creating every possible root file automatically.
 
-For a simple project, a valid L1 installation may be only:
+For new L1 installations, project-memory language defaults to **Russian (`ru`)** unless the user explicitly selects another language.
+
+For an already initialized project:
+
+- preserve its established project-memory language;
+- do not translate project-memory files merely because a current deliverable is in another language;
+- change the project-memory language only when explicitly requested as an infrastructure/project convention change.
+
+The language of an individual deliverable does not determine the language of the project memory. For example, an English journal manuscript may coexist with Russian `STATE.md`, `TASKS.md`, `PROJECT.md`, and `SOURCES.md`.
+
+Keep infrastructure filenames, record IDs, and controlled status values in their defined English forms even when surrounding prose is Russian.
+
+A simple L1 installation may be only:
 
 ```text
 Existing-Project/
@@ -78,7 +90,7 @@ Existing-Project/
             └── L1_LOCAL_FOLDER.md
 ```
 
-Add `PROJECT.md`, `SOURCES.md`, `ASSUMPTIONS.md`, `README.md`, plans, decisions, research, archives, work areas, or generated-output areas only when they have a real role. Promote the profile later as complexity grows.
+Add `PROJECT.md`, `SOURCES.md`, `ASSUMPTIONS.md`, `README.md`, plans, decisions, research, archives, work areas, or generated-output areas only when they have a real role.
 
 For a substantial brownfield project, a typical structure is:
 
@@ -117,21 +129,21 @@ The root Markdown files are visible entry points. `_ai/` is an agent-owned suppo
 
 New L1 installations use `_ai/` so the support namespace remains visibly discoverable in ordinary file managers and in tools that skip hidden directories by default.
 
-Projects installed under older draft versions may already use `.ai/`. **Routine work must continue using the installed path recorded in `AGENTS.md`/`MANIFEST.md`; never rename it silently.** During an explicit infrastructure migration, rename `.ai/` to `_ai/` only when it is clearly infrastructure-owned, the target path does not conflict, dependencies have been checked, and the migration can update all runtime references atomically. Otherwise preserve the existing installed namespace and record it in the manifest.
+Projects installed under older draft versions may already use `.ai/`. **Routine work must continue using the installed path recorded in `AGENTS.md`/`MANIFEST.md`; never rename it silently.** During explicit migration, rename `.ai/` to `_ai/` only when it is clearly infrastructure-owned, the target path does not conflict, dependencies have been checked, and all runtime references can be updated atomically. Otherwise preserve the existing namespace.
 
 ### `_ai/` roles
 
-Create only the subdirectories actually needed:
+Create only subdirectories actually needed:
 
 - `_ai/infrastructure/` — installed infrastructure metadata and standard snapshot; required by L1 bootstrap;
-- `_ai/plans/` — complex or multi-session `P-###` plans;
+- `_ai/plans/` — `P-###` plans;
 - `_ai/decisions/` — `D-###` decision records;
-- `_ai/research/` — intermediate research notes/evidence syntheses;
+- `_ai/research/` — intermediate research/evidence syntheses;
 - `_ai/archive/tasks/` — archived completed/cancelled task records;
 - `_ai/work/` — temporary/disposable work files;
 - `_ai/generated/` — generated deliverables not yet reviewed/promoted.
 
-For L1, decision and plan locations are `_ai/decisions/` and `_ai/plans/`. Generic common rules must not introduce competing `docs/decisions/` or `docs/plans/` conventions.
+For L1, decision and plan locations are `_ai/decisions/` and `_ai/plans/` for new installations.
 
 ## Infrastructure manifest and local snapshot
 
@@ -152,6 +164,7 @@ The two files under `standard/` should be exact local copies of the applied comm
 
 Scenario: L1
 Project-memory profile: Minimal | Standard
+Project-memory language: ru
 Agent namespace: _ai/
 Standard source: maxvfk/ai-workflow or local bootstrap bundle
 Standard version: <installed version>
@@ -163,11 +176,11 @@ Runtime entry point: ../../AGENTS.md
 Local standard snapshot: ./standard/
 ```
 
-If version/commit cannot be established, record `unknown` rather than guessing.
+Use another language code instead of `ru` only when the project has another explicitly selected/established project-memory language. If version/commit cannot be established, record `unknown` rather than guessing.
 
 ### Version behavior
 
-A project stays on its **installed** infrastructure version until the user explicitly requests validation, repair, or migration/upgrade. Do not silently re-bootstrap or change behavior merely because `main` has changed.
+A project stays on its **installed** infrastructure version until the user explicitly requests validation, repair, or migration/upgrade. Do not silently change behavior because `main` has changed.
 
 For migration:
 
@@ -175,7 +188,7 @@ For migration:
 2. read the explicitly selected target standard;
 3. compare installed vs target rules;
 4. migrate non-destructively;
-5. preserve project-specific rules/state/IDs/user-owned content;
+5. preserve project-specific rules/state/IDs/language/user-owned content unless explicitly changing them;
 6. only then update manifest and local snapshot.
 
 ## Authority rules
@@ -190,7 +203,7 @@ For infrastructure repair/migration:
 
 1. local manifest/snapshot describes the previously installed specification;
 2. the explicitly selected external/local target standard defines the target specification;
-3. user/project-specific content must be preserved unless explicitly migrated.
+3. user/project-specific content and installed language must be preserved unless explicitly migrated.
 
 The snapshot is never a second copy of current project state.
 
@@ -201,17 +214,20 @@ During bootstrap/migration, `AGENTS.md` must contain a concise infrastructure-ma
 - `Scenario: L1`;
 - installed standard version and commit/ref when known;
 - installed project-memory profile and actual project-memory files;
+- `Project-memory language: ru` (or the explicitly selected/established language code);
 - installed agent namespace and path to its infrastructure manifest;
 - normal work does not require GitHub or the standard snapshot;
+- maintain project-memory prose in the installed project-memory language;
+- keep filenames, record IDs, and controlled status values in their defined English forms;
 - preserve the user's existing structure unless explicitly asked to reorganize it;
 - do not move/rename/regroup/convert user-owned files merely to fit infrastructure;
 - temporary/intermediate files belong under the installed agent work path where practical;
 - unreviewed generated deliverables belong under the installed generated-output path;
 - accepted generated artifacts are promoted into the user's normal structure only when their long-term location is clear, with source/state records updated as appropriate;
-- decisions/plans use the scenario-defined `_ai/` locations for new installations;
+- decisions/plans use scenario-defined locations;
 - secrets/credentials are never stored in project-memory/infrastructure text files;
 - immediately before writing shared project-memory/runtime files, re-read them and reconcile concurrent changes;
-- avoid simultaneous modification of the same task/canonical artifact by multiple agents unless explicitly coordinated;
+- avoid simultaneous modification of the same task/canonical artifact by multiple agents unless coordinated;
 - the project must remain continuable without previous chat history or external-standard access.
 
 When `AGENTS.md` already exists, preserve project-specific/user-authored content and update only a clearly identifiable infrastructure-managed block when practical.
@@ -232,8 +248,9 @@ On reapplication:
 - read existing project-memory/instruction files before modifying them;
 - preserve user-authored/project-specific content;
 - preserve current task/source/assumption/decision/plan IDs;
+- preserve the established project-memory language unless explicitly changing it;
 - update only missing/obsolete infrastructure-managed rules/metadata;
-- refresh the manifest/snapshot only as part of explicit infrastructure work;
+- refresh manifest/snapshot only as part of explicit infrastructure work;
 - do not reconstruct `STATE.md` or `TASKS.md` unless existing files are unusable and reconstruction is explicitly justified;
 - if a safe merge is ambiguous, leave the original intact and put a proposed patch under the installed agent work path.
 
@@ -248,10 +265,10 @@ Initialization should discover enough to reconstruct project context without rec
 Start with directory/file metadata:
 
 - inspect the root and normally no more than **2 directory levels** below it;
-- extend to depth 3 or a specific deeper branch only when the initial structure shows that it is necessary;
+- extend to depth 3 or a specific deeper branch only when necessary;
 - collect useful metadata such as names, types/extensions, approximate sizes, and obvious project/instruction files;
 - identify very large directories, archives, dependency trees, caches, generated outputs, backups, and application-specific bundles without opening every contained file;
-- skip known cache/dependency/generated directories during the first pass unless they are clearly project-relevant.
+- skip known cache/dependency/generated directories during the first pass unless clearly relevant.
 
 The depth value is a default discovery bound, not a prohibition on later targeted inspection.
 
@@ -259,30 +276,28 @@ The depth value is a default discovery bound, not a prohibition on later targete
 
 Prioritize artifacts likely to establish objective, current state, authority, dependencies, or deliverables, for example:
 
-- existing `README`, instructions, notes, manifests, reports, specifications, final/approved documents;
+- existing README/instructions/notes/manifests/reports/specifications/final or approved documents;
 - obvious entry-point CAD assemblies/projects, spreadsheets/workbooks, scripts, notebooks, datasets, or current deliverables;
-- files explicitly named by the user or referenced by other authoritative artifacts;
+- files explicitly named by the user or referenced by authoritative artifacts;
 - dependency-sensitive entry points rather than every dependent file.
 
 ### Stage 3 — targeted reads
 
-Open only the high-value candidates needed to build reliable project memory. For large/complex files, use bounded extraction, metadata, application-aware tools, summaries, or targeted sections rather than wholesale context ingestion.
-
-Expand inspection only when evidence is ambiguous or a required fact cannot otherwise be established.
+Open only high-value candidates needed to build reliable project memory. For large/complex files, use bounded extraction, metadata, application-aware tools, summaries, or targeted sections rather than wholesale context ingestion.
 
 ### What belongs in `SOURCES.md`
 
-When `SOURCES.md` exists, register an artifact or logical group when at least one is true:
+When `SOURCES.md` exists, register an artifact/logical group when at least one is true:
 
 - it is authoritative/canonical;
-- it is an important non-reconstructable input or raw dataset;
+- it is an important non-reconstructable input/raw dataset;
 - provenance/version matters;
 - it is a current major deliverable/output;
 - modification restrictions matter;
-- it is an external dependency/source needed to reproduce or continue work;
+- it is an external dependency/source needed to reproduce/continue work;
 - it is a dependency-sensitive application entry point such as a main CAD assembly/project.
 
-Do **not** register every ordinary file, cache, generated intermediate, or dependency leaf.
+Do not register every ordinary file, cache, generated intermediate, or dependency leaf.
 
 ## Ownership and promotion rules
 
@@ -306,15 +321,15 @@ After promotion, the normal user-structure copy is canonical; remove or clearly 
 
 ## Greenfield exception
 
-If the folder is genuinely new or the user explicitly requests a new structure, create only domain-appropriate directories that are actually useful, for example `data/`, `calculations/`, `src/`, `outputs/`, `cad/`, `experiments/`, `references/`, or `reports/`.
+If the folder is genuinely new or the user explicitly requests a new structure, create only domain-appropriate directories actually useful for the project.
 
-Do not create them mechanically. Start with the Minimal project-memory profile unless the known project requirements justify Standard immediately.
+Start with Minimal project-memory profile unless known complexity justifies Standard immediately. Use Russian project memory by default unless the user explicitly selects another language.
 
 ## Source locations
 
 For artifacts inside the project, prefer relative paths in `SOURCES.md`.
 
-There is no requirement to rename or move an artifact into a standardized directory merely to register it.
+There is no requirement to rename/move an artifact into a standardized directory merely to register it.
 
 Use absolute paths only when an important dependency necessarily lives outside the project folder and document that dependency.
 
@@ -337,10 +352,11 @@ Preserve the original `T-###` ID, final status, short task description, completi
 ## Local working rules
 
 - Prefer direct filesystem access when available.
-- Use bounded discovery and targeted reads rather than recursive content ingestion.
+- Use bounded discovery/targeted reads rather than recursive content ingestion.
 - Do not reorganize user files as part of initialization.
 - Use the installed agent work path for temporary/intermediate files where practical.
 - Use the installed generated-output path for unreviewed deliverables.
+- Maintain project-memory prose in the installed language; do not switch language because a deliverable switches language.
 - Treat raw source/experimental data as immutable by default unless the project says otherwise.
 - Register important user artifacts and accepted generated outputs in `SOURCES.md` without requiring relocation.
 - Preserve linked/dependent CAD and application structures.
@@ -353,15 +369,14 @@ Git is optional in L1. Do not initialize Git merely because L1 is being applied.
 
 If the project is already a Git repository:
 
-- read the existing `.gitignore` before changing it;
-- preserve existing entries;
-- ignore the temporary work area by default (`_ai/work/` for new installations);
-- normally ignore `_ai/generated/` unless generated drafts are intentionally versioned/reviewed through Git;
-- do **not** ignore `_ai/infrastructure/`, `_ai/plans/`, `_ai/decisions/`, `_ai/research/`, or `_ai/archive/` merely because they are agent-owned; these may contain durable project knowledge;
-- use a small identifiable managed block when adding ignore rules to an existing `.gitignore`;
-- for legacy `.ai/` installations, use paths matching the installed namespace instead of adding `_ai/` rules blindly.
+- read/preserve existing `.gitignore`;
+- ignore `_ai/work/` by default for new installations;
+- normally ignore `_ai/generated/` unless drafts are intentionally versioned/reviewed through Git;
+- do **not** ignore `_ai/infrastructure/`, `_ai/plans/`, `_ai/decisions/`, `_ai/research/`, or `_ai/archive/` merely because they are agent-owned;
+- use a small identifiable managed block when adding ignore rules;
+- for legacy `.ai/` installations, use paths matching the installed namespace.
 
-Example managed block:
+Example:
 
 ```gitignore
 # project-infrastructure:start
@@ -370,21 +385,19 @@ _ai/generated/
 # project-infrastructure:end
 ```
 
-If generated artifacts are intentionally tracked, omit `_ai/generated/` from that block.
+If generated artifacts are intentionally tracked, omit `_ai/generated/`.
 
-If GitHub later becomes canonical project storage, reassess the project against a GitHub-based scenario.
-
-Backup/synchronization is recommended when the local folder is canonical, but backup copies must not become competing canonical copies.
+If GitHub later becomes canonical project storage, reassess against a GitHub-based scenario.
 
 ## Concurrent-agent minimum rules
 
 Even in L1, more than one agent may touch the project.
 
 - Before writing shared canonical/runtime files, re-read the current version immediately before the write.
-- If it changed, reconcile the newer content instead of overwriting it.
+- If it changed, reconcile newer content instead of overwriting it.
 - Prefer one active owner per task/canonical artifact at a time.
-- Parallel agents should use separate `T-###` tasks and separate work areas when practical, then deliberately merge results.
-- If a conflict cannot be reconciled confidently, preserve both candidate changes in the non-canonical work area and surface the conflict instead of choosing silently.
+- Parallel agents should use separate `T-###` tasks/work areas when practical, then deliberately merge results.
+- If a conflict cannot be reconciled confidently, preserve both candidate changes in the non-canonical work area and surface the conflict.
 
 A later H1 scenario may add stronger coordination/locking rules.
 
@@ -392,16 +405,16 @@ A later H1 scenario may add stronger coordination/locking rules.
 
 After bootstrap, repair, or migration, validate the installation **from local files only**.
 
-Starting from `AGENTS.md` and without using the originating chat, GitHub standard, or bootstrap copies, a fresh agent/check should be able to identify:
+Starting from `AGENTS.md` and without using the originating chat, external standard, or bootstrap copies, a fresh agent/check should be able to identify:
 
-- installed scenario/profile/agent namespace;
+- installed scenario/profile/project-memory language/agent namespace;
 - current project phase/status;
 - active or nearest next `T-###` tasks;
 - key canonical sources/outputs when source tracking is installed;
 - the rule not to reorganize user-owned files;
 - where temporary work and unreviewed generated outputs belong.
 
-When practical, run this with a genuinely fresh agent/session. Otherwise simulate the cold start by following only the installed local runtime. If any answer requires hidden bootstrap knowledge, the installation is incomplete; repair the local runtime or create an explicit task for the gap.
+When practical, run this with a genuinely fresh agent/session. Otherwise simulate the cold start using only the installed local runtime. If any answer requires hidden bootstrap knowledge, the installation is incomplete.
 
 ## Bootstrap procedure
 
@@ -413,41 +426,43 @@ First classify the target as:
 
 ### Already initialized L1
 
-1. Read `AGENTS.md`, local manifest, and only the project-memory needed to understand installed state.
+1. Read `AGENTS.md`, local manifest, and only project-memory needed to understand installed state.
 2. Compare installed infrastructure with the explicitly requested target standard.
 3. Reconcile/migrate non-destructively.
-4. Preserve project-specific instructions and current project state.
+4. Preserve project-specific instructions, current state, IDs, and established project-memory language unless explicitly changing it.
 5. If migrating a legacy `.ai/` namespace, apply the explicit migration rule above; never rename it during routine work.
 6. Refresh infrastructure-managed blocks, manifest, and snapshot only as needed.
 7. Perform cold-start validation from the installed local runtime.
 
 ### Existing project / uninitialized brownfield
 
-1. Read the bootstrap index, `COMMON.md`, and this scenario from either authorized GitHub access or the provided local bundle.
-2. Perform the bounded brownfield inventory before opening large amounts of content.
-3. Determine Minimal vs Standard profile from actual project complexity.
-4. Identify high-value authoritative artifacts and dependency-sensitive structures using targeted inspection.
-5. Read existing root/instruction files before integrating infrastructure.
-6. Create only missing project-memory files justified by the selected profile and safely augment existing ones.
-7. Create `_ai/infrastructure/` and its `standard/` snapshot; create other `_ai/` subdirectories only when useful.
-8. Save the applied `COMMON.md` and `L1_LOCAL_FOLDER.md`, and create/update `MANIFEST.md` with profile, namespace, version/lifecycle/commit/ref when known.
-9. Ensure `AGENTS.md` contains the required L1 runtime rules and the actual installed file list.
-10. Populate project memory from evidence without inventing missing facts.
-11. Register only important sources using current relative paths.
-12. If the project is already a Git repository, apply the `.gitignore` rules non-destructively when relevant.
-13. Do not move/rename files solely to standardize appearance.
-14. Summarize current state and supported next actions.
-15. Perform cold-start validation from local files only.
+1. Read the bootstrap index, `COMMON.md`, and this scenario from authorized GitHub access or the provided local bundle.
+2. Perform bounded brownfield inventory before opening large amounts of content.
+3. Determine Minimal vs Standard profile from actual complexity.
+4. Determine project-memory language: use an already established project-memory language if clearly present; otherwise default to Russian (`ru`) unless the user explicitly requests another language.
+5. Identify high-value authoritative artifacts/dependency-sensitive structures using targeted inspection.
+6. Read existing root/instruction files before integrating infrastructure.
+7. Create only missing project-memory files justified by the selected profile and safely augment existing ones.
+8. Create `_ai/infrastructure/` and its `standard/` snapshot; create other `_ai/` subdirectories only when useful.
+9. Save the applied `COMMON.md`/`L1_LOCAL_FOLDER.md`, and create/update `MANIFEST.md` with profile, project-memory language, namespace, version/lifecycle/commit/ref when known.
+10. Ensure `AGENTS.md` contains required L1 runtime rules, installed language, and actual installed file list.
+11. Populate project memory from evidence without inventing missing facts.
+12. Register only important sources using current relative paths.
+13. If already a Git repository, apply `.gitignore` rules non-destructively when relevant.
+14. Do not move/rename files solely to standardize appearance.
+15. Summarize current state/supported next actions.
+16. Perform cold-start validation from local files only.
 
 ### New project / greenfield
 
 1. Start with Minimal profile unless known complexity justifies Standard.
-2. Create `_ai/infrastructure/` and only other agent/domain directories actually needed.
-3. Preserve any target file that already exists.
-4. Record known objectives, constraints, sources, assumptions, and tasks without invention.
-5. Install the L1 runtime rules and actual installed-file list in `AGENTS.md`.
-6. Apply Git ignore rules only when Git already exists or Git setup is separately requested.
-7. Perform cold-start validation.
+2. Use Russian (`ru`) project memory unless the user explicitly selects another language.
+3. Create `_ai/infrastructure/` and only other agent/domain directories actually needed.
+4. Preserve any target file that already exists.
+5. Record known objectives, constraints, sources, assumptions, and tasks without invention.
+6. Install L1 runtime rules, project-memory language, and actual installed-file list in `AGENTS.md`.
+7. Apply Git ignore rules only when Git already exists or Git setup is separately requested.
+8. Perform cold-start validation.
 
 ## Completion report
 
@@ -455,6 +470,7 @@ After initialization/restructuring/repair/migration, report concisely:
 
 - classification: already initialized / brownfield / greenfield;
 - selected project-memory profile;
+- installed project-memory language;
 - installed agent namespace;
 - project-memory and `_ai/` files/directories created or updated;
 - existing files preserved/merged rather than replaced;
