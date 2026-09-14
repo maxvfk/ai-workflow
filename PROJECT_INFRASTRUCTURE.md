@@ -7,7 +7,7 @@
 
 ## Bootstrap contract
 
-This file is the single external entry point for project initialization.
+This file is the single external entry point for project initialization, infrastructure validation, repair, or migration.
 
 When a user asks an agent to initialize or adapt a project using a scenario ID, the agent must:
 
@@ -15,11 +15,21 @@ When a user asks an agent to initialize or adapt a project using a scenario ID, 
 2. read [`project-infrastructure/COMMON.md`](project-infrastructure/COMMON.md);
 3. read the selected scenario file;
 4. inspect the target project environment;
-5. apply the selected scenario completely, including its bootstrap, preservation, project-memory, validation, and handoff rules.
+5. apply the selected scenario completely, including its bootstrap, preservation, project-memory, validation, local-runtime, and handoff rules.
 
 The user should **not** need to repeat scenario details in the prompt or enumerate the linked files manually.
 
 If a scenario distinguishes brownfield from greenfield projects, the agent must make that determination from the target folder and follow the scenario rules unless the user explicitly overrides it.
+
+## Fundamental runtime rule
+
+The external GitHub standard is an **installer/upgrader specification, not a permanent runtime dependency**.
+
+Every implemented scenario must leave the initialized project sufficiently self-contained that normal future work can continue from the project's own `AGENTS.md` and project-memory files without access to this repository, the original chat, or the bootstrap agent.
+
+Scenario-specific rules that remain relevant during ordinary work must therefore be materialized locally during bootstrap/migration. A scenario may also keep a local snapshot of the applied standard for audit, repair, and migration, but that snapshot should not be loaded during normal startup.
+
+External-standard access is required again only when the user explicitly requests initialization, infrastructure validation, repair, or migration/upgrade.
 
 ## Scenarios
 
@@ -43,14 +53,16 @@ For a new or existing local-folder project:
 
 > Apply project infrastructure scenario **L1** to this folder using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
 
-That is intentionally sufficient. The agent must follow the Bootstrap contract above and retrieve the linked common/scenario instructions itself.
+That is intentionally sufficient. The bootstrap agent must retrieve the linked common/scenario instructions and install a self-contained local runtime.
 
 For an already initialized project:
 
 > Read `AGENTS.md`, restore the current project context, and continue with my request.
 
+No GitHub-standard access should be required for that routine invocation.
+
 A task ID may be added when useful, for example `continue task T-017`.
 
 ## Compatibility
 
-The common memory model is tool-agnostic. Product-specific entry files or workspace instructions should be thin adapters pointing to the project infrastructure rather than independent copies of project state.
+The common memory model is tool-agnostic. Product-specific entry files or workspace instructions should be thin adapters pointing to the locally installed project runtime rather than independent copies of project state.
