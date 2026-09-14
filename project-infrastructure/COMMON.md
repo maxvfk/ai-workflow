@@ -109,7 +109,68 @@ For every important artifact, identify one canonical copy.
 
 Avoid maintaining multiple competing “latest” copies across folders or services. If another copy exists for transport, conversion, review, local processing, or publication, treat it as temporary or derived and point back to the canonical artifact in `SOURCES.md`.
 
-## 6. Root-file guidance
+## 6. Safe initialization, reapplication, and file preservation
+
+Infrastructure initialization and migration must be **non-destructive and idempotent by default**.
+
+Before creating or updating any existing root/project-instruction file, including `README.md`, `AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, `SOURCES.md`, `CLAUDE.md`, or another tool-specific instruction file:
+
+1. read the existing file first;
+2. identify user-maintained and project-specific content;
+3. preserve valid existing content and integrate infrastructure rules around it;
+4. never replace the complete file merely because the standard contains a template;
+5. if a safe merge is ambiguous, leave the original unchanged and create a proposed patch/draft in the scenario-defined agent work area for review.
+
+Templates in this standard are **shapes and defaults**, not permission to overwrite existing content.
+
+### Reapplying an already-installed scenario
+
+When infrastructure metadata shows that a project is already initialized:
+
+- treat the operation as reconcile/repair/migration, not as a new bootstrap;
+- preserve current project state, task IDs, decisions, source registrations, and project-specific instructions;
+- update only missing, obsolete, or explicitly migrated infrastructure behavior;
+- do not recreate project-memory files from scratch;
+- do not reset `STATE.md` or `TASKS.md` from a new scan unless the existing files are demonstrably unusable and the user has approved reconstruction.
+
+### Infrastructure-managed blocks
+
+When practical, scenario/runtime material added to a pre-existing instruction file should be isolated with stable markers, for example:
+
+```markdown
+<!-- project-infrastructure:start -->
+... infrastructure-managed runtime rules ...
+<!-- project-infrastructure:end -->
+```
+
+On later reapplication, update only the managed block and preserve content outside it. Do not wrap an entire existing user-maintained file in managed markers unless the file was created wholly by the infrastructure bootstrap.
+
+Tool-specific adapter files follow the same preservation rule. For example, an existing substantive `CLAUDE.md` must not be replaced with a one-line `@AGENTS.md`; integrate the pointer only when useful and preserve the existing Claude-specific instructions.
+
+## 7. Security, secrets, and personal data
+
+Project-memory and infrastructure files must not become a credential store.
+
+Never write secret values into `AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, `SOURCES.md`, manifests, decision records, plans, research notes, or other infrastructure-managed text files. This includes, at minimum:
+
+- passwords;
+- API tokens/keys;
+- OAuth tokens or refresh tokens;
+- session cookies;
+- private keys or seed phrases;
+- database credentials;
+- access tokens embedded in URLs;
+- other authentication material that grants access when copied.
+
+If a secret is required by the workflow, record only a non-secret reference such as `configured via environment variable`, `stored in system credential manager`, or a secret-manager identifier. Do not copy the value from source files into project memory.
+
+If a secret is discovered in project content, avoid echoing or propagating it. Flag the exposure to the user; when relevant recommend moving it to an appropriate credential mechanism and rotating/revoking it. Do not silently commit or replicate exposed secrets.
+
+Personal or sensitive user data should be minimized in project-memory files. Record only what is necessary for the project's operation, prefer references to canonical protected source documents over duplication, and avoid putting sensitive details into repositories or shared project memory unless the project genuinely requires them and the storage/access model is appropriate.
+
+These requirements apply even when the current scenario is purely local, because projects may later be synchronized, shared, or migrated to Git-backed scenarios.
+
+## 8. Root-file guidance
 
 ### `README.md` — human entry point
 
@@ -163,6 +224,7 @@ Do not treat previous chat history as the authoritative project state.
 - Distinguish facts, decisions, assumptions, recommendations, and tasks.
 - Use appropriate tools to inspect large or complex files instead of placing their full contents into model context unnecessarily.
 - Keep temporary/intermediate files separate from canonical outputs.
+- Never store secrets or credential values in project-memory/infrastructure files.
 - Follow the scenario-specific runtime rules recorded in this file.
 
 ## Before finishing substantial work
@@ -277,7 +339,7 @@ Register important authoritative information and artifacts. For each source, rec
 
 The scenario file defines how locations should be represented for that storage environment.
 
-## 7. Decisions
+## 9. Decisions
 
 Use one decision record per significant decision when future agents may need to understand **why** it was made.
 
@@ -310,7 +372,7 @@ Date: YYYY-MM-DD
 
 When a decision changes, normally create a new decision record and mark the old one `Superseded` rather than rewriting history.
 
-## 8. Plans for complex work
+## 10. Plans for complex work
 
 For a small task, `TASKS.md` is enough.
 
@@ -330,7 +392,7 @@ When complete, move or mark it according to the scenario's completed-plan conven
 
 Reference the active plan from `STATE.md` or `TASKS.md` instead of duplicating it there.
 
-## 9. End-of-session synchronization
+## 11. End-of-session synchronization
 
 Before ending substantial work, the active agent should:
 
@@ -341,7 +403,7 @@ Before ending substantial work, the active agent should:
 5. Record a decision in the scenario-defined decision location when a significant choice was made and its rationale may matter later.
 6. Leave the project in a state where a new agent can continue without reading the previous chat or contacting the external standard.
 
-## 10. Tool-specific adapters
+## 12. Tool-specific adapters
 
 The canonical project memory must remain tool-agnostic.
 
@@ -349,13 +411,13 @@ If a tool requires a special entry file or workspace instruction, use a thin ada
 
 ### Claude Code
 
-When useful, create `CLAUDE.md` containing:
+For a new project with no existing `CLAUDE.md`, it may be useful to create:
 
 ```markdown
 @AGENTS.md
 ```
 
-Add Claude-specific instructions only when truly necessary.
+If `CLAUDE.md` already exists, preserve its existing instructions and integrate a reference to `AGENTS.md` only when useful. Never replace a substantive existing `CLAUDE.md` with the one-line adapter.
 
 ### Codex
 
