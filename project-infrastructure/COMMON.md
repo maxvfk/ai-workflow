@@ -39,33 +39,59 @@ The current external standard becomes authoritative again only when the user exp
 
 Projects do **not** silently follow changes to a mutable branch such as `main`. During bootstrap or migration, record the standard version and, when available, the exact commit/ref used. During a later upgrade, compare the installed manifest/snapshot with the explicitly selected target standard and migrate deliberately.
 
-## 1. Core project-memory files
+## 1. Project-memory profiles
 
-A substantial project should expose a small set of stable, human-readable files with distinct responsibilities:
+Do not create empty infrastructure files merely because they appear in the standard. Start with the smallest profile that can preserve continuity and **promote the project when complexity requires it**.
 
-- `AGENTS.md` — AI entry point and runtime contract.
-- `PROJECT.md` — stable project definition: objective, scope, deliverables, constraints, terminology, success criteria.
-- `STATE.md` — current project snapshot.
-- `TASKS.md` — task registry.
-- `ASSUMPTIONS.md` — uncertainty register.
-- `SOURCES.md` — registry of authoritative source files, datasets, external artifacts, and canonical locations.
-- `README.md` — short human entry point; it should not duplicate current project state.
+### Minimal profile
 
-These files should not duplicate one another. Each has one primary responsibility.
+Use for a small, short-lived, or structurally simple project where the objective and source material are obvious and there is little uncertainty.
+
+Required:
+
+- `AGENTS.md` — runtime entry point;
+- `STATE.md` — current snapshot;
+- `TASKS.md` — active/next work.
+
+Add other project-memory files only when they have real content to hold.
+
+### Standard profile
+
+Use for substantial, long-running, multi-deliverable, research, engineering, analytical, or dependency-rich work.
+
+Typical files:
+
+- `AGENTS.md` — AI entry point and runtime contract;
+- `PROJECT.md` — stable project definition: objective, scope, deliverables, constraints, terminology, success criteria;
+- `STATE.md` — current project snapshot;
+- `TASKS.md` — task registry;
+- `ASSUMPTIONS.md` — uncertainty register;
+- `SOURCES.md` — registry of authoritative source files, datasets, external artifacts, and canonical locations;
+- `README.md` — optional human entry point when useful or already present.
+
+### Promotion triggers
+
+Promote from Minimal by creating only the needed file(s):
+
+- create `PROJECT.md` when scope, deliverables, terminology, or constraints are no longer obvious from `AGENTS.md`/`STATE.md`;
+- create `SOURCES.md` when provenance, canonical-vs-derived status, multiple authoritative artifacts, external sources, or modification restrictions matter;
+- create `ASSUMPTIONS.md` when estimates, uncertainty, design choices, research premises, or validation state matter;
+- use decision records when rationale must survive future sessions;
+- use plans when a task spans a long run, multiple sessions, or multiple agents;
+- use `README.md` when a human-facing entry point adds value.
+
+Never create placeholder files that would remain effectively empty. `AGENTS.md` must list the actual installed project-memory files so startup does not assume absent optional files.
 
 ## 2. Startup sequence and progressive disclosure
 
 Do not load the whole project into model context by default.
 
-Preferred runtime startup sequence:
+Preferred runtime sequence is:
 
-1. `AGENTS.md`
-2. `PROJECT.md`
-3. `STATE.md`
-4. `TASKS.md`
-5. `ASSUMPTIONS.md` when the task involves estimates, uncertainty, design choices, research, or analysis
-6. `SOURCES.md` before locating, retrieving, or editing authoritative artifacts
-7. decisions, plans, source documents, code, data, and outputs only as needed
+1. `AGENTS.md`;
+2. the installed current-state/task files named there (`STATE.md`, `TASKS.md`);
+3. `PROJECT.md`, `ASSUMPTIONS.md`, and `SOURCES.md` only if they exist and are relevant;
+4. decisions, plans, source documents, code, data, and outputs only as needed.
 
 Do not load the local infrastructure-standard snapshot during ordinary startup.
 
@@ -89,13 +115,32 @@ Agents should distinguish explicitly:
 
 Do not silently convert one category into another.
 
-## 5. One canonical copy
+## 5. Stable identifiers
+
+Use one shared identifier convention across scenarios when records are non-trivial:
+
+- `T-001`, `T-002`, ... — tasks;
+- `A-001`, `A-002`, ... — assumptions;
+- `S-001`, `S-002`, ... — sources/canonical artifacts;
+- `D-001`, `D-002`, ... — decisions;
+- `P-001`, `P-002`, ... — substantial plans.
+
+IDs are stable, monotonically increasing within a project, and must not be reused after deletion, cancellation, rejection, or supersession.
+
+Recommended filenames for standalone records:
+
+- `D-001-short-decision-title.md`;
+- `P-001-short-plan-title.md`.
+
+Cross-reference these IDs from `STATE.md`, `TASKS.md`, decisions, plans, and other project-memory files when useful.
+
+## 6. One canonical copy
 
 For every important artifact, identify one canonical copy. Avoid maintaining competing “latest” copies across folders or services.
 
 If another copy exists for transport, conversion, review, local processing, or publication, treat it as temporary/derived and point back to the canonical artifact in `SOURCES.md`.
 
-## 6. Safe initialization, reapplication, and file preservation
+## 7. Safe initialization, reapplication, and file preservation
 
 Infrastructure initialization and migration must be **non-destructive and idempotent by default**.
 
@@ -131,7 +176,7 @@ When practical, scenario/runtime material added to a pre-existing instruction fi
 
 On later reapplication, update only the managed block and preserve content outside it. Existing substantive tool-specific files such as `CLAUDE.md` follow the same preservation rule.
 
-## 7. Security, secrets, and personal data
+## 8. Security, secrets, and personal data
 
 Project-memory and infrastructure files must not become a credential store.
 
@@ -143,11 +188,11 @@ If a secret is discovered in project content, avoid echoing or propagating it. F
 
 Personal or sensitive data should be minimized in project-memory files. Prefer references to protected canonical sources over duplication and avoid placing sensitive details into repositories/shared memory unless genuinely required and appropriate for the storage/access model.
 
-## 8. Root-file guidance
+## 9. Root-file guidance
 
 ### `README.md`
 
-Keep it short: project name, one-paragraph purpose, basic structure, pointer to `AGENTS.md`, and essential human setup/opening instructions. Do not duplicate detailed project state.
+Keep it short when present: project name, one-paragraph purpose, basic structure, pointer to `AGENTS.md`, and essential human setup/opening instructions. Do not duplicate detailed project state.
 
 ### `AGENTS.md` — AI entry point and runtime contract
 
@@ -155,7 +200,7 @@ Keep it short: project name, one-paragraph purpose, basic structure, pointer to 
 
 During bootstrap/migration, the selected scenario must add its required runtime rules and infrastructure metadata locally.
 
-Recommended baseline:
+A useful baseline contains:
 
 ```markdown
 # Agent instructions
@@ -164,15 +209,13 @@ Recommended baseline:
 Scenario: <scenario-id>
 Installed standard version/commit: <version and commit/ref when known>
 Local infrastructure metadata: <scenario-defined manifest path>
+Project-memory profile: <Minimal/Standard>
+Installed project-memory files: <actual files>
 
 For normal work, this file and the project-memory files are the runtime source of truth. Do not require the external standard or load the local standard snapshot unless performing infrastructure audit, repair, or migration.
 
 ## Startup
-1. `PROJECT.md`
-2. `STATE.md`
-3. `TASKS.md`
-4. `ASSUMPTIONS.md` when relevant
-5. `SOURCES.md` before locating/editing authoritative artifacts
+Read only the installed project-memory files needed for the task, beginning with current state/tasks.
 
 ## Working rules
 - Prefer project files over remembered chat context when they conflict.
@@ -185,9 +228,7 @@ For normal work, this file and the project-memory files are the runtime source o
 
 ## Before finishing substantial work
 - Re-read shared project-memory files you are about to modify and reconcile concurrent changes.
-- Update `STATE.md` if project state changed.
-- Update `TASKS.md`.
-- Update `ASSUMPTIONS.md` and `SOURCES.md` when relevant.
+- Update current state/tasks and other installed project-memory files when relevant.
 - Record significant decisions in the scenario-defined location.
 - Leave the project continuable without the previous chat or external standard.
 ```
@@ -204,7 +245,11 @@ Recommended sections: Last updated; Current phase; Current status; Completed; In
 
 ### `TASKS.md`
 
-Use stable task IDs for non-trivial projects. Suggested statuses: `todo`, `active`, `blocked`, `done`, `cancelled`. Do not use it as a narrative diary.
+Use stable `T-###` IDs for non-trivial projects. Suggested statuses: `todo`, `active`, `blocked`, `done`, `cancelled`. Do not use it as a narrative diary.
+
+`TASKS.md` is an **active working set**, not a permanent ledger. Keep active/blocked/todo tasks plus recently completed tasks that still provide useful context. Periodically move older `done`/`cancelled` entries to the scenario-defined task archive while preserving IDs and relevant output/evidence references.
+
+Archive when the file becomes noisy enough to hinder startup rather than at a rigid task count. Do not archive active or blocked tasks.
 
 ### `ASSUMPTIONS.md`
 
@@ -212,31 +257,32 @@ For engineering, scientific, cost-estimation, research, planning, and analytical
 
 ### `SOURCES.md`
 
-Register important authoritative information and artifacts. Record when useful: source ID, title/name, type, canonical location/path/URL/ID, canonical status, provenance, purpose, modification restrictions, and version/date. The scenario defines location conventions.
+Register important authoritative information and artifacts. Record when useful: `S-###` ID, title/name, type, canonical location/path/URL/ID, canonical status, provenance, purpose, modification restrictions, and version/date. The scenario defines location conventions.
 
-## 9. Decisions
+## 10. Decisions
 
-Use one decision record per significant decision when future agents may need to understand **why** it was made. The storage location is scenario-defined.
+Use `D-###` for one decision record per significant decision when future agents may need to understand **why** it was made. The storage location is scenario-defined.
 
 A useful record contains: ID/title, status, date, context, decision, alternatives considered, and consequences. When a decision changes, normally create a new record and mark the old one `Superseded` rather than rewriting history.
 
-## 10. Plans for complex work
+## 11. Plans for complex work
 
-For a small task, `TASKS.md` is enough. For work spanning a long agent run, multiple sessions, or multiple agents, create a plan in the active scenario's plan location.
+For a small task, `TASKS.md` is enough. For work spanning a long agent run, multiple sessions, or multiple agents, create a `P-###` plan in the active scenario's plan location.
 
 A plan should contain objective, inputs, expected outputs, steps/workstreams, dependencies, validation criteria, and open questions. Reference it from `STATE.md`/`TASKS.md` instead of duplicating it there.
 
-## 11. End-of-session synchronization
+## 12. End-of-session synchronization
 
 Before ending substantial work, the active agent should:
 
 1. re-read every shared project-memory file it intends to modify;
 2. reconcile any changes made since it last read the file rather than overwriting them;
-3. update `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, and `SOURCES.md` as relevant;
+3. update installed current-state/task/source/assumption files as relevant;
 4. record significant decisions in the scenario-defined location;
-5. leave the project continuable without the previous chat or external standard.
+5. archive stale completed/cancelled tasks when `TASKS.md` has become noisy;
+6. leave the project continuable without the previous chat or external standard.
 
-## 12. Concurrent agents and shared-state writes
+## 13. Concurrent agents and shared-state writes
 
 L1 and other scenarios may be used by more than one agent even before a dedicated multi-agent scenario is adopted. Use **optimistic concurrency** for shared project state.
 
@@ -249,7 +295,21 @@ Rules:
 - When a conflict cannot be reconciled confidently, preserve both contributions in a non-canonical work area and surface the conflict rather than choosing silently.
 - A dedicated multi-agent scenario may later add stronger coordination/locking rules; these minimum rules apply everywhere.
 
-## 13. Tool-specific adapters
+## 14. Cold-start validation
+
+A bootstrap, repair, or migration is not complete merely because files were created.
+
+Validate the installed runtime from the perspective of a fresh agent that has access only to the project folder and begins with `AGENTS.md`. Without relying on the originating chat or external standard, that agent should be able to determine at least:
+
+- what the project is currently doing/current phase;
+- the nearest active/next tasks;
+- where the important canonical sources or outputs are, when source tracking is part of the installed profile;
+- which scenario/runtime rules constrain its work;
+- where temporary/generated work belongs.
+
+When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly by following only the installed local runtime. Record unresolved gaps as tasks instead of claiming successful validation.
+
+## 15. Tool-specific adapters
 
 The canonical project memory must remain tool-agnostic. Tool-specific entry files or workspace instructions should be thin adapters rather than independent project-state copies.
 
