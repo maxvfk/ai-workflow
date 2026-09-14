@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.3.0  
+**Standard version:** 0.3.1  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -26,14 +26,16 @@ When upgrading an initialized project:
 2. read the explicitly selected target standard;
 3. compare installed and target behavior;
 4. migrate non-destructively according to `COMMON.md` and the active scenario;
-5. preserve project-specific rules, state, identifiers, and user-owned content;
+5. preserve project-specific rules, state, identifiers, language, and user-owned content;
 6. update the manifest and local snapshot only after the migration is applied.
 
 ### Draft 0.3 compatibility note
 
-L1 0.3 changes the preferred agent-support namespace for **new installations** from hidden `.ai/` to visible `_ai/`, adds Minimal/Standard project-memory profiles, bounded brownfield inspection, task archiving, Git-ignore guidance, cold-start validation, and unified record IDs.
+L1 0.3 changes the preferred agent-support namespace for **new installations** from hidden `.ai/` to visible `_ai/`, adds Minimal/Standard project-memory profiles, bounded brownfield inspection, task archiving, Git-ignore guidance, cold-start validation, unified record IDs, and an explicit project-memory language policy.
 
 Projects installed under 0.2.x do not rename `.ai/` during ordinary work. An explicit migration may move it to `_ai/` only according to the safe migration rules in L1; otherwise the installed namespace remains valid and must be recorded in the manifest/runtime instructions.
+
+Version 0.3.1 defines **Russian (`ru`) as the default project-memory language** for this standard unless the user explicitly selects another language or the project already has an established project-memory language. The language of an individual deliverable does not by itself change the project-memory language.
 
 ## Bootstrap contract
 
@@ -45,7 +47,7 @@ When a user asks an agent to initialize or adapt a project using a scenario ID, 
 2. read [`project-infrastructure/COMMON.md`](project-infrastructure/COMMON.md);
 3. read the selected scenario file;
 4. inspect the target project environment;
-5. apply the selected scenario completely, including its bootstrap, preservation, project-memory, validation, local-runtime, and handoff rules.
+5. apply the selected scenario completely, including its bootstrap, preservation, project-memory, language, validation, local-runtime, and handoff rules.
 
 The user should **not** need to repeat scenario details in the prompt or enumerate the linked files manually when the agent can access this repository.
 
