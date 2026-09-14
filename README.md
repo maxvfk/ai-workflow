@@ -17,12 +17,14 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.3.0**  
+Current standard version: **0.3.1**  
 Lifecycle: **Draft**
 
 The external standard is used for initialization, validation, repair, and migration. After bootstrap, a project is expected to be self-contained and ordinary work should continue from its local `AGENTS.md` and installed project-memory files without GitHub access.
 
 L1 is brownfield-first, supports Minimal and Standard project-memory profiles, uses visible `_ai/` as the preferred support namespace for new installations, and preserves older installed `.ai/` namespaces until an explicit migration.
+
+Project-memory prose defaults to **Russian (`ru`)** unless the user explicitly selects another language or an existing project already has an established project-memory language. Deliverable language does not automatically change project-memory language; filenames, record IDs, and controlled status values remain in their defined English forms.
 
 ### L1 bootstrap
 
