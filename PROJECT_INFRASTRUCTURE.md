@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.2.0  
+**Standard version:** 0.3.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -28,6 +28,12 @@ When upgrading an initialized project:
 4. migrate non-destructively according to `COMMON.md` and the active scenario;
 5. preserve project-specific rules, state, identifiers, and user-owned content;
 6. update the manifest and local snapshot only after the migration is applied.
+
+### Draft 0.3 compatibility note
+
+L1 0.3 changes the preferred agent-support namespace for **new installations** from hidden `.ai/` to visible `_ai/`, adds Minimal/Standard project-memory profiles, bounded brownfield inspection, task archiving, Git-ignore guidance, cold-start validation, and unified record IDs.
+
+Projects installed under 0.2.x do not rename `.ai/` during ordinary work. An explicit migration may move it to `_ai/` only according to the safe migration rules in L1; otherwise the installed namespace remains valid and must be recorded in the manifest/runtime instructions.
 
 ## Bootstrap contract
 
