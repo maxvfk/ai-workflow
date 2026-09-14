@@ -1,12 +1,14 @@
 # ai-workflow
 
-Shared AI workflow notes, routing rules and current model state.
+Shared AI workflow notes, routing rules and project-infrastructure standards.
 
 ## Files
 
 - `AI_MODEL_ROUTING_MEMO.md` — stable routing rules for choosing vendor, environment, model and effort.
 - `AI_MODEL_CURRENT_STATE.md` — regularly refreshed snapshot of current ChatGPT/Claude models, limits, benchmark evidence and practical recommendations.
-- `PROJECT_INFRASTRUCTURE_STANDARD.md` — reusable project-memory and handoff standard. It defines the common `AGENTS.md` / `PROJECT.md` / `STATE.md` / `TASKS.md` / `ASSUMPTIONS.md` / `SOURCES.md` infrastructure and scenario-specific setup rules. Scenario L1 covers projects stored in a local folder.
+- `PROJECT_INFRASTRUCTURE.md` — entry point for reusable project-memory and handoff infrastructure. It links to common rules and environment-specific scenarios under `project-infrastructure/`.
+- `project-infrastructure/COMMON.md` — shared `AGENTS.md` / `PROJECT.md` / `STATE.md` / `TASKS.md` / `ASSUMPTIONS.md` / `SOURCES.md` rules used by all scenarios.
+- `project-infrastructure/L1_LOCAL_FOLDER.md` — implemented scenario for projects stored in a local folder.
 - `skills/model-router/SKILL.md` — reusable Agent Skill that applies the routing memo and current-state snapshot to a concrete task.
 
 ## Usage
@@ -21,11 +23,15 @@ If the skill is not installed natively in the current product, ask the chat to r
 
 ### Project infrastructure
 
-For a new project, ask the agent to read `PROJECT_INFRASTRUCTURE_STANDARD.md` and apply the scenario matching the storage/work environment.
+For a new project, start with `PROJECT_INFRASTRUCTURE.md`, then read `project-infrastructure/COMMON.md` and the scenario matching the project's storage/work environment.
 
 For a local-folder project:
 
-`Read PROJECT_INFRASTRUCTURE_STANDARD.md and apply Scenario L1 to this project folder.`
+`Read PROJECT_INFRASTRUCTURE.md, project-infrastructure/COMMON.md, and project-infrastructure/L1_LOCAL_FOLDER.md. Apply Scenario L1 to this project.`
+
+For an already initialized project:
+
+`Read AGENTS.md, restore the current project context, and continue task T-XXX.`
 
 ### Freshness behavior
 
