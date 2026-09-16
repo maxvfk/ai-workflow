@@ -14,7 +14,7 @@ Both locations may already contain project material. G1 is therefore brownfield-
 
 ## 1. Core model
 
-A G1 project has two canonical stores with different responsibilities:
+A G1 project has two complementary canonical stores:
 
 ```text
                     G1 project
@@ -34,45 +34,44 @@ A G1 project has two canonical stores with different responsibilities:
               optional and non-canonical
 ```
 
-The stores are complementary, not mirrored copies.
+The stores are **not mirrors**.
 
-Do not maintain a second copy of `STATE.md`, `TASKS.md`, or other current project state in Drive. Do not mirror Drive documents into GitHub merely for completeness.
+Do not keep a second copy of `STATE.md`, `TASKS.md`, or other current project state in Drive. Do not mirror Drive documents into GitHub merely for completeness.
 
 ## 2. Default placement policy
 
-For **new** artifacts, prefer:
-
-### GitHub
+For new artifacts, prefer GitHub for:
 
 - project-memory/runtime files defined by `COMMON.md`;
-- code, scripts, notebooks when text-friendly and appropriate for Git;
-- configuration and small text data;
+- code, scripts, text-friendly notebooks, configuration, and small text data;
 - plans, decisions, research notes, schemas, prompts, and documentation;
-- other artifacts where diff/history through Git is valuable.
+- other artifacts where Git diff/history is valuable.
 
-### Google Drive
+Prefer Google Drive for:
 
 - native Google Docs, Sheets, and Slides;
 - DOCX/XLSX/PPTX and similar Office files;
 - PDFs, images, audio/video, archives, and large binaries;
-- large datasets or exports that are impractical for normal Git use;
-- collaborative documents whose canonical editing environment is Google Workspace.
+- large datasets or exports impractical for ordinary Git use;
+- collaborative artifacts whose canonical editing environment is Google Workspace.
 
-This is a **placement default, not a migration command**. During brownfield bootstrap, preserve existing canonical locations unless the user explicitly requests reorganization. A source that is already canonical in the “other” store may remain there and should simply be registered accurately in `SOURCES.md`.
+This is a **placement default, not a migration command**. During brownfield bootstrap, preserve existing canonical locations unless the user explicitly requests reorganization.
+
+A source already canonical in the “other” store may remain there and should simply be registered accurately in `SOURCES.md`.
 
 ## 3. Project-memory profile and language
 
 Use the Minimal/Standard profile rules from `COMMON.md`.
 
-For most substantial G1 projects, `Standard` will be appropriate because cross-store provenance matters, and `SOURCES.md` is strongly recommended. A genuinely small project may still use Minimal plus `SOURCES.md` if that is sufficient.
+For most substantial G1 projects, `Standard` will be appropriate because cross-store provenance matters. `SOURCES.md` is strongly recommended even when the rest of the project remains close to Minimal.
 
-Project-memory language follows `COMMON.md`; for this standard the default is Russian (`ru`). Deliverable language does not change project-memory language by itself.
+Project-memory language follows `COMMON.md`; the default is Russian (`ru`). Deliverable language does not change project-memory language by itself.
 
-## 4. Canonical G1 runtime in GitHub
+## 4. Canonical runtime in GitHub
 
-The GitHub repository is the canonical home of the installed runtime and project-memory layer.
+The project GitHub repository is the canonical home of the installed runtime and project-memory layer.
 
-Typical repository structure:
+Typical structure:
 
 ```text
 repo/
@@ -98,9 +97,9 @@ repo/
     └── generated/
 ```
 
-Create only the project-memory files and `_ai/` subdirectories that have a real role, following `COMMON.md`.
+Create only files/directories that have a real role.
 
-Normal runtime does **not** require access to the external `ai-workflow` standard repository. It does require access to the project's own GitHub repository or a current local clone of it.
+Normal runtime does **not** require the external `ai-workflow` standard repository. It does require access to the project's own GitHub runtime, either remotely or through a current local clone/check-out.
 
 ## 5. Infrastructure manifest
 
@@ -143,13 +142,15 @@ Use the Drive **folder ID** as the stable machine reference. Name/path is human 
 
 Never invent IDs, URLs, branch names, or commit refs.
 
+Do **not** store a product-specific capability matrix in the manifest: connector/tool capabilities are session-dependent and may change independently of the project.
+
 ## 6. `SOURCES.md` as the cross-store registry
 
 `SOURCES.md` is the primary bridge between GitHub project state and Drive artifacts.
 
 Use stable `S-###` IDs from `COMMON.md`.
 
-For a Drive source, record when useful:
+Example Drive source:
 
 ```markdown
 ## S-012 — Расчёт стоимости
@@ -162,7 +163,7 @@ Canonical: yes
 Modification: editable
 ```
 
-For a GitHub source:
+Example GitHub source:
 
 ```markdown
 ## S-013 — Расчётный код
@@ -172,21 +173,21 @@ Canonical: yes
 Modification: editable
 ```
 
-Prefer IDs and repository-relative paths as machine-stable locators. Human-readable names/folder context supplement them.
+Prefer IDs and repository-relative paths as stable machine locators. Human-readable names/folder context supplement them.
 
-Do not register every ordinary file. Apply the source-selection rules from `COMMON.md` and register important canonical/non-reconstructable inputs, current major outputs, provenance-sensitive artifacts, and dependency entry points.
+Do not register every ordinary file. Register important canonical/non-reconstructable inputs, major outputs, provenance-sensitive artifacts, and dependency entry points.
 
 ## 7. Optional Drive-to-GitHub pointer
 
 When useful for human discoverability, the Drive root may contain a small pointer document such as `PROJECT_LINK.md` or a short Google Doc stating that the folder belongs to the G1 project and linking to the GitHub repository/runtime entry point.
 
-This pointer is optional and must **not** duplicate `STATE.md`, `TASKS.md`, or other current project memory. GitHub remains the project-state plane.
+This pointer is optional and must **not** duplicate `STATE.md`, `TASKS.md`, or other current project memory.
 
 Preserve existing Drive organization and sharing permissions when adding such a pointer.
 
 ## 8. Brownfield-first bootstrap on both stores
 
-A G1 project is brownfield if either the target GitHub repository or target Drive folder already contains meaningful project material.
+A G1 project is brownfield if **either** the target GitHub repository or target Drive folder already contains meaningful project material.
 
 Do not classify it as greenfield merely because one side is empty.
 
@@ -211,32 +212,62 @@ Start with metadata/folder discovery, not bulk download:
 
 ### Preservation rule
 
-During bootstrap do not move, rename, convert, regroup, or duplicate existing GitHub/Drive artifacts merely to make the project match the preferred G1 layout.
+During bootstrap do not move, rename, convert, regroup, or duplicate existing GitHub/Drive artifacts merely to match the preferred G1 layout.
 
 If the two stores contain competing apparent “latest” versions, do not guess. Register the ambiguity as an assumption/task and resolve provenance before declaring one canonical.
 
-## 9. Agent execution modes
+## 9. Session capability check
 
-G1 must work for agents with different capabilities. The execution mode is selected per session/task; it is not part of canonical project state.
+G1 is **capability-driven, not product-driven**. Do not assume that all agents, chats, connectors, MCP servers, local runtimes, or product surfaces expose the same operations.
 
-### Mode A — connector-native
+Before a task that may modify canonical state/artifacts, determine the capabilities actually available in the current session.
 
-Use when the agent can access GitHub and Google Drive through connectors/APIs but has no persistent local filesystem or does not need one.
+At minimum check, when relevant:
+
+```text
+GitHub
+  read repository/project memory?       yes/no
+  write/update project memory?          yes/no
+
+Google Drive
+  discover/read files?                  yes/no
+  create/upload files?                  yes/no
+  move/rename/share metadata?           yes/no
+  edit existing native content in place? yes/no
+
+Execution
+  persistent/local filesystem?          yes/no
+  ephemeral workspace?                  yes/no
+  code/data execution?                  yes/no
+  browser/computer use?                 yes/no
+```
+
+Use actual available tools/actions as evidence. Do not infer write capability merely because read access exists.
+
+The capability check is temporary session context, not durable project state. Record a lasting dependency only when the project genuinely requires a specific tool/API to operate.
+
+## 10. Agent execution modes
+
+Execution mode is selected per session/task and may combine capabilities.
+
+### Mode A — connector/API native
+
+Use when available connector/API operations can safely perform the required work directly.
 
 Best for:
 
 - discovery and metadata reads;
 - bounded source reads;
-- small GitHub text edits;
-- native Google Docs/Sheets/Slides operations supported by the connector;
-- small addressed updates to Drive files;
-- project-memory synchronization.
+- small GitHub text edits when GitHub write exists;
+- native Google Docs/Sheets/Slides operations explicitly supported by the current connector/API;
+- small addressed Drive operations;
+- project-memory synchronization when GitHub write exists.
 
-Do not create a local workspace merely because one is theoretically possible.
+Do not assume that a Drive connector which can read or create files can also edit existing Google-native content.
 
 ### Mode B — local/hybrid workspace
 
-Use when the agent has filesystem access and the task benefits from iterative local work.
+Use when the agent has filesystem access and iterative local work is advantageous.
 
 Typical setup:
 
@@ -248,33 +279,65 @@ local repo clone/
     └── MATERIALIZATION.md
 ```
 
-The GitHub working tree is a normal clone/checkout. Drive artifacts are materialized only as needed into the non-canonical work area.
+The GitHub working tree is a normal clone/check-out. Drive artifacts are materialized only as needed into the non-canonical work area.
 
 ### Mode C — ephemeral workspace
 
-A cloud/chat agent may have a temporary execution filesystem even though it has no persistent user-local folder. Treat it the same as a local workspace for processing, except that all contents are disposable.
+A cloud/chat agent may have a temporary execution filesystem without a persistent user-local folder.
 
-Nothing in an ephemeral workspace is canonical. Required results must be published back before the task is considered complete.
+Treat it like a local workspace for processing, except that all contents are disposable. Nothing there is canonical.
 
-## 10. Connector vs materialization routing
+### Mode D — browser/computer-mediated
+
+When a safe API/native write is unavailable but an authenticated browser/computer-use path can preserve the identity of the canonical artifact, UI-mediated editing may be used for bounded work.
+
+Prefer API/native operations when both are available. Browser/computer use is generally less deterministic and should not be the default for large batch transformations when a reliable API/workflow can be used instead.
+
+## 11. Safe operation fallback ladder
+
+For a requested modification to a canonical artifact, select the first safe supported path:
+
+```text
+1. Native connector/API operation preserving canonical identity
+        ↓ unavailable
+2. Direct local editing when the canonical artifact is genuinely local-editable
+   and synchronization/identity can be verified
+        ↓ unavailable
+3. Browser/computer-mediated editing that preserves canonical identity
+        ↓ unavailable
+4. Materialize → transform → publish-back,
+   only when the round-trip is demonstrably safe
+        ↓ unsafe or unavailable
+5. Do not mutate the canonical artifact.
+   Produce a proposed change / derived result and leave synchronization pending
+   for a write-capable agent or workflow.
+```
+
+A lower rung must not be chosen merely for convenience if it risks changing file identity, permissions, links, collaboration semantics, formulas, formatting, comments, or other meaningful properties.
+
+**Never emulate an in-place edit by replacing a canonical artifact with a newly uploaded file unless the user explicitly accepts the identity/provenance change and project records are updated accordingly.**
+
+## 12. Connector vs materialization routing
 
 Default rule:
 
 > **Use connectors for discovery and small addressed operations; materialize only when iterative computation or unsupported tooling makes a workspace materially better.**
 
-Prefer direct connector/native work for roughly one to a few bounded operations.
+Prefer direct connector/native work for one to a few bounded operations.
 
-Prefer materialization when the task requires repeated cycles such as:
+Prefer materialization for repeated cycles such as:
 
 ```text
 read → transform → inspect → modify → validate
 ```
 
-or requires Python/MATLAB/specialized parsers, multiple interdependent files, heavy table transformation, batch processing, or other local tooling.
+or when Python/MATLAB/specialized parsers, multiple interdependent files, heavy table transformation, batch processing, or other local tooling are needed.
 
 Materialize the **smallest sufficient subset**, not the whole Drive folder.
 
-## 11. Materialization tracking
+Before materializing for an intended edit, determine the safe publish-back path. If no safe path exists, treat the materialization as analysis/proposal generation rather than as a canonical edit workflow.
+
+## 13. Materialization tracking
 
 When a persistent/local workspace is used, keep temporary provenance under the installed work area, for example:
 
@@ -290,74 +353,114 @@ For each materialized Drive artifact record when useful:
 - source modified time or revision identifier when available;
 - local working path;
 - whether the local copy is raw, exported, converted, or derived;
-- intended publish target/action.
+- intended publish target/action;
+- whether safe publish-back has been confirmed.
 
 This mapping is temporary execution metadata and should normally remain uncommitted with `_ai/work/`.
 
 An ephemeral agent may keep equivalent in-session metadata without creating a durable file.
 
-## 12. Native Google Docs/Sheets/Slides
+## 14. Native Google Docs/Sheets/Slides
 
-Native Google Workspace files have special rules.
+Native Google Workspace files require identity-preserving handling.
 
-Prefer connector-native reads/edits when supported.
+Prefer connector/API-native reads and edits **only when the current session actually exposes the required write operation**.
 
-If a native Google file is exported to DOCX/XLSX/PPTX/PDF/CSV or another local format for analysis or processing:
+If a native file is exported to DOCX/XLSX/PPTX/PDF/CSV or another local format:
 
 - the export is a **derived working copy**, never automatically canonical;
 - preserve the original Drive file ID as the canonical locator unless the user explicitly chooses a new canonical artifact;
-- decide the publish-back method before making substantial edits;
-- do not silently replace a native Google file with an uploaded binary equivalent;
-- when possible, apply validated changes back through the native connector/API rather than changing file type;
-- if the task intentionally creates a new imported/native document, verify the created Drive artifact and then update `SOURCES.md`/state deliberately.
+- determine the publish-back method before substantial edits;
+- do not silently replace the native file with an uploaded binary equivalent;
+- apply validated changes back through an identity-preserving native/API/UI path when available;
+- if no safe write-back path exists, keep the output as a proposed/derived result and mark synchronization pending;
+- if the task intentionally creates a new imported/native document, verify the created artifact and then update `SOURCES.md`/state deliberately.
 
-For native Sheets, prefer range/table/formula operations for ordinary edits; materialize/export only when complex computation or unsupported operations justify it.
+For native Sheets, range/table/formula operations are preferred for ordinary edits when available. Export/materialize only when complex computation or unsupported operations justify it.
 
-## 13. Stored non-native Drive files
+Do not claim that formulas, formatting, comments, permissions, links, or other semantics were preserved unless the chosen round-trip was validated.
+
+## 15. Stored non-native Drive files
 
 For PDFs, Office files, ZIPs, images, datasets, and other stored non-native files:
 
 - use connector reads for bounded inspection when sufficient;
-- materialize/download the raw file for local tooling when needed;
-- preserve the Drive file ID and source revision/modified metadata;
-- publish an edited result back deliberately, preserving the canonical file identity when the available API/workflow safely supports replacement/versioning;
+- materialize/download raw files for local tooling when needed;
+- preserve Drive file ID and source revision/modified metadata;
+- publish edited results deliberately, preserving canonical identity when the available workflow safely supports replacement/versioning;
 - otherwise create a new verified artifact and update `SOURCES.md` so the canonical relationship is explicit.
 
 Do not leave an edited local file as the only copy of a completed result.
 
-## 14. Publish-back transaction
+## 16. Publish-back transaction
 
-For any materialized or locally generated result, use this order:
+For any canonical-changing result, use this order:
 
 ```text
+SESSION CAPABILITY CHECK
+        ↓
 DISCOVER / GROUND
         ↓
 READ or MATERIALIZE
         ↓
 WORK
         ↓
-VALIDATE LOCALLY
+VALIDATE
         ↓
-RE-CHECK CANONICAL SOURCE
+RE-CHECK CANONICAL SOURCE / SHARED STATE
         ↓
-PUBLISH TO GITHUB OR DRIVE
+PUBLISH TO THE CANONICAL STORE
         ↓
 VERIFY PUBLISHED RESULT
         ↓
 UPDATE SOURCES / STATE / TASKS IN GITHUB
+        ↓
+VERIFY PROJECT-MEMORY SYNC
 ```
 
-Do not mark a deliverable complete in `STATE.md`/`TASKS.md` before the canonical write succeeds and is verified.
+Do not mark a deliverable complete in `STATE.md`/`TASKS.md` before the canonical artifact write succeeds and is verified.
 
-If publication fails, keep project memory truthful: record the result as local/ephemeral/unpublished or blocked, not completed.
+Do not consider project synchronization complete until the relevant GitHub project-memory changes are also written and verified.
 
-## 15. Concurrency and conflict checks
+## 17. Incomplete synchronization and read-only agents
 
-Apply the optimistic-concurrency rules from `COMMON.md` to both stores.
+An agent may be capable of useful work without being capable of completing the full G1 transaction.
 
-Before writing GitHub project state, re-read the current target file/branch state and reconcile changes.
+Examples include:
 
-Before publishing a materialized Drive artifact, re-check the canonical Drive file's revision/modified metadata when available.
+- GitHub read but no GitHub write;
+- Drive read/create but no in-place native edit;
+- local analysis with no safe publish-back path;
+- Drive write succeeds but GitHub project-memory write is unavailable.
+
+In these cases:
+
+- complete every safe step that is actually possible;
+- do not falsely report the project as fully synchronized;
+- preserve the result as a proposed/derived artifact or explicit pending change;
+- clearly identify which canonical write or project-memory synchronization remains pending;
+- provide enough provenance/instructions for a write-capable agent or user to finish the transaction;
+- do not replace a canonical artifact merely to work around missing write capability.
+
+When GitHub project-memory cannot be updated, the task is not fully complete from the G1 project-state perspective even if useful analysis or an artifact draft has been produced.
+
+A useful status distinction is:
+
+```text
+work result ready
+canonical publication pending
+project-memory synchronization pending
+```
+
+Record such status in project memory only if the current agent can safely write it; otherwise report it in the session handoff/output.
+
+## 18. Concurrency and conflict checks
+
+Apply optimistic-concurrency rules from `COMMON.md` to both stores.
+
+Before writing GitHub project state, re-read the current target file/branch state and reconcile intervening changes.
+
+Before publishing a materialized Drive artifact, re-check canonical Drive revision/modified metadata when available.
 
 If the source changed after materialization:
 
@@ -367,21 +470,21 @@ If the source changed after materialization:
 
 Prefer one active owner per `T-###` task/canonical artifact at a time unless explicit coordination exists.
 
-## 16. Local synced Google Drive folders
+## 19. Local synced Google Drive folders
 
-A locally synchronized Google Drive folder may be used as an **access path**, but it is not a separate canonical store.
+A locally synchronized Google Drive folder may be an **access path**, but it is not a separate canonical store.
 
 When working through a synced folder:
 
 - preserve the distinction between local sync state and canonical Drive identity;
 - prefer Drive IDs in `SOURCES.md` rather than machine-specific local paths;
 - do not assume a local write has reached Drive until synchronization can be verified;
-- avoid using sync folders as scratch space for partial/intermediate writes; prefer `_ai/work/` in the local repository/workspace;
-- for native Google Docs/Sheets/Slides, use connector/native operations rather than treating local shortcut/placeholder files as editable canonical content.
+- avoid using sync folders as scratch space for partial/intermediate writes; prefer `_ai/work/`;
+- for native Google Docs/Sheets/Slides, do not treat local shortcut/placeholder files as ordinary editable binaries unless the access mechanism explicitly supports safe editing.
 
-## 17. Git and temporary-work rules
+## 20. Git and temporary-work rules
 
-The G1 GitHub repository is already a Git project. Preserve its existing `.gitignore` and add only non-destructive managed rules when useful.
+Preserve the repository's existing `.gitignore` and add only non-destructive managed rules when useful.
 
 For new G1 installs, normally ignore:
 
@@ -398,7 +501,7 @@ Do not ignore `_ai/infrastructure/`, `_ai/plans/`, `_ai/decisions/`, `_ai/resear
 
 Do not commit materialized Drive binaries under `_ai/work/`.
 
-## 18. Required G1 runtime rules in `AGENTS.md`
+## 21. Required G1 runtime rules in `AGENTS.md`
 
 During bootstrap/migration, install a concise infrastructure-managed block containing at least:
 
@@ -411,20 +514,25 @@ During bootstrap/migration, install a concise infrastructure-managed block conta
 - GitHub is the project-state/control plane; Drive is the document/large-artifact plane;
 - existing canonical locations are preserved unless explicitly reorganized;
 - `SOURCES.md` is the cross-store canonical registry when installed;
-- connectors are preferred for discovery/small native operations;
+- each modifying session must check actual GitHub/Drive/execution write capabilities before choosing a workflow;
+- connectors/APIs are preferred for discovery and safe native operations;
+- use the safe fallback ladder when the preferred write path is unavailable;
 - iterative/heavy work may materialize only the required subset into a non-canonical workspace;
 - `_ai/work/` and ephemeral workspaces are never canonical;
 - native Google exports are derived working copies unless explicitly promoted;
-- publish/verify canonical results before marking tasks complete;
+- missing in-place write capability must not be worked around by silently replacing canonical files;
+- publish and verify canonical results before marking tasks complete;
+- project-memory synchronization in GitHub is part of completion for project-changing work;
+- if a write/synchronization step cannot be completed, report it explicitly as pending rather than claiming completion;
 - re-check shared GitHub/Drive state before writes and do not overwrite concurrent changes blindly;
 - secrets/credentials are never stored in project memory;
 - external `ai-workflow` standard access is not required for ordinary project work.
 
 Preserve project-specific/user-authored `AGENTS.md` content and update only the infrastructure-managed block when practical.
 
-## 19. G1 bootstrap procedure
+## 22. G1 bootstrap procedure
 
-The user/agent must ground two target resources:
+Ground two target resources:
 
 1. the project GitHub repository;
 2. the project Google Drive root folder.
@@ -433,74 +541,87 @@ Do not guess either target when multiple plausible resources exist.
 
 ### Already initialized G1
 
-1. Read the repository `AGENTS.md`, `_ai/infrastructure/MANIFEST.md`, and only the project-memory needed to understand installed state.
-2. Verify the configured Drive root still resolves to the intended folder.
-3. If infrastructure migration was requested, compare the local snapshot with the target standard and migrate non-destructively.
-4. Preserve project-specific instructions, IDs, source registrations, and Drive/GitHub canonical relationships.
-5. Refresh managed runtime/manifest/snapshot only as needed.
-6. Perform G1 cold-start validation.
+1. Read repository `AGENTS.md`, `_ai/infrastructure/MANIFEST.md`, and only project-memory needed to understand installed state.
+2. Verify configured Drive root still resolves to the intended folder.
+3. Determine current-session capabilities relevant to the requested infrastructure operation.
+4. If migration was requested, compare installed snapshot with target standard and migrate non-destructively.
+5. Preserve project-specific instructions, IDs, source registrations, and Drive/GitHub canonical relationships.
+6. Refresh managed runtime/manifest/snapshot only as needed.
+7. Perform G1 cold-start validation.
 
 ### Uninitialized brownfield G1
 
 1. Read the bootstrap index, `COMMON.md`, and this scenario from authorized standard access or a provided local bundle.
-2. Inspect the GitHub repository and Drive root with bounded metadata-first discovery.
-3. Determine the project-memory profile and language from `COMMON.md` and existing project context.
-4. Identify important existing artifacts and any competing/ambiguous canonical versions.
-5. Preserve both existing organizations; do not restructure merely to fit G1 defaults.
-6. Create/augment the justified project-memory files in GitHub; create `SOURCES.md` unless the project is exceptionally trivial and cross-store provenance is obvious without it.
-7. Create `_ai/infrastructure/`, save the applied standard snapshot, and create/update `MANIFEST.md` with both store identities.
-8. Install the G1 runtime rules in `AGENTS.md`.
-9. Register important Drive/GitHub sources using stable IDs/relative paths.
-10. Add Git-ignore rules non-destructively when relevant.
-11. Optionally add a Drive-root pointer back to GitHub when useful for human discovery.
-12. Summarize current state/tasks without claiming unresolved provenance as fact.
-13. Perform G1 cold-start validation.
+2. Ground the GitHub repository and Drive root.
+3. Perform the session capability check for required reads/writes.
+4. Inspect both stores with bounded metadata-first discovery.
+5. Determine project-memory profile/language from `COMMON.md` and existing project context.
+6. Identify important existing artifacts and competing/ambiguous canonical versions.
+7. Preserve both existing organizations; do not restructure merely to fit G1 defaults.
+8. Create/augment justified project-memory files in GitHub; create `SOURCES.md` unless the project is exceptionally trivial and cross-store provenance is obvious without it.
+9. Create `_ai/infrastructure/`, save applied standard snapshot, and create/update `MANIFEST.md` with both store identities.
+10. Install G1 runtime rules in `AGENTS.md`.
+11. Register important Drive/GitHub sources using stable IDs/relative paths.
+12. Add Git-ignore rules non-destructively when relevant.
+13. Optionally add a Drive-root pointer back to GitHub when useful for human discovery.
+14. Summarize current state/tasks without claiming unresolved provenance as fact.
+15. Perform G1 cold-start validation.
+
+If required bootstrap writes are unavailable in the current session, do not simulate completion. Produce an explicit bootstrap plan/pending-change set for a write-capable session.
 
 ### Greenfield G1
 
 1. Ground the empty/new GitHub repository and Drive root.
-2. Start with Minimal profile unless known complexity justifies Standard; add `SOURCES.md` when cross-store artifacts begin to matter.
-3. Create the GitHub runtime/infrastructure and only useful project directories.
-4. Do not invent a Drive subfolder hierarchy before real artifacts justify it.
-5. Install G1 runtime rules and manifest with both store identities.
-6. Apply Git-ignore rules.
-7. Optionally create the Drive pointer.
-8. Perform G1 cold-start validation.
+2. Check current-session capabilities required for bootstrap.
+3. Start with Minimal profile unless known complexity justifies Standard; add `SOURCES.md` when cross-store artifacts matter.
+4. Create GitHub runtime/infrastructure and only useful project directories.
+5. Do not invent a Drive subfolder hierarchy before real artifacts justify it.
+6. Install G1 runtime rules and manifest with both store identities.
+7. Apply Git-ignore rules.
+8. Optionally create the Drive pointer.
+9. Perform G1 cold-start validation.
 
-## 20. Cold-start validation for G1
+If required writes are unavailable, leave a truthful pending bootstrap plan rather than claiming G1 is installed.
 
-Starting only from the project's GitHub `AGENTS.md` and installed project-memory files, a fresh agent with appropriate project connectors/access should be able to determine without the originating chat or external standard:
+## 23. Cold-start validation for G1
+
+Starting only from project GitHub `AGENTS.md` and installed project-memory files, a fresh agent with appropriate project access should be able to determine without the originating chat or external standard:
 
 - that the project uses G1;
-- the current phase/status and nearest active/next `T-###` tasks;
-- the exact GitHub repository and Drive root identity;
+- current phase/status and nearest active/next `T-###` tasks;
+- exact GitHub repository and Drive root identity;
 - where key canonical artifacts live and how to locate them;
 - which store is authoritative for project state vs Drive artifacts;
-- whether a requested operation should normally use a connector or workspace/materialization;
+- that actual session capabilities must be checked before assuming writes are possible;
+- the safe fallback order when a preferred operation is unavailable;
 - that local/ephemeral/materialized copies are non-canonical until published;
+- that incomplete publication/project-memory synchronization must be reported explicitly;
 - where temporary/generated work belongs;
-- the project-memory language and preservation/security rules.
+- project-memory language and preservation/security rules.
 
 When practical, validate with a genuinely fresh agent/session. Otherwise simulate the cold start using only installed project files and actual connectors/locators.
 
 Unresolved access/provenance gaps become explicit tasks rather than hidden assumptions.
 
-## 21. Completion report
+## 24. Completion report
 
-After initialization, repair, or migration, report concisely:
+After initialization, repair, migration, or substantial project-changing work, report concisely when relevant:
 
 - classification: initialized / brownfield / greenfield;
 - selected project-memory profile/language;
 - GitHub repository and Drive root grounded;
+- relevant session capabilities and any material write limitations;
 - project-memory/infrastructure files created or updated;
 - existing files/organization preserved rather than moved;
-- main canonical sources and any unresolved provenance conflicts;
-- selected/available execution modes if relevant;
-- Git-ignore/pointer changes made, if any;
-- cold-start validation result;
-- confirmation that the external infrastructure-standard repository is no longer needed for ordinary project work.
+- main canonical sources and unresolved provenance conflicts;
+- execution/fallback path used;
+- canonical publication verification result;
+- GitHub project-memory synchronization result;
+- any remaining pending publication/synchronization step;
+- cold-start validation result for infrastructure work;
+- confirmation that the external infrastructure-standard repository is not needed for ordinary project work.
 
-## 22. Minimal invocation
+## 25. Minimal invocation
 
 With authorized access to the private standard repository:
 
@@ -518,4 +639,4 @@ and ask:
 
 For routine work after bootstrap:
 
-> Read `AGENTS.md`, restore the current project context, and continue with my request.
+> Read `AGENTS.md`, restore the current project context, check the capabilities available in this session, and continue with my request.
