@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.4.0  
+**Standard version:** 0.4.1  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -39,9 +39,11 @@ Version 0.3.1 defined Russian (`ru`) as the default project-memory language unle
 
 ### Draft 0.4 note
 
-Version 0.4.0 adds the first fully specified **G1 — GitHub + Google Drive** scenario.
+Version 0.4.0 added the first fully specified **G1 — GitHub + Google Drive** scenario.
 
 G1 treats GitHub and Drive as complementary canonical stores rather than mirrors: GitHub is the control/state plane for project memory and text/code knowledge, while Google Drive is the artifact plane for native Workspace documents, Office/PDF/media/large-file artifacts. Agents may work connector-native or through optional local/ephemeral materialization, but temporary workspaces are never canonical.
+
+Version **0.4.1** makes G1 explicitly **capability-aware**. Each modifying session must determine its actual GitHub/Drive/execution read/write capabilities before selecting a workflow. G1 now defines an identity-preserving fallback ladder and requires agents to report incomplete publication or project-memory synchronization instead of silently replacing canonical artifacts or claiming completion.
 
 ## Bootstrap contract
 
@@ -53,7 +55,7 @@ When a user asks an agent to initialize or adapt a project using a scenario ID, 
 2. read [`project-infrastructure/COMMON.md`](project-infrastructure/COMMON.md);
 3. read the selected scenario file;
 4. ground/inspect the target project environment and canonical stores;
-5. apply the selected scenario completely, including bootstrap, preservation, project-memory, language, validation, runtime, synchronization/materialization, and handoff rules.
+5. apply the selected scenario completely, including bootstrap, preservation, project-memory, language, validation, runtime, synchronization/materialization, capability, and handoff rules.
 
 The user should not need to repeat scenario details when the agent can access the standard.
 
@@ -98,7 +100,7 @@ External-standard access is required again only for explicit initialization, inf
 | ID | Scenario | Status | Use when |
 |---|---|---|---|
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
-| **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors or optional local/ephemeral workspaces. |
+| **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors, browser/computer use, or optional local/ephemeral workspaces according to actual session capabilities. |
 | **Y1** | [GitHub + Yandex Disk](project-infrastructure/Y1_GITHUB_YANDEX.md) | Planned | GitHub stores code/text/project state while documents, CAD, data, or other large artifacts live in Yandex Disk and/or its synchronized local folder. |
 | **R1** | [Remote agent](project-infrastructure/R1_REMOTE_AGENT.md) | Planned | The active agent cannot directly access the user's local filesystem and must retrieve required artifacts through connectors, MCP, or remote storage. |
 | **H1** | [Hybrid multi-agent](project-infrastructure/H1_HYBRID_MULTI_AGENT.md) | Planned | Several agents/environments cooperate using local materialization, shared project state, validation, and publish-back rules. |
@@ -133,7 +135,7 @@ Without standard-repository access, provide the three G1 bootstrap files and use
 
 ### Already initialized project
 
-> Read `AGENTS.md`, restore the current project context, and continue with my request.
+> Read `AGENTS.md`, restore the current project context, check the capabilities available in this session, and continue with my request.
 
 No external-standard access should be required for that routine invocation.
 
