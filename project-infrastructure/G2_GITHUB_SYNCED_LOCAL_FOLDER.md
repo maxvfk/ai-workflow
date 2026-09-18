@@ -1,0 +1,549 @@
+# Scenario G2 — GitHub + Synced Local Folder
+
+**Status:** Draft  
+**Depends on:** [COMMON.md](COMMON.md)  
+**Standard version:** inherit from [PROJECT_INFRASTRUCTURE.md](../PROJECT_INFRASTRUCTURE.md)
+
+Use this scenario when one logical project is split between a dedicated GitHub repository and a user-facing local project folder synchronized across machines by an external synchronization system such as Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, NAS/cloud-sync software, or a similar service.
+
+The synchronization provider is transport, not a third canonical store.
+
+## 1. Core model
+
+~~~text
+                      G2 project
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+         GitHub repo          synced local folder
+       control/state plane       artifact plane
+             │                         │
+         AGENTS.md                PROJECT_LINK.md
+         PROJECT.md               CAD / DOCX / XLSX
+         STATE.md                 data / reports
+         TASKS.md                 results / media
+         SOURCES.md
+         decisions/plans
+             │                         │
+             └────────────┬────────────┘
+                          │
+                 execution workspace
+            preferably outside sync roots
+~~~
+
+GitHub is the **canonical control/state plane**. The synchronized local folder is the **canonical artifact root**. They are complementary, not mirrors.
+
+Do not duplicate current project memory into the artifact root. Do not move large/user artifacts into GitHub merely to centralize state.
+
+## 2. Why G2 exists
+
+Use G2 when:
+
+- work happens on several machines;
+- project artifacts are already synchronized independently of Git;
+- CAD/Office/data/binary files should remain ordinary local files;
+- durable project memory benefits from Git history and one shared state plane;
+- the user wants the synchronized working folder to remain mostly free of agent infrastructure.
+
+Unlike L1, the local folder is not the canonical home of project memory. Unlike G1, artifacts are accessed as ordinary local files rather than primarily through a document API.
+
+## 3. Canonical roles
+
+### GitHub control/state plane
+
+Prefer GitHub for:
+
+- AGENTS.md, PROJECT.md, STATE.md, TASKS.md;
+- ASSUMPTIONS.md and SOURCES.md when justified;
+- durable plans, decisions, research notes, prompts, schemas;
+- scripts, text-friendly code/configuration;
+- infrastructure manifest and installed standard snapshot.
+
+### Synced local artifact plane
+
+Prefer the synchronized folder for:
+
+- CAD projects and dependencies;
+- DOCX/XLSX/PPTX and editable documents;
+- PDFs, images, media, archives;
+- datasets and measurement files;
+- calculation outputs;
+- reports and deliverables;
+- other user-owned artifacts whose normal working environment is the local filesystem.
+
+This is a placement default, not a migration command. Preserve existing canonical locations unless the user explicitly requests reorganization.
+
+## 4. Runtime dependency model
+
+G2 distinguishes:
+
+1. the external infrastructure-standard repository, such as maxvfk/ai-workflow;
+2. the project's own dedicated GitHub repository.
+
+The external standard is needed only for initialization, validation, repair, or migration.
+
+The project's own GitHub repository is a **permanent canonical part of G2 runtime** and is normally required for project-state continuity.
+
+After bootstrap, ordinary work must not require the originating chat or the external standard repository.
+
+A new agent must be able to continue from the synced artifact folder, its PROJECT_LINK.md, and access to the project GitHub repository named there.
+
+## 5. Recommended GitHub structure
+
+~~~text
+repo/
+├── AGENTS.md
+├── PROJECT.md          # when justified
+├── STATE.md
+├── TASKS.md
+├── ASSUMPTIONS.md      # when relevant
+├── SOURCES.md          # strongly recommended for G2
+├── README.md           # optional
+├── src/ ...            # text-friendly code/scripts when appropriate
+└── _ai/
+    ├── infrastructure/
+    │   ├── MANIFEST.md
+    │   └── standard/
+    │       ├── COMMON.md
+    │       └── G2_GITHUB_SYNCED_LOCAL_FOLDER.md
+    ├── plans/
+    ├── decisions/
+    ├── research/
+    └── archive/
+~~~
+
+A durable _ai/work/ directory is normally unnecessary because temporary execution should prefer a harness/local workspace outside the synchronized artifact root.
+
+Create only support files that have a real role.
+
+## 6. Synced artifact-root structure
+
+G2 imposes almost no structure on the user artifact root.
+
+~~~text
+Synced-Project/
+├── PROJECT_LINK.md
+├── CAD/
+├── Data/
+├── Reports/
+├── Calculations/
+└── Results/
+~~~
+
+Preserve the user's existing structure.
+
+The only required infrastructure-owned file in the artifact root is PROJECT_LINK.md.
+
+Do not add GitHub project-memory files, infrastructure snapshots, plans, or decisions to the artifact root.
+
+## 7. Project identity and PROJECT_LINK.md
+
+Every G2 project has a stable **Project ID**, preferably a short slug such as:
+
+~~~text
+tokamak-cost-study
+~~~
+
+The same Project ID must appear in the GitHub infrastructure manifest and local PROJECT_LINK.md.
+
+Recommended PROJECT_LINK.md:
+
+~~~markdown
+# Project link
+
+Project: <human-readable project name>
+Project ID: <stable-project-id>
+Scenario: G2
+
+Canonical project control:
+https://github.com/<owner>/<repo>
+
+Local role:
+This directory is the synchronized project artifact root.
+
+Before substantial work:
+1. read AGENTS.md from the canonical project repository;
+2. restore current state/tasks from GitHub project memory;
+3. resolve project artifact paths relative to this directory;
+4. verify project identity and basic synchronization health before modifying important artifacts.
+
+Do not create duplicate project-memory files in this folder.
+~~~
+
+Keep this file intentionally small and stable. Do not put active tasks, current state, source inventories, credentials, machine-specific absolute paths, or other volatile data into it.
+
+## 8. Infrastructure manifest
+
+Create/update in GitHub:
+
+~~~text
+_ai/infrastructure/MANIFEST.md
+_ai/infrastructure/standard/COMMON.md
+_ai/infrastructure/standard/G2_GITHUB_SYNCED_LOCAL_FOLDER.md
+~~~
+
+Recommended manifest fields:
+
+~~~markdown
+# Project infrastructure manifest
+
+Scenario: G2
+Project ID: <stable-project-id>
+Project-memory profile: Minimal | Standard
+Project-memory language: ru
+Agent namespace: _ai/
+
+GitHub repository: <owner/repo>
+GitHub default branch: <branch>
+
+Artifact root role: synchronized local folder
+Artifact root marker: PROJECT_LINK.md
+Artifact path convention: relative to artifact root
+Synchronization assumption: synchronized across working machines
+
+Standard source: maxvfk/ai-workflow or local bootstrap bundle
+Standard version: <installed version>
+Standard lifecycle: <Draft/Pilot/Stable>
+Standard commit/ref: <exact commit/ref when known>
+Initialized: YYYY-MM-DD
+Last infrastructure update: YYYY-MM-DD
+Runtime entry point: ../../AGENTS.md
+Local standard snapshot: ./standard/
+~~~
+
+Never store a machine-specific absolute artifact-root path or synchronization credentials in the canonical manifest.
+
+## 9. Project-memory profile and language
+
+Use the Minimal/Standard profile rules from COMMON.md.
+
+For substantial engineering, analytical, or long-running G2 projects, Standard is usually appropriate and SOURCES.md is strongly recommended.
+
+Project-memory language follows COMMON.md; the default is Russian (ru) unless another language is explicitly selected or already established.
+
+## 10. Relative artifact paths
+
+Paths to artifacts inside the synchronized artifact root are recorded **relative to the artifact root**.
+
+Example:
+
+~~~markdown
+## S-017 — Главная сборка
+Storage: G2 artifact root
+Path: CAD/MainAssembly.SLDASM
+Canonical: yes
+Modification: editable
+~~~
+
+Do not use machine-specific paths such as:
+
+~~~text
+D:\YandexDisk\Projects\Tokamak\CAD\MainAssembly.SLDASM
+C:\Users\Max\OneDrive\Tokamak\CAD\MainAssembly.SLDASM
+~~~
+
+Absolute paths may exist only as temporary session context for the current machine.
+
+Artifacts outside the G2 artifact root must be registered explicitly as external rather than pretending they are root-relative.
+
+## 11. SOURCES.md as cross-plane registry
+
+SOURCES.md links GitHub project state to important local artifacts.
+
+Use stable S-### IDs from COMMON.md.
+
+Register important canonical/non-reconstructable inputs, major outputs, dependency entry points, provenance-sensitive files, and artifacts with modification restrictions. Do not register every ordinary file.
+
+Useful fields may include:
+
+- Storage: G2 artifact root;
+- root-relative Path;
+- artifact type;
+- Canonical: yes/no;
+- modification policy;
+- last verified date when meaningful;
+- expected size/modified metadata when it materially helps sync validation;
+- checksum/hash only when justified.
+
+Checksums are **not required by default**. Prefer them for immutable critical inputs, released deliverables, or cases where synchronization/provenance risk warrants them.
+
+## 12. Synchronization model
+
+G2 assumes the external sync system normally keeps the artifact root logically consistent across working machines.
+
+Do not perform a full folder comparison or hash scan on every startup.
+
+Default assumption:
+
+> the connected local artifact root represents the current synchronized project artifacts unless there is evidence of synchronization failure.
+
+Important writes still require a bounded sync-sanity check.
+
+The provider is outside the canonical project-state model. Record provider-specific details only when they are materially required to operate the project.
+
+## 13. Sync-sanity check
+
+Before modifying an important canonical artifact, check enough evidence to detect obvious synchronization or project-selection errors.
+
+When practical:
+
+1. confirm PROJECT_LINK.md exists;
+2. confirm its Project ID matches the GitHub manifest;
+3. confirm the intended relative target path resolves inside the connected artifact root;
+4. confirm the target exists when expected;
+5. inspect enough metadata/content to detect obviously stale or wrong material;
+6. check for obvious sync-conflict copies, duplicate-version names, placeholders, offline-only/unavailable files, or sync-error indicators exposed by the environment;
+7. validate stronger expected metadata/hash from SOURCES.md when relevant.
+
+Do not turn this into an expensive full-project verification unless evidence of a problem appears.
+
+## 14. Synchronization conflicts
+
+If the artifact root may not be current or internally consistent:
+
+- do not silently select one competing file as canonical;
+- do not overwrite the target;
+- do not delete conflict copies;
+- do not claim the artifact modification succeeded;
+- mark the task/artifact blocked by a synchronization/provenance conflict;
+- inspect/reconcile the conflict or request user intervention when necessary.
+
+Examples include provider-generated conflict copies, unexpectedly stale files, missing CAD dependencies, offline placeholders, mismatched Project ID, or incompatible edits from another machine.
+
+For CAD/linked-document projects, missing dependencies or unresolved references are possible sync failures; do not automatically rewrite paths.
+
+## 15. Temporary execution workspace priority
+
+Temporary/intermediate work should preferably occur **outside the synchronized artifact root**.
+
+Use this priority:
+
+~~~text
+1. Harness-provided temporary/workspace directory outside the synchronized project
+        ↓ unavailable
+2. Another suitable local temporary/work directory outside the synchronized project
+        ↓ unavailable
+3. A clearly temporary fallback inside the artifact root
+   only when no external workspace is available
+~~~
+
+If the harness already exposes a connected/usable temporary workspace, prefer it.
+
+Do not copy the whole project there by default. Copy/materialize only the smallest subset needed for the task.
+
+Temporary paths are session-specific and are never canonical project paths.
+
+## 16. Local fallback work directory
+
+If no external workspace is available, a fallback such as:
+
+~~~text
+<artifact-root>/_ai-local-work/
+~~~
+
+may be used.
+
+It is non-canonical, disposable, excluded from SOURCES.md as a canonical location, and preferably excluded from synchronization when the provider/environment safely supports that. Otherwise use it transiently and clean it after successful publication when practical.
+
+Do not confuse _ai-local-work/ with the durable GitHub _ai/ namespace.
+
+## 17. Direct editing vs temporary working copies
+
+Because G2 artifacts are ordinary local files, direct editing of the canonical file is often appropriate.
+
+Prefer direct editing when:
+
+- the format/tool supports safe direct modification;
+- backup/version/recovery is adequate for the risk;
+- the sync-sanity check passed;
+- no conflicting simultaneous edit is known;
+- the task does not require destructive experimentation.
+
+Prefer an external temporary workspace/copy when:
+
+- transformation is iterative or destructive;
+- several files must be staged before replacing an output;
+- conversion may lose information;
+- validation should occur before promotion;
+- external software may create scratch/intermediate files.
+
+A synchronized folder is not automatically a good scratch area.
+
+## 18. Publish/promote transaction
+
+For substantial artifact-changing work:
+
+~~~text
+GROUND PROJECT ID / ARTIFACT ROOT
+        ↓
+RESTORE GITHUB PROJECT STATE
+        ↓
+SYNC-SANITY CHECK
+        ↓
+DIRECT SAFE EDIT
+        or
+COPY/MATERIALIZE MINIMAL WORKING SET
+        ↓
+WORK
+        ↓
+VALIDATE
+        ↓
+RE-CHECK TARGET / CONFLICT SIGNALS
+        ↓
+PROMOTE RESULT TO CANONICAL ARTIFACT PATH
+        ↓
+VERIFY RESULT AT CANONICAL PATH
+        ↓
+UPDATE SOURCES / STATE / TASKS IN GITHUB
+        ↓
+VERIFY GITHUB PROJECT-MEMORY SYNC
+~~~
+
+Do not mark project-changing work complete before both the canonical local artifact result and relevant GitHub project-memory updates are verified.
+
+The sync provider may need time to replicate changes to other machines. G2 does not require proof that every remote replica is current unless the environment exposes such verification and the task requires it.
+
+## 19. Concurrent work and multi-machine behavior
+
+GitHub project-memory changes follow COMMON.md optimistic-concurrency rules.
+
+Before writing shared GitHub state, re-read current targets and reconcile intervening changes.
+
+For local artifacts:
+
+- assume synchronization normally propagates changes;
+- avoid simultaneous modification of the same canonical artifact on multiple machines;
+- use one active owner per T-### task/artifact when practical;
+- re-check target metadata/conflict signals immediately before final replacement/promotion;
+- if another machine appears to have changed the artifact during work, stop blind publication and reconcile.
+
+GitHub history does not replace synchronization/versioning for binary/local artifacts.
+
+## 20. Brownfield-first bootstrap
+
+A G2 project is brownfield if either the GitHub repository or synchronized local artifact folder already contains meaningful project material.
+
+Do not call it greenfield merely because one side is empty.
+
+### GitHub inspection
+
+Use bounded discovery: inspect root and normally no more than 2 levels initially; identify existing instructions/project memory/code/configuration; read before modifying; preserve history/structure and user content.
+
+### Artifact-root inspection
+
+Use bounded local discovery: inspect root and normally no more than 2 levels initially; identify major document/CAD/data/report/output areas and likely canonical artifacts; avoid recursive scans of huge archives, generated trees, CAD dependency forests, caches, vendor trees, or backups unless needed.
+
+Do not reorganize either plane merely to match G2 defaults.
+
+## 21. Already initialized G2
+
+If PROJECT_LINK.md and/or GitHub infrastructure metadata indicate G2 is already installed:
+
+1. read PROJECT_LINK.md;
+2. access the named GitHub repository;
+3. read AGENTS.md, manifest, and only required project memory;
+4. verify Project ID match;
+5. treat infrastructure work as reconcile/repair/migration rather than fresh bootstrap;
+6. preserve IDs/state/source registrations/project language/user content;
+7. perform bounded sync-sanity validation;
+8. update only managed infrastructure behavior that needs change.
+
+Do not create duplicate local project-memory files.
+
+## 22. Uninitialized brownfield bootstrap
+
+1. Read PROJECT_INFRASTRUCTURE.md, COMMON.md, and this scenario.
+2. Ground the target GitHub repository and connected synchronized local folder.
+3. Inspect both planes with bounded discovery.
+4. Determine/create a stable Project ID.
+5. Determine project-memory profile and language.
+6. Identify important canonical artifacts and ambiguous/conflicting versions.
+7. Preserve existing structures.
+8. Create/augment justified project-memory files in GitHub.
+9. Create SOURCES.md unless the project is exceptionally trivial.
+10. Create GitHub _ai/infrastructure/, manifest, and applied standard snapshot.
+11. Install G2 runtime rules in AGENTS.md.
+12. Create or safely update local PROJECT_LINK.md.
+13. Register important artifact paths relative to the artifact root.
+14. Perform a basic sync-sanity check.
+15. Perform G2 cold-start validation.
+
+## 23. Greenfield bootstrap
+
+1. Ground the new GitHub repository and synchronized local artifact root.
+2. Create a stable Project ID.
+3. Start with Minimal memory unless known complexity justifies Standard.
+4. Create GitHub runtime/infrastructure.
+5. Create local PROJECT_LINK.md.
+6. Do not invent an artifact subfolder hierarchy before real needs justify it.
+7. Add SOURCES.md when artifact tracking begins to matter.
+8. Perform sync-sanity and cold-start validation.
+
+## 24. Required G2 runtime rules in AGENTS.md
+
+During bootstrap/migration, install a concise infrastructure-managed section containing at least:
+
+- Scenario: G2;
+- Project ID;
+- installed standard version/commit when known;
+- project-memory profile/language and installed files;
+- GitHub repository identity/default branch;
+- path to GitHub infrastructure manifest;
+- the folder identified by matching PROJECT_LINK.md is the synchronized canonical artifact root;
+- project artifact paths are relative to that root;
+- GitHub is canonical for runtime/state; do not duplicate that state locally;
+- verify Project ID before substantial work;
+- assume artifact synchronization is healthy by default but perform bounded sync-sanity checks before important writes;
+- do not silently resolve sync conflicts or overwrite suspicious/stale targets;
+- prefer an external/harness temporary workspace outside the synchronized folder when available;
+- keep any in-root fallback non-canonical/disposable;
+- temporary absolute paths are never canonical;
+- preserve existing user artifact structure;
+- update and verify GitHub project memory after substantial project-changing work;
+- re-read shared GitHub state before writes and reconcile concurrent changes;
+- never store secrets/credentials in project memory;
+- external infrastructure-standard access is not required for ordinary work.
+
+## 25. Cold-start validation
+
+A fresh capable agent on another machine should be able to start from only the connected synced folder plus repository/network access:
+
+1. read PROJECT_LINK.md;
+2. identify Project ID and GitHub repository;
+3. access/read repository AGENTS.md;
+4. restore STATE.md / TASKS.md and relevant project memory;
+5. confirm Project ID matches the GitHub manifest;
+6. resolve important artifact paths relative to the connected folder;
+7. understand temporary-workspace policy;
+8. perform a bounded sync-sanity check;
+9. continue without the originating chat or external standard repository.
+
+When practical, validate using a genuinely fresh session/machine/harness. Otherwise simulate this startup using only the installed runtime and marker file.
+
+## 26. Completion report
+
+After initialization, repair, or migration, report:
+
+- initialized / brownfield / greenfield classification;
+- Project ID;
+- project-memory profile/language;
+- GitHub repository and artifact root grounded;
+- PROJECT_LINK.md created/updated/preserved;
+- important artifacts registered with relative paths;
+- temporary-workspace route available/selected;
+- sync-sanity result and any conflict;
+- project-memory/infrastructure files created/updated;
+- cold-start validation result;
+- confirmation that the external standard repository is not needed for ordinary work.
+
+## 27. Minimal invocation
+
+With authorized access to the private standard repository and the synchronized artifact folder already connected:
+
+> Apply project infrastructure scenario **G2** to this synchronized local project folder using GitHub repository <owner/repo> and https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md.
+
+If PROJECT_LINK.md already exists and names the repository:
+
+> Read PROJECT_LINK.md, restore the G2 project from its GitHub repository, and continue with my request.
+
+Without standard-repository access, provide PROJECT_INFRASTRUCTURE.md, project-infrastructure/COMMON.md, and project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md and ask the same bootstrap request using the provided standard files.
