@@ -11,6 +11,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 - `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
+- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md` — **Draft** GitHub + synchronized local artifact-folder scenario.
 - `project-infrastructure/Y1_GITHUB_YANDEX.md` — planned GitHub + Yandex Disk scenario.
 - `project-infrastructure/R1_REMOTE_AGENT.md` — planned remote-agent scenario.
 - `project-infrastructure/H1_HYBRID_MULTI_AGENT.md` — planned hybrid multi-agent scenario.
@@ -18,7 +19,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.5.0**  
+Current standard version: **0.6.0**  
 Lifecycle: **Draft**
 
 The external standard is used for initialization, validation, repair, and migration. After bootstrap, a project is expected to use its installed runtime and canonical stores without requiring the external standard repository for ordinary work.
@@ -76,6 +77,20 @@ Then ask:
 For a ChatGPT-only project, use the profile in `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` and bootstrap with:
 
 `Apply G1 / ChatGPT Project to this ChatGPT Project using GitHub repository <owner/repo> and Google Drive folder <folder URL or ID> from https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md.`
+
+### G2 — GitHub + Synced Local Folder
+
+G2 keeps durable project runtime/state in GitHub while the user's normal local project folder is the canonical artifact root and is synchronized across machines by an external sync system. Only `PROJECT_LINK.md` is required in the artifact root; project artifact paths are stored relative to that root. Temporary execution preferably uses a harness/local workspace outside the synchronized folder.
+
+Use G2 when Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, NAS/cloud sync, or similar tooling is acting primarily as a transparent local-folder synchronization layer.
+
+Bootstrap:
+
+`Apply project infrastructure scenario G2 to this synchronized local project folder using GitHub repository <owner/repo> and https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md.`
+
+On another machine, once the synchronized folder is available:
+
+`Read PROJECT_LINK.md, restore the G2 project from its GitHub repository, and continue with my request.`
 
 ### Already initialized project
 
