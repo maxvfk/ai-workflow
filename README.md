@@ -9,7 +9,8 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 - `PROJECT_INFRASTRUCTURE.md` — canonical entry point for project-infrastructure bootstrap and migration.
 - `project-infrastructure/COMMON.md` — common project-memory/runtime rules used by all scenarios.
 - `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md` — **Draft** GitHub + Google Drive scenario.
+- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
+- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
 - `project-infrastructure/Y1_GITHUB_YANDEX.md` — planned GitHub + Yandex Disk scenario.
 - `project-infrastructure/R1_REMOTE_AGENT.md` — planned remote-agent scenario.
 - `project-infrastructure/H1_HYBRID_MULTI_AGENT.md` — planned hybrid multi-agent scenario.
@@ -17,7 +18,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.4.1**  
+Current standard version: **0.5.0**  
 Lifecycle: **Draft**
 
 The external standard is used for initialization, validation, repair, and migration. After bootstrap, a project is expected to use its installed runtime and canonical stores without requiring the external standard repository for ordinary work.
@@ -44,6 +45,9 @@ Then ask:
 
 ### G1 — GitHub + Google Drive
 
+G1 is now a scenario family: `BASE.md` contains vendor-independent canonical-store/materialization/synchronization rules, while product profiles add only environment-specific bootstrap behavior.
+
+
 G1 treats GitHub and Google Drive as complementary canonical stores rather than mirrors:
 
 - GitHub is the project control/state plane for project memory, text/code knowledge, plans, and decisions;
@@ -63,11 +67,15 @@ Without standard-repository access, provide local copies of:
 
 - `PROJECT_INFRASTRUCTURE.md`
 - `project-infrastructure/COMMON.md`
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md`
+- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`
 
 Then ask:
 
 `Apply project infrastructure scenario G1 to GitHub repository <owner/repo> and Google Drive folder <folder URL or ID> using the provided project-infrastructure standard files.`
+
+For a ChatGPT-only project, use the profile in `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` and bootstrap with:
+
+`Apply G1 / ChatGPT Project to this ChatGPT Project using GitHub repository <owner/repo> and Google Drive folder <folder URL or ID> from https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md.`
 
 ### Already initialized project
 
