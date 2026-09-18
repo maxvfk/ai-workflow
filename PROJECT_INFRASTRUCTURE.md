@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.5.0  
+**Standard version:** 0.6.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -49,6 +49,10 @@ Version **0.4.1** made G1 explicitly **capability-aware**. Each modifying sessio
 
 Version **0.5.0** restructures G1 as a scenario family. The universal GitHub + Google Drive rules now live in `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`; product-specific profiles extend the base. The first profile, `CHATGPT_PROJECT.md`, defines the recommended mapping **1 ChatGPT Project ↔ 1 GitHub repository ↔ 1 Google Drive root folder**, adds Project Instructions as a versioned ChatGPT adapter, and validates bootstrap from a new empty project chat.
 
+### Draft 0.6 note
+
+Version **0.6.0** adds **G2 — GitHub + Synced Local Folder**. G2 separates durable project control/state into GitHub while keeping user artifacts in an ordinary local folder synchronized across machines by an external sync system. The local folder contains a lightweight `PROJECT_LINK.md`; artifact paths are root-relative; important writes use bounded sync-sanity checks; temporary execution prefers a harness/local workspace outside the synchronized folder.
+
 ## Bootstrap contract
 
 This file is the single external entry point for project initialization, infrastructure validation, repair, or migration.
@@ -89,6 +93,12 @@ For G1 / ChatGPT Project, also provide:
 
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md`.
 
+For G2:
+
+- `PROJECT_INFRASTRUCTURE.md`;
+- `project-infrastructure/COMMON.md`;
+- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md`.
+
 Treat supplied files exactly as the bootstrap specification and record available version/commit/ref provenance without invention.
 
 After successful bootstrap, access to the external infrastructure-standard repository is not required for ordinary project work.
@@ -109,6 +119,7 @@ External-standard access is required again only for explicit initialization, inf
 |---|---|---|---|
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
 | **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors, browser/computer use, or optional local/ephemeral workspaces according to actual session capabilities. |
+| **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root across machines; temporary work preferably happens outside the sync root. |
 | **Y1** | [GitHub + Yandex Disk](project-infrastructure/Y1_GITHUB_YANDEX.md) | Planned | GitHub stores code/text/project state while documents, CAD, data, or other large artifacts live in Yandex Disk and/or its synchronized local folder. |
 | **R1** | [Remote agent](project-infrastructure/R1_REMOTE_AGENT.md) | Planned | The active agent cannot directly access the user's local filesystem and must retrieve required artifacts through connectors, MCP, or remote storage. |
 | **H1** | [Hybrid multi-agent](project-infrastructure/H1_HYBRID_MULTI_AGENT.md) | Planned | Several agents/environments cooperate using local materialization, shared project state, validation, and publish-back rules. |
@@ -123,6 +134,8 @@ External-standard access is required again only for explicit initialization, inf
 Choose the scenario according to **where canonical project state/artifacts live and how active agents access them**, not merely by file type.
 
 If a project combines several environments, start with the closest primary scenario and add only specific required rules from another scenario. Do not duplicate canonical project state between scenarios.
+
+If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another service is used only to present the project as a synchronized ordinary local folder, prefer **G2**. Reserve a provider-specific scenario such as Y1 for workflows that materially depend on that provider's remote API/MCP/cloud semantics.
 
 ## Minimal invocation
 
@@ -153,6 +166,18 @@ Without standard-repository access, provide the G1 base bootstrap files (`PROJEC
 For G1 / ChatGPT Project offline bootstrap, also provide `G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` and use:
 
 > Apply **G1 / ChatGPT Project** to this ChatGPT Project using GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` using the provided project-infrastructure standard files.
+
+### G2
+
+With authorized standard-repository access and the synchronized artifact folder already connected:
+
+> Apply project infrastructure scenario **G2** to this synchronized local project folder using GitHub repository `<owner/repo>` and `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
+
+If `PROJECT_LINK.md` is already present:
+
+> Read `PROJECT_LINK.md`, restore the G2 project from its GitHub repository, and continue with my request.
+
+Without standard-repository access, provide `PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G2_GITHUB_SYNCED_LOCAL_FOLDER.md`.
 
 ### Already initialized project
 
