@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.4.1  
+**Standard version:** 0.5.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -43,7 +43,11 @@ Version 0.4.0 added the first fully specified **G1 — GitHub + Google Drive** s
 
 G1 treats GitHub and Drive as complementary canonical stores rather than mirrors: GitHub is the control/state plane for project memory and text/code knowledge, while Google Drive is the artifact plane for native Workspace documents, Office/PDF/media/large-file artifacts. Agents may work connector-native or through optional local/ephemeral materialization, but temporary workspaces are never canonical.
 
-Version **0.4.1** makes G1 explicitly **capability-aware**. Each modifying session must determine its actual GitHub/Drive/execution read/write capabilities before selecting a workflow. G1 now defines an identity-preserving fallback ladder and requires agents to report incomplete publication or project-memory synchronization instead of silently replacing canonical artifacts or claiming completion.
+Version **0.4.1** made G1 explicitly **capability-aware**. Each modifying session determines its actual GitHub/Drive/execution read/write capabilities before selecting a workflow. G1 defines an identity-preserving fallback ladder and requires incomplete publication or project-memory synchronization to be reported explicitly.
+
+### Draft 0.5 note
+
+Version **0.5.0** restructures G1 as a scenario family. The universal GitHub + Google Drive rules now live in `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`; product-specific profiles extend the base. The first profile, `CHATGPT_PROJECT.md`, defines the recommended mapping **1 ChatGPT Project ↔ 1 GitHub repository ↔ 1 Google Drive root folder**, adds Project Instructions as a versioned ChatGPT adapter, and validates bootstrap from a new empty project chat.
 
 ## Bootstrap contract
 
@@ -79,7 +83,7 @@ For G1:
 
 - `PROJECT_INFRASTRUCTURE.md`;
 - `project-infrastructure/COMMON.md`;
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md`.
+- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`.
 
 Treat supplied files exactly as the bootstrap specification and record available version/commit/ref provenance without invention.
 
@@ -100,10 +104,15 @@ External-standard access is required again only for explicit initialization, inf
 | ID | Scenario | Status | Use when |
 |---|---|---|---|
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
-| **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors, browser/computer use, or optional local/ephemeral workspaces according to actual session capabilities. |
+| **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors, browser/computer use, or optional local/ephemeral workspaces according to actual session capabilities. |
 | **Y1** | [GitHub + Yandex Disk](project-infrastructure/Y1_GITHUB_YANDEX.md) | Planned | GitHub stores code/text/project state while documents, CAD, data, or other large artifacts live in Yandex Disk and/or its synchronized local folder. |
 | **R1** | [Remote agent](project-infrastructure/R1_REMOTE_AGENT.md) | Planned | The active agent cannot directly access the user's local filesystem and must retrieve required artifacts through connectors, MCP, or remote storage. |
 | **H1** | [Hybrid multi-agent](project-infrastructure/H1_HYBRID_MULTI_AGENT.md) | Planned | Several agents/environments cooperate using local materialization, shared project state, validation, and publish-back rules. |
+
+### G1 profiles
+
+- **Base:** [`project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md)
+- **ChatGPT Project:** [`project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md`](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md) — recommended when one ChatGPT Project is intentionally paired with one GitHub repository and one Google Drive root folder. Project Instructions are treated as a versioned product adapter, not as project state.
 
 ## Scenario selection rule
 
@@ -129,7 +138,11 @@ With authorized standard-repository access:
 
 > Apply project infrastructure scenario **G1** to GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
 
-Without standard-repository access, provide the three G1 bootstrap files and use:
+For the ChatGPT-optimized profile:
+
+> Apply **G1 / ChatGPT Project** to this ChatGPT Project using GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` from `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
+
+Without standard-repository access, provide the G1 base bootstrap files (`PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G1_GITHUB_GOOGLE_DRIVE/BASE.md`) and use:
 
 > Apply project infrastructure scenario **G1** to GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` using the provided project-infrastructure standard files.
 
