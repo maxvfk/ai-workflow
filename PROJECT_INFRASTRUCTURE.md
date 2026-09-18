@@ -79,11 +79,15 @@ For L1:
 - `project-infrastructure/COMMON.md`;
 - `project-infrastructure/L1_LOCAL_FOLDER.md`.
 
-For G1:
+For G1 Base:
 
 - `PROJECT_INFRASTRUCTURE.md`;
 - `project-infrastructure/COMMON.md`;
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`.
+
+For G1 / ChatGPT Project, also provide:
+
+- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md`.
 
 Treat supplied files exactly as the bootstrap specification and record available version/commit/ref provenance without invention.
 
@@ -145,6 +149,10 @@ For the ChatGPT-optimized profile:
 Without standard-repository access, provide the G1 base bootstrap files (`PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G1_GITHUB_GOOGLE_DRIVE/BASE.md`) and use:
 
 > Apply project infrastructure scenario **G1** to GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` using the provided project-infrastructure standard files.
+
+For G1 / ChatGPT Project offline bootstrap, also provide `G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` and use:
+
+> Apply **G1 / ChatGPT Project** to this ChatGPT Project using GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` using the provided project-infrastructure standard files.
 
 ### Already initialized project
 
