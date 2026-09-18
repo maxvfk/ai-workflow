@@ -12,6 +12,12 @@ Both locations may already contain project material. G1 is therefore brownfield-
 
 `Draft` means the scenario is structurally specified but still needs representative real-project pilots before promotion to `Pilot`.
 
+## Product profiles
+
+Product-specific profiles extend this base without changing the canonical-store model.
+
+- [`CHATGPT_PROJECT.md`](CHATGPT_PROJECT.md) — optimized profile for **1 ChatGPT Project ↔ 1 GitHub repository ↔ 1 Google Drive root folder**, including Project Instructions design/deployment and ChatGPT-specific cold-start validation.
+
 ## 1. Core model
 
 A G1 project has two complementary canonical stores:
