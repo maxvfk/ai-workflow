@@ -25,13 +25,14 @@ GitHub default branch: main
 - Local clone/check-out/workspace — только access/execution path, а не отдельная canonical копия.
 - Для небольших адресных изменений предпочитай доступный remote/API/connector path; local checkout используй, когда нужны code/diff/build/test или multi-file Git workflows.
 - Перед shared write перечитай текущий target/revision. Используй SHA/revision conditional writes, когда они доступны. При rejected/conflicting write обнови состояние и reconcile; не перезаписывай stale content и не force-push без явной необходимости.
-- Сохраняй существующую repository/branch/contribution policy. Не вводи новую branch model без причины.
+- Default branch — `main`. Текущую branch protection/contribution policy проверяй по repository metadata перед существенными Git operations; не полагайся на сохранённое предположение о protection state и не вводи новую branch model без причины.
 - Для artifact/source locators предпочитай repository-relative paths.
 - Веди project-memory prose на русском. Filenames, record IDs и controlled statuses сохраняй в определённых английских формах.
 - `TASKS.md` — краткий operational index. Подробные ревью/обсуждения остаются в GitHub Issues и не копируются целиком.
 - Репозиторий содержит два связанных, но независимо обновляемых направления: Project Infrastructure и model routing. Версия Project Infrastructure не версионирует автоматически `AI_MODEL_*` и `skills/model-router/`.
 - Не сохраняй secrets/credentials в project-memory/infrastructure files.
 - Не загружай installed standard snapshot в обычной сессии.
+- Temporary/intermediate work предпочитай выполнять в harness/local workspace вне canonical repo. Если реально нужен repo-local `_ai/work/` или `_ai/generated/`, сначала добавь соответствующие managed `.gitignore` rules, если эти материалы не должны намеренно version-control'иться.
 - Сохраняй canonical source files и существующую структуру, если задача явно не требует изменений.
 
 ## Масштаб задачи
