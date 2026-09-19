@@ -494,58 +494,24 @@ In addition to the common runtime baseline from `COMMON.md`, G1 must materialize
 
 When canonical `AGENTS.md` also contains user/project-authored material, keep these additions inside the mandatory managed block from `COMMON.md`.
 
-## 22. G1 bootstrap procedure
+## 22. G1 bootstrap/reconcile additions
 
-Ground two target resources:
+Follow the common bootstrap/reconcile flow from `COMMON.md`.
 
-1. the project GitHub repository;
-2. the project Google Drive root folder.
+G1-specific additions:
 
-Do not guess either target when multiple plausible resources exist.
+- ground exactly two canonical resources: the project GitHub repository and the Google Drive root folder;
+- use observable operation discovery for the reads/writes required by bootstrap; do not assume connector capabilities;
+- inspect both stores using the G1 brownfield additions above;
+- preserve both existing organizations and resolve ambiguous canonical versions by provenance rather than guesswork;
+- store project memory/runtime/infrastructure in GitHub and record both store identities in the manifest;
+- create/use `SOURCES.md` when cross-store provenance is non-trivial;
+- register Drive artifacts by stable Drive ID and GitHub artifacts by repository-relative path;
+- apply Git ignore rules only when relevant;
+- optionally add a lightweight Drive-root pointer back to GitHub for human discovery;
+- if a required canonical/bootstrap write is unavailable, leave an explicit pending change/plan rather than claiming G1 is installed.
 
-### Already initialized G1
-
-1. Read repository `AGENTS.md`, `_ai/infrastructure/MANIFEST.md`, and only project-memory needed to understand installed state.
-2. Verify configured Drive root still resolves to the intended folder.
-3. Determine current-session capabilities relevant to the requested infrastructure operation.
-4. If migration was requested, compare installed snapshot with target standard and migrate non-destructively.
-5. Preserve project-specific instructions, IDs, source registrations, and Drive/GitHub canonical relationships.
-6. Refresh managed runtime/manifest/snapshot only as needed.
-7. Perform G1 cold-start validation.
-
-### Uninitialized brownfield G1
-
-1. Read the bootstrap index, `COMMON.md`, and this scenario from authorized standard access or a provided local bundle.
-2. Ground the GitHub repository and Drive root.
-3. Ground the required targets and discover/verify the concrete read/write operations needed for the bootstrap without assuming capabilities.
-4. Inspect both stores with bounded metadata-first discovery.
-5. Determine project-memory profile/language from `COMMON.md` and existing project context.
-6. Identify important existing artifacts and competing/ambiguous canonical versions.
-7. Preserve both existing organizations; do not restructure merely to fit G1 defaults.
-8. Create/augment justified project-memory files in GitHub; create `SOURCES.md` unless the project is exceptionally trivial and cross-store provenance is obvious without it.
-9. Create `_ai/infrastructure/`, save applied standard snapshot, and create/update `MANIFEST.md` with both store identities.
-10. Install G1 runtime rules in `AGENTS.md`.
-11. Register important Drive/GitHub sources using stable IDs/relative paths.
-12. Add Git-ignore rules non-destructively when relevant.
-13. Optionally add a Drive-root pointer back to GitHub when useful for human discovery.
-14. Summarize current state/tasks without claiming unresolved provenance as fact.
-15. Perform G1 cold-start validation.
-
-If required bootstrap writes are unavailable in the current session, do not simulate completion. Produce an explicit bootstrap plan/pending-change set for a write-capable session.
-
-### Greenfield G1
-
-1. Ground the empty/new GitHub repository and Drive root.
-2. Check current-session capabilities required for bootstrap.
-3. Start with Minimal profile unless known complexity justifies Standard; add `SOURCES.md` when cross-store artifacts matter.
-4. Create GitHub runtime/infrastructure and only useful project directories.
-5. Do not invent a Drive subfolder hierarchy before real artifacts justify it.
-6. Install G1 runtime rules and manifest with both store identities.
-7. Apply Git-ignore rules.
-8. Optionally create the Drive pointer.
-9. Perform G1 cold-start validation.
-
-If required writes are unavailable, leave a truthful pending bootstrap plan rather than claiming G1 is installed.
+Already initialized G1 performs only the reconcile/repair/migration subset of these additions. Greenfield G1 starts Minimal unless known complexity justifies more structure.
 
 ## 23. G1 cold-start additions
 
