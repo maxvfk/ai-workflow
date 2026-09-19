@@ -103,6 +103,35 @@ Preferred runtime sequence:
 
 Do not load the local infrastructure-standard snapshot during ordinary startup.
 
+### Task scale and proportional write path
+
+Do not apply the heaviest synchronization/publication procedure to every task. Use the lightest path that preserves correctness.
+
+**Read-only or informational task**
+- read the canonical `AGENTS.md` and only the project/source files needed for the answer;
+- do not update project memory merely because a read occurred;
+- do not run publication or write-synchronization procedures.
+
+**Bounded small edit**
+- use for a low-risk edit to one clearly identified canonical artifact or one small project-memory change;
+- ground the project/target and check only the concurrency/synchronization signals relevant to that target;
+- make the edit through the safest available identity-preserving path;
+- verify the edited target;
+- update `STATE.md`, `TASKS.md`, `SOURCES.md`, decisions, or other project memory **only when the edit materially changes project state, task status, provenance, or a recorded decision**;
+- a scenario's full publish/promote transaction is not required unless one of the substantial-work triggers below applies.
+
+Use the **full scenario transaction** when work is substantial or risk-bearing, including one or more of:
+- several canonical artifacts/stores must change together;
+- a derived/materialized copy must be promoted or published back;
+- conversion/replacement may alter identity, structure, formulas, references, metadata, or other important semantics;
+- the work is destructive, difficult to reverse, or provenance-sensitive;
+- concurrent edits are plausible;
+- project state/tasks/decisions materially change;
+- the work spans multiple agents/sessions or has a meaningful handoff;
+- the active scenario explicitly requires a stronger transaction for that operation.
+
+When uncertain, escalate one level rather than automatically using the full workflow.
+
 ## 4. Current state is not a session log
 
 `STATE.md` is the default handoff snapshot. It describes the **present**, not a chronological diary.
@@ -168,7 +197,7 @@ When infrastructure metadata shows that a project is already initialized:
 - do not recreate project-memory files from scratch;
 - do not reset `STATE.md` or `TASKS.md` from a new scan unless existing files are unusable and reconstruction is explicitly justified.
 
-When practical, infrastructure-managed material added to a pre-existing instruction file should use stable markers:
+When infrastructure-managed material is inserted into a **pre-existing file that also contains user/project-authored content**, the managed block **must** use stable markers:
 
 ```markdown
 <!-- project-infrastructure:start -->
@@ -176,7 +205,11 @@ When practical, infrastructure-managed material added to a pre-existing instruct
 <!-- project-infrastructure:end -->
 ```
 
-Update only the managed block on later reapplication. Existing substantive tool-specific files such as `CLAUDE.md` follow the same preservation rule.
+On reapplication, update only the marked managed block.
+
+A file created and owned entirely by the infrastructure may omit the markers while it remains wholly infrastructure-owned. If user/project-authored content is later mixed into that file, convert the infrastructure-owned portion to a marked block before further automated maintenance.
+
+Existing substantive tool-specific files such as `CLAUDE.md` follow the same preservation rule. Never add unmarked infrastructure text to an existing mixed-ownership instruction file.
 
 ## 9. Security, secrets, and personal data
 
@@ -200,7 +233,7 @@ Keep it short when present: project name, one-paragraph purpose, basic structure
 
 `AGENTS.md` must be sufficient for a future agent to discover and follow the installed runtime without external-standard access.
 
-A useful baseline contains:
+A useful baseline contains the following shape. The `Infrastructure` field names/controlled values remain in their defined English forms; ordinary headings and prose use the installed project-memory language. Example for `ru`:
 
 ```markdown
 # Инструкции для агента
@@ -213,25 +246,25 @@ Project-memory profile: <Minimal/Standard>
 Project-memory language: <ru/en/...>
 Installed project-memory files: <actual files>
 
-For normal work, this file and the project-memory files are the runtime source of truth. Do not require the external standard or load the local standard snapshot unless performing infrastructure audit, repair, or migration.
+Для обычной работы этот файл и установленные файлы project memory являются источником истины. Не обращайся к внешнему репозиторию стандарта и не загружай snapshot стандарта, кроме задач аудита, ремонта или миграции инфраструктуры.
 
 ## Запуск
-Read only the installed project-memory files needed for the task, beginning with current state/tasks.
+Читай только те файлы project memory, которые нужны для текущей задачи, начиная с актуального состояния и задач.
 
 ## Правила работы
-- Prefer project files over remembered chat context when they conflict.
-- Preserve canonical source files unless the task explicitly requires changing them.
-- Maintain project-memory prose in the installed project-memory language.
-- Keep filenames, record IDs, and controlled status values in their defined English forms.
-- Distinguish facts, decisions, assumptions, recommendations, and tasks.
-- Never store secrets or credential values in project-memory/infrastructure files.
-- Follow the scenario-specific runtime rules recorded here.
+- Если файлы проекта противоречат запомненному контексту чата, приоритет имеют файлы проекта.
+- Сохраняй canonical source files, если задача явно не требует их изменения.
+- Веди обычную прозу project memory на установленном языке проекта.
+- Сохраняй filenames, record IDs и controlled status values в их определённых английских формах.
+- Различай факты, решения, допущения, рекомендации и задачи.
+- Никогда не сохраняй secrets или credential values в project-memory/infrastructure files.
+- Следуй scenario-specific runtime rules, записанным в этом файле.
 
 ## Перед завершением существенной работы
-- Re-read shared project-memory files you are about to modify and reconcile concurrent changes.
-- Update current state/tasks and other installed project-memory files when relevant.
-- Record significant decisions in the scenario-defined location.
-- Leave the project continuable without the previous chat or external standard.
+- Перечитай shared project-memory files, которые собираешься изменить, и согласуй конкурентные изменения.
+- При необходимости обнови актуальное состояние, задачи и другие установленные project-memory files.
+- Зафиксируй существенные решения в месте, определённом сценарием.
+- Оставь проект в состоянии, позволяющем продолжить работу без предыдущего чата и внешнего стандарта.
 ```
 
 Do not turn `AGENTS.md` into a full project encyclopedia.
@@ -303,6 +336,8 @@ Validate from the perspective of a fresh agent that has only the scenario-define
 
 When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed runtime and scenario-defined entry resources.
 
+Validate **effective behavior**, not merely file presence. If the active product does not expose all loaded instruction files in its memory/context UI, confirm the startup/instruction announcement when available or ask the fresh agent to state the project/scenario/runtime rules it actually received. Do not treat a file existing on disk as proof that the product loaded it.
+
 ## 15. Universal `AGENTS.md` and tool-specific adapters
 
 `AGENTS.md` is the **canonical vendor-neutral instruction convention** for this standard. Each project has one **canonical full-runtime `AGENTS.md`** in its scenario-defined runtime/control store.
@@ -315,11 +350,19 @@ Tool-specific entry files/workspace instructions are optional thin adapters. The
 
 ### Claude Code
 
-Claude Code 2.1.277+ can load `AGENTS.md` natively when the project has no project-specific `CLAUDE.md`. Therefore the default for a new project is:
+`AGENTS.md` remains the canonical shared source of truth.
 
-> **Always create/maintain `AGENTS.md`. Do not create `CLAUDE.md` unless the project has a concrete Claude-specific requirement.**
+Claude Code 2.1.277+ can load `AGENTS.md` through its built-in `agents-md` support. In the default fallback mode, project-specific `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` on the project-root-to-working-directory path can cause Claude Code to use the Claude-specific project instructions instead of `AGENTS.md`. User/global managed instructions and `.claude/rules/` are separate layers and do not by themselves replace the project `AGENTS.md` fallback.
 
-When a Claude-specific adapter is genuinely useful, keep `AGENTS.md` as the single shared source of truth and make `CLAUDE.md` thin, for example:
+Native `AGENTS.md` support is version/provider/configuration dependent. Do not assume it is available merely because the file exists. The 2.1.277 rollout explicitly did not initially cover some third-party/provider surfaces, and the built-in feature can also be disabled. `AGENTS.md` loaded through this mechanism is not necessarily listed by Claude's ordinary memory/context inspection UI, so use the behavioral cold-start validation rule above.
+
+Default for a new project:
+
+> **Always create/maintain `AGENTS.md`. Do not create `CLAUDE.md` unless the project has a concrete Claude-specific or compatibility requirement.**
+
+A valid compatibility requirement can be a need to support Claude environments where native `AGENTS.md` loading is unavailable/unreliable, or to make the relationship explicit despite an ancestor/project-specific Claude instruction file.
+
+When a Claude-specific adapter is justified, keep it thin and explicit:
 
 ```markdown
 @AGENTS.md
@@ -333,9 +376,9 @@ Appropriate Claude-only additions include tool-specific skills, subagent policy,
 
 Do not copy shared project rules from `AGENTS.md` into `CLAUDE.md`.
 
-Do not make project correctness depend on a user-global Claude setting such as loading both instruction formats. A repository-level adapter, when needed, should carry its own explicit relationship to `AGENTS.md`.
+Do not make project correctness depend on a user-global Claude setting such as loading both instruction formats. A repository/project-level adapter, when needed, should carry its own explicit relationship to `AGENTS.md`.
 
-If an existing `CLAUDE.md` or `CLAUDE.local.md` is present, preserve it non-destructively. Project-specific Claude instruction files can change whether native `AGENTS.md` fallback is used, so ensure the effective Claude instructions still include the canonical `AGENTS.md` rules when required.
+If an existing `CLAUDE.md` or `CLAUDE.local.md` is present, preserve it non-destructively and ensure the effective Claude instructions still include the canonical `AGENTS.md` rules when required.
 
 ### Codex
 
