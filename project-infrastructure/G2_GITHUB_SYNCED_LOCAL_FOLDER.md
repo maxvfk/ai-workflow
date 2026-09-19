@@ -260,13 +260,11 @@ Local standard snapshot: ./standard/
 
 Never store a machine-specific absolute artifact-root path or synchronization credentials in the canonical manifest.
 
-## 9. Project-memory profile and language
+## 9. G2 project-memory additions
 
-Use the Minimal/Standard profile rules from COMMON.md.
+Profile and language selection follow `COMMON.md`.
 
-For substantial engineering, analytical, or long-running G2 projects, Standard is usually appropriate and SOURCES.md is strongly recommended.
-
-Project-memory language follows COMMON.md; the default is Russian (ru) unless another language is explicitly selected or already established.
+For substantial engineering/analytical G2 projects, `SOURCES.md` is strongly recommended because artifact paths/provenance bridge the GitHub control plane and synchronized artifact root.
 
 ## 10. Relative artifact paths
 
