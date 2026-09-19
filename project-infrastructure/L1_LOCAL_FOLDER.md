@@ -42,21 +42,9 @@ This is especially important for linked Office files, CAD assemblies/dependent p
 
 If the structure is inconvenient, document the issue and propose a reorganization separately rather than performing one silently.
 
-## Project-memory profile and language
+## Project-memory profile and L1 layout
 
-Use the Minimal/Standard profile rules from `COMMON.md` rather than creating every possible root file automatically.
-
-For new L1 installations, project-memory language defaults to **Russian (`ru`)** unless the user explicitly selects another language.
-
-For an already initialized project:
-
-- preserve its established project-memory language;
-- do not translate project-memory files merely because a current deliverable is in another language;
-- change the project-memory language only when explicitly requested as an infrastructure/project convention change.
-
-The language of an individual deliverable does not determine the language of the project memory. For example, an English journal manuscript may coexist with Russian `STATE.md`, `TASKS.md`, `PROJECT.md`, and `SOURCES.md`.
-
-Keep infrastructure filenames, record IDs, and controlled status values in their defined English forms even when surrounding prose is Russian.
+Profile and language selection follow `COMMON.md`; L1 adds only the local layout below.
 
 A simple L1 installation may be only:
 
