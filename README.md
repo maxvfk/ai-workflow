@@ -2,6 +2,10 @@
 
 Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
+<!-- project-infrastructure:start -->
+Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STATE.md). Active/next work: [`TASKS.md`](TASKS.md).
+<!-- project-infrastructure:end -->
+
 ## Files
 
 - `AI_MODEL_ROUTING_MEMO.md` — stable routing rules for choosing vendor, environment, model, and effort.
