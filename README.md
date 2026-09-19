@@ -8,6 +8,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 - `AI_MODEL_CURRENT_STATE.md` — refreshed snapshot of current ChatGPT/Claude models, limits, benchmark evidence, and practical recommendations.
 - `PROJECT_INFRASTRUCTURE.md` — canonical entry point for project-infrastructure bootstrap and migration.
 - `project-infrastructure/COMMON.md` — common project-memory/runtime rules used by all scenarios.
+- `project-infrastructure/G0_GITHUB_REPOSITORY.md` — **Draft** GitHub-only single-store scenario.
 - `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
@@ -17,7 +18,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.7.4**  
+Current standard version: **0.8.0**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -33,6 +34,7 @@ Core conventions:
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
+- **G0 — GitHub Repository:** one GitHub repo is the canonical runtime/state and ordinary Git-artifact store; local clones are access paths.
 - **L1 — Local Folder:** project runtime/memory and artifacts live in one normal local folder; existing user structure is preserved.
 - **G1 — GitHub + Google Drive:** GitHub is the control/state plane and Drive is the artifact plane; G1 has a ChatGPT Project profile.
 - **G2 — GitHub + Synced Local Folder:** GitHub is the control/state plane, a synchronized ordinary local folder is the artifact root, and control-repo clones never live inside the sync root.
