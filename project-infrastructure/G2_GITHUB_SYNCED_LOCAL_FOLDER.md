@@ -88,6 +88,31 @@ After bootstrap, ordinary work must not require the originating chat or the exte
 
 A new agent must be able to continue from the synced artifact folder, its local bootstrap `AGENTS.md`, and access to the project GitHub repository named there.
 
+### Control-repository access modes
+
+The project GitHub repository is a permanent canonical control/state store, but G2 does **not** require one fixed machine-specific clone path.
+
+Use one of these modes per session/task:
+
+**Mode A — remote/API/connector access (preferred for project memory)**
+- use an authenticated GitHub connector/API/CLI operation to read and update `AGENTS.md`, `STATE.md`, `TASKS.md`, `SOURCES.md`, manifests, decisions, and other small text state;
+- immediately before a write, re-read the current file/revision;
+- when the API exposes a blob/content SHA, revision, ETag, or equivalent conditional-write token, use it;
+- if the write is rejected because the target changed, refresh and reconcile; never force-overwrite stale project state;
+- a small project-memory update may go directly to the repository's normal/default branch only when that is consistent with the repository's existing contribution/branch policy and the current session is authorized.
+
+**Mode B — local checkout outside the synchronized artifact root**
+- use when code, scripts, many repository files, diff/build/test workflows, or multi-file Git operations materially benefit from a working tree;
+- place/discover the checkout **outside the synchronized artifact root** and preferably outside any cloud-sync root;
+- a harness-provided temporary workspace is suitable for an ephemeral checkout; a persistent local clone is also acceptable;
+- the checkout's absolute path is machine/session-local context and is never canonical project state;
+- before publishing, fetch/pull/rebase/merge according to the repository's established policy and reconcile concurrent changes;
+- push normally; if push/merge is rejected, refresh and reconcile rather than force-pushing unless the user explicitly requests a destructive history operation.
+
+**Never clone the control repository inside the synchronized artifact root.** This would mix `.git` and project-memory files into the artifact sync plane, violate the G2 separation of roles, and create avoidable sync/conflict risk.
+
+Do not invent a new branching model merely for G2. Respect an existing repository policy. If none exists, prefer the simplest safe path: bounded project-memory edits through Mode A; task branches/local checkout only when the work itself benefits from Git workflow.
+
 ## 5. Recommended GitHub structure
 
 ~~~text
@@ -163,7 +188,7 @@ This file is a thin local bootstrap adapter. The canonical full runtime
 instructions and project memory live in the project GitHub repository.
 
 Before substantial work:
-1. access the canonical project repository;
+1. access the canonical project repository using the G2 control-repository access modes;
 2. read its root AGENTS.md;
 3. restore current state/tasks from GitHub project memory;
 4. treat this directory as the synchronized canonical artifact root;
@@ -283,11 +308,11 @@ Useful fields may include:
 - artifact type;
 - Canonical: yes/no;
 - modification policy;
-- last verified date when meaningful;
-- expected size/modified metadata when it materially helps sync validation;
-- checksum/hash only when justified.
+- stable external/version identifier when the source itself provides one.
 
-Checksums are **not required by default**. Prefer them for immutable critical inputs, released deliverables, or cases where synchronization/provenance risk warrants them.
+Do **not** maintain mutable file size, modified time, or live-file checksums manually in `SOURCES.md` as ordinary synchronization state. Those values become stale quickly and can create false conflict signals.
+
+A checksum/fingerprint is appropriate only when it is deliberately tied to an **immutable or released artifact/version** (for example a raw input snapshot or approved release) and is generated/recorded as part of that versioning/release process rather than expected to track a changing working file.
 
 ## 12. Synchronization model
 
@@ -303,21 +328,27 @@ Important writes still require a bounded sync-sanity check.
 
 The provider is outside the canonical project-state model. Record provider-specific details only when they are materially required to operate the project.
 
-## 13. Sync-sanity check
+## 13. Proportional sync-sanity check
 
-Before modifying an important canonical artifact, check enough evidence to detect obvious synchronization or project-selection errors.
+G2 assumes the synchronization layer is healthy by default. Do not perform a full project scan before ordinary work.
 
-When practical:
+Before **any canonical artifact write**, perform the minimum target-level checks:
 
-1. confirm the local artifact-root `AGENTS.md` exists;
-2. confirm its Project ID matches the GitHub manifest;
-3. confirm the intended relative target path resolves inside the connected artifact root;
-4. confirm the target exists when expected;
-5. inspect enough metadata/content to detect obviously stale or wrong material;
-6. check for obvious sync-conflict copies, duplicate-version names, placeholders, offline-only/unavailable files, or sync-error indicators exposed by the environment;
-7. validate stronger expected metadata/hash from SOURCES.md when relevant.
+1. confirm the connected folder is the intended G2 artifact root by its local bootstrap `AGENTS.md` / Project ID;
+2. confirm the intended relative target path resolves inside that artifact root;
+3. check the target area for an obvious conflict copy, duplicate competing version, missing/offline placeholder, or other visible sync error.
 
-Do not turn this into an expensive full-project verification unless evidence of a problem appears.
+For a **bounded low-risk edit**, these checks plus normal target inspection/verification are usually sufficient.
+
+Escalate to an extended sync-sanity check for substantial, destructive, dependency-sensitive, provenance-sensitive, multi-file, or suspicious work. Then also inspect, as relevant:
+
+- whether the target exists and is locally available when expected;
+- enough metadata/content context to detect an obviously stale or wrong artifact;
+- linked/dependent files required by the application (especially CAD/project bundles);
+- provider-exposed sync-error indicators;
+- an intentionally recorded immutable/release fingerprint from `SOURCES.md`, if one exists for the exact artifact version being used.
+
+Do not compare mutable working-file timestamps/sizes/checksums against manually maintained registry values.
 
 ## 14. Synchronization conflicts
 
@@ -393,6 +424,8 @@ A synchronized folder is not automatically a good scratch area.
 
 ## 18. Publish/promote transaction
 
+For a bounded low-risk single-artifact edit, use the proportional small-edit path from `COMMON.md` plus the minimum G2 sync-sanity check above. Do not update GitHub project memory unless the edit materially changes project state, task status, provenance, or a recorded decision.
+
 For substantial artifact-changing work:
 
 ~~~text
@@ -400,7 +433,7 @@ GROUND PROJECT ID / ARTIFACT ROOT
         ↓
 RESTORE GITHUB PROJECT STATE
         ↓
-SYNC-SANITY CHECK
+PROPORTIONAL / EXTENDED SYNC-SANITY CHECK
         ↓
 DIRECT SAFE EDIT
         or
@@ -511,6 +544,7 @@ During bootstrap/migration, install a concise infrastructure-managed section in 
 - project-memory profile/language and installed files;
 - GitHub repository identity/default branch;
 - path to GitHub infrastructure manifest;
+- project-memory access may use remote/API/connector operations or a local checkout outside the synchronized artifact root; never place the control-repository clone inside the artifact root;
 - the folder identified by the matching local bootstrap `AGENTS.md` is the synchronized canonical artifact root;
 - project artifact paths are relative to that root;
 - GitHub is canonical for runtime/state; do not duplicate that state locally;
@@ -550,6 +584,7 @@ After initialization, repair, or migration, report:
 - Project ID;
 - project-memory profile/language;
 - GitHub repository and artifact root grounded;
+- control-repository access mode used/available;
 - local bootstrap `AGENTS.md` created/updated/preserved;
 - important artifacts registered with relative paths;
 - temporary-workspace route available/selected;
