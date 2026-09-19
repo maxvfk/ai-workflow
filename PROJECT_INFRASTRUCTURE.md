@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.7.2  
+**Standard version:** 0.7.3  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -60,6 +60,8 @@ Version **0.7.0** standardizes `AGENTS.md` as the required vendor-neutral runtim
 Version **0.7.1** is a corrective/pre-pilot patch rather than a feature release. It adds proportional lightweight paths for small tasks, makes managed markers mandatory for infrastructure blocks in mixed-ownership files, fixes the project-memory-language example, replaces G1 capability self-report with observable operation routing, defines G2 control-repository access/write mechanics, scales G2 sync-sanity by task risk, and removes manually maintained mutable file metadata/checksums from ordinary G2 source tracking.
 
 Version **0.7.2** is a deduplication/refactor patch. `COMMON.md` now owns generic bounded discovery/source-registration, the common bootstrap/reconcile flow, and the common `AGENTS.md` runtime baseline. L1/G1/G2 bootstrap, runtime, brownfield, concurrency, cold-start, and completion sections were reduced to scenario-specific deltas. Scenario/profile `Minimal invocation` copies were removed; `PROJECT_INFRASTRUCTURE.md` is the single canonical location for invocation prompts, and README now points to it instead of duplicating commands.
+
+Version **0.7.3** freezes pre-pilot scenario scope to the three implemented Draft scenarios: **L1, G1, and G2**. The unimplemented Y1/R1/H1 placeholders were removed from the active standard and moved to `project-infrastructure/ROADMAP.md` as deferred ideas. They are not reserved scenario commitments; a future real-project gap should first be solved by the smallest suitable common rule, scenario delta, or profile before introducing a new scenario.
 
 ## Bootstrap contract
 
@@ -128,9 +130,6 @@ External-standard access is required again only for explicit initialization, inf
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
 | **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; workflow selection is based on observable available operations and target state, with connectors/browser/local workspaces used only when they safely support the intended operation. |
 | **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root; a thin local `AGENTS.md` bootstraps GitHub access, project-memory access is API/connector-first or via a clone outside the sync root, and task checks scale with risk. |
-| **Y1** | [GitHub + Yandex Disk](project-infrastructure/Y1_GITHUB_YANDEX.md) | Planned | GitHub stores code/text/project state while documents, CAD, data, or other large artifacts live in Yandex Disk and/or its synchronized local folder. |
-| **R1** | [Remote agent](project-infrastructure/R1_REMOTE_AGENT.md) | Planned | The active agent cannot directly access the user's local filesystem and must retrieve required artifacts through connectors, MCP, or remote storage. |
-| **H1** | [Hybrid multi-agent](project-infrastructure/H1_HYBRID_MULTI_AGENT.md) | Planned | Several agents/environments cooperate using local materialization, shared project state, validation, and publish-back rules. |
 
 ### G1 profiles
 
@@ -143,7 +142,11 @@ Choose the scenario according to **where canonical project state/artifacts live 
 
 If a project combines several environments, start with the closest primary scenario and add only specific required rules from another scenario. Do not duplicate canonical project state between scenarios.
 
-If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another service is used only to present the project as a synchronized ordinary local folder, prefer **G2**. Reserve a provider-specific scenario such as Y1 for workflows that materially depend on that provider's remote API/MCP/cloud semantics.
+If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another service is used to present the project as a synchronized ordinary local folder, use **G2**. Provider-specific remote/API/MCP behavior is not a current scenario; if a real project later exposes a gap, evaluate it using the roadmap discipline in [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md).
+
+## Deferred ideas
+
+Provider-specific remote storage, remote-only agent access, and stronger multi-agent coordination are intentionally **outside the active pre-pilot scenario set**. See [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md). They should not influence scenario selection unless explicitly reintroduced through a future standard revision.
 
 ## Minimal invocation
 
