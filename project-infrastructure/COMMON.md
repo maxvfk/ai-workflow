@@ -303,24 +303,48 @@ Validate from the perspective of a fresh agent that has access only to the proje
 
 When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed local runtime.
 
-## 15. Tool-specific adapters
+## 15. Universal `AGENTS.md` and tool-specific adapters
 
-The canonical project memory must remain tool-agnostic. Tool-specific entry files/workspace instructions should be thin adapters rather than independent project-state copies.
+`AGENTS.md` is the **canonical, vendor-neutral runtime instruction file** for this standard.
+
+Rules that are valid regardless of the active agent belong in `AGENTS.md`. Current project state belongs in the project-memory files named from `AGENTS.md`, not in vendor-specific instruction files.
+
+Tool-specific entry files/workspace instructions are optional thin adapters. They must not become independent copies of project state or duplicate the general runtime rules.
 
 ### Claude Code
 
-For a new project with no existing `CLAUDE.md`, it may be useful to create:
+Claude Code 2.1.277+ can load `AGENTS.md` natively when the project has no project-specific `CLAUDE.md`. Therefore the default for a new project is:
+
+> **Always create/maintain `AGENTS.md`. Do not create `CLAUDE.md` unless the project has a concrete Claude-specific requirement.**
+
+When a Claude-specific adapter is genuinely useful, keep `AGENTS.md` as the single shared source of truth and make `CLAUDE.md` thin, for example:
 
 ```markdown
 @AGENTS.md
+
+# Claude-specific additions
+
+...only instructions that are specific to Claude Code...
 ```
 
-If `CLAUDE.md` already exists, preserve its instructions and integrate a reference to `AGENTS.md` only when useful.
+Appropriate Claude-only additions include tool-specific skills, subagent policy, Claude hooks/rules, or compatibility requirements that do not apply to other agents.
+
+Do not copy shared project rules from `AGENTS.md` into `CLAUDE.md`.
+
+Do not make project correctness depend on a user-global Claude setting such as loading both instruction formats. A repository-level adapter, when needed, should carry its own explicit relationship to `AGENTS.md`.
+
+If an existing `CLAUDE.md` or `CLAUDE.local.md` is present, preserve it non-destructively. Project-specific Claude instruction files can change whether native `AGENTS.md` fallback is used, so ensure the effective Claude instructions still include the canonical `AGENTS.md` rules when required.
 
 ### Codex
 
-Use the root `AGENTS.md` directly. Add nested `AGENTS.md` files only when a subdirectory needs materially different rules.
+Use the root `AGENTS.md` directly.
+
+Add nested `AGENTS.md` files only when a subdirectory needs materially different or path-scoped rules. Keep the root `AGENTS.md` self-contained enough for ordinary project startup.
+
+For cross-tool portability, do not rely on Claude-specific `@path` import behavior inside canonical `AGENTS.md` unless all required agents are known to support the same semantics.
 
 ### ChatGPT Work / Cowork / other project agents
 
-Configure workspace/project instructions to read the root `AGENTS.md` before substantial work when the product does not automatically discover it. Do not maintain separate full copies of project state inside product-specific instructions.
+When a product does not automatically discover `AGENTS.md`, configure its project/workspace instructions as a thin adapter that points to the canonical `AGENTS.md`.
+
+Do not maintain separate full copies of current project state inside product-specific instructions.
