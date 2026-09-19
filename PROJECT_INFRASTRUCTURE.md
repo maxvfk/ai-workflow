@@ -59,7 +59,7 @@ Version **0.7.0** standardizes `AGENTS.md` as the required vendor-neutral runtim
 
 Version **0.7.1** is a corrective/pre-pilot patch rather than a feature release. It adds proportional lightweight paths for small tasks, makes managed markers mandatory for infrastructure blocks in mixed-ownership files, fixes the project-memory-language example, replaces G1 capability self-report with observable operation routing, defines G2 control-repository access/write mechanics, scales G2 sync-sanity by task risk, and removes manually maintained mutable file metadata/checksums from ordinary G2 source tracking.
 
-Version **0.7.2** is a deduplication/refactor patch. `COMMON.md` now owns generic bounded discovery/source-registration and the common `AGENTS.md` runtime baseline. L1/G1/G2 runtime, brownfield, concurrency, cold-start, and completion sections were reduced to scenario-specific deltas. Scenario/profile `Minimal invocation` copies were removed; `PROJECT_INFRASTRUCTURE.md` is the single canonical location for invocation prompts, and README now points to it instead of duplicating commands.
+Version **0.7.2** is a deduplication/refactor patch. `COMMON.md` now owns generic bounded discovery/source-registration, the common bootstrap/reconcile flow, and the common `AGENTS.md` runtime baseline. L1/G1/G2 bootstrap, runtime, brownfield, concurrency, cold-start, and completion sections were reduced to scenario-specific deltas. Scenario/profile `Minimal invocation` copies were removed; `PROJECT_INFRASTRUCTURE.md` is the single canonical location for invocation prompts, and README now points to it instead of duplicating commands.
 
 ## Bootstrap contract
 
