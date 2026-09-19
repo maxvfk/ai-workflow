@@ -211,7 +211,33 @@ A file created and owned entirely by the infrastructure may omit the markers whi
 
 Existing substantive tool-specific files such as `CLAUDE.md` follow the same preservation rule. Never add unmarked infrastructure text to an existing mixed-ownership instruction file.
 
-## 9. Security, secrets, and personal data
+## 9. Bounded discovery and source registration
+
+Bootstrap/reconstruction should discover enough to establish project purpose, state, authority, dependencies, and deliverables without recursively ingesting the whole project.
+
+Default discovery pattern:
+
+1. **Inventory first:** inspect names/types/metadata at the project/store root and normally no more than about 2 levels below it.
+2. **Targeted expansion:** go deeper only into specific branches needed to understand the project or current task.
+3. **High-value reads:** prioritize existing instructions/README/manifests, current/final/approved documents, obvious code/CAD/notebook/data entry points, files explicitly named by the user, and artifacts referenced by authoritative sources.
+4. **Avoid bulk ingestion:** skip caches, dependencies, generated trees, backups, large archives, vendor folders, and dependency leaves unless directly relevant.
+5. **Use format-aware inspection:** for large or complex artifacts prefer metadata, targeted sections, application-aware tools, summaries, or bounded extraction over loading everything.
+
+When `SOURCES.md` is installed, register an artifact or logical group when at least one is true:
+
+- it is authoritative/canonical;
+- it is an important non-reconstructable input/raw dataset;
+- provenance/version matters;
+- it is a current major deliverable/output;
+- modification restrictions matter;
+- it is an external dependency/source required to reproduce or continue work;
+- it is a dependency-sensitive application entry point (for example a main CAD assembly/project).
+
+Do not register every ordinary file, cache, generated intermediate, or dependency leaf.
+
+Scenario files may add store-specific discovery rules, locators, and preservation constraints; they should not restate this generic process.
+
+## 10. Security, secrets, and personal data
 
 Project-memory/infrastructure files must not become a credential store.
 
@@ -223,7 +249,7 @@ If a secret is discovered in project content, avoid echoing/propagating it. Flag
 
 Personal/sensitive data should be minimized in project memory. Prefer references to protected canonical sources over duplication.
 
-## 10. Root-file guidance
+## 11. Root-file guidance
 
 ### `README.md`
 
@@ -269,6 +295,23 @@ Installed project-memory files: <actual files>
 
 Do not turn `AGENTS.md` into a full project encyclopedia.
 
+### Common runtime baseline
+
+Every scenario's **canonical full-runtime `AGENTS.md`** must materialize the common rules needed during ordinary work. At minimum it must make discoverable:
+
+- installed scenario, standard version/commit when known, project-memory profile/language, installed project-memory files, and infrastructure metadata path;
+- canonical project/runtime authority and the rule that remembered chat context is non-authoritative when it conflicts with project files;
+- progressive disclosure/startup order;
+- proportional task path (read-only / bounded small edit / full scenario transaction);
+- installed project-memory language rule;
+- canonical/source preservation and one-canonical-copy rule;
+- secrets/credentials prohibition;
+- optimistic concurrency: re-read shared state immediately before writes and reconcile changes;
+- end-of-substantial-work synchronization/handoff expectations;
+- scenario-specific runtime additions.
+
+Scenario files must list **only their additional runtime requirements**, not repeat this common baseline.
+
 ### `PROJECT.md`
 
 Recommended content: objective; scope; deliverables; constraints; definitions/terminology; success criteria.
@@ -291,13 +334,13 @@ For engineering, scientific, cost-estimation, research, planning, and analytical
 
 Register important authoritative information/artifacts. Record when useful: `S-###` ID, title/name, type, canonical location/path/URL/ID, canonical status, provenance, purpose, modification restrictions, version/date.
 
-## 11. Decisions and plans
+## 12. Decisions and plans
 
 Use `D-###` for significant decision records whose rationale must survive future sessions. Use `P-###` for substantial plans spanning long runs, multiple sessions, or multiple agents.
 
 Decision/plan storage locations are scenario-defined. When a decision changes, normally create a new record and mark the old one `Superseded` rather than rewriting history.
 
-## 12. End-of-session synchronization
+## 13. End-of-session synchronization
 
 Before ending substantial work:
 
@@ -309,7 +352,7 @@ Before ending substantial work:
 6. preserve the installed project-memory language;
 7. leave the project continuable without the previous chat or external standard.
 
-## 13. Concurrent agents and shared-state writes
+## 14. Concurrent agents and shared-state writes
 
 Use optimistic concurrency for shared project state:
 
@@ -321,7 +364,7 @@ Use optimistic concurrency for shared project state:
 
 A dedicated multi-agent scenario may later add stronger coordination/locking rules.
 
-## 14. Cold-start validation
+## 15. Cold-start validation
 
 A bootstrap, repair, or migration is not complete merely because files were created.
 
@@ -338,7 +381,7 @@ When an independent fresh-agent run is available and proportionate, use it. Othe
 
 Validate **effective behavior**, not merely file presence. If the active product does not expose all loaded instruction files in its memory/context UI, confirm the startup/instruction announcement when available or ask the fresh agent to state the project/scenario/runtime rules it actually received. Do not treat a file existing on disk as proof that the product loaded it.
 
-## 15. Universal `AGENTS.md` and tool-specific adapters
+## 16. Universal `AGENTS.md` and tool-specific adapters
 
 `AGENTS.md` is the **canonical vendor-neutral instruction convention** for this standard. Each project has one **canonical full-runtime `AGENTS.md`** in its scenario-defined runtime/control store.
 
