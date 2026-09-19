@@ -223,35 +223,25 @@ During bootstrap do not move, rename, convert, regroup, or duplicate existing Gi
 
 If the two stores contain competing apparent “latest” versions, do not guess. Register the ambiguity as an assumption/task and resolve provenance before declaring one canonical.
 
-## 9. Session capability check
+## 9. Session operation discovery
 
-G1 is **capability-driven, not product-driven**. Do not assume that all agents, chats, connectors, MCP servers, local runtimes, or product surfaces expose the same operations.
+G1 is **operation-driven, not product-driven**. Do not assume that all agents, chats, connectors, MCP servers, local runtimes, or product surfaces expose the same operations, permissions, or identity-preserving semantics.
 
-Before a task that may modify canonical state/artifacts, determine the capabilities actually available in the current session.
+Before a modifying task, determine the required path from **observable tool/actions and target state**, not from model self-assessment.
 
-At minimum check, when relevant:
+Use this process:
 
-```text
-GitHub
-  read repository/project memory?       yes/no
-  write/update project memory?          yes/no
+1. ground the exact GitHub/Drive target and read the metadata/revision needed for concurrency/provenance;
+2. inspect the actual operations exposed in the current session;
+3. choose the first identity-preserving operation that is explicitly available for the intended change;
+4. do not infer write support from read support, product name, or prior sessions;
+5. do not perform destructive/dummy writes merely to test a capability;
+6. when the intended safe operation fails because the action is unavailable, unauthorized, unsupported, or cannot preserve identity, treat that path as unavailable and descend the fallback ladder;
+7. preserve the failure as session context only when useful; do not turn transient capability observations into durable project state.
 
-Google Drive
-  discover/read files?                  yes/no
-  create/upload files?                  yes/no
-  move/rename/share metadata?           yes/no
-  edit existing native content in place? yes/no
+A successful metadata/read operation proves only that specific read path. A successful canonical write proves the corresponding write path for that operation/target at that moment.
 
-Execution
-  persistent/local filesystem?          yes/no
-  ephemeral workspace?                  yes/no
-  code/data execution?                  yes/no
-  browser/computer use?                 yes/no
-```
-
-Use actual available tools/actions as evidence. Do not infer write capability merely because read access exists.
-
-The capability check is temporary session context, not durable project state. Record a lasting dependency only when the project genuinely requires a specific tool/API to operate.
+The project manifest may record a **lasting required dependency** only when project operation genuinely depends on a particular API/tool. Do not store a session capability matrix.
 
 ## 10. Agent execution modes
 
@@ -401,10 +391,10 @@ Do not leave an edited local file as the only copy of a completed result.
 
 ## 16. Publish-back transaction
 
-For any canonical-changing result, use this order:
+For **substantial, cross-store, materialized, provenance-sensitive, or identity-sensitive** canonical changes, use this order:
 
 ```text
-SESSION CAPABILITY CHECK
+OPERATION DISCOVERY / GROUND
         ↓
 DISCOVER / GROUND
         ↓
@@ -424,6 +414,8 @@ UPDATE SOURCES / STATE / TASKS IN GITHUB
         ↓
 VERIFY PROJECT-MEMORY SYNC
 ```
+
+For a bounded low-risk edit to one clearly identified artifact, use the proportional small-edit path from `COMMON.md`: ground/verify the target, perform the safest identity-preserving edit, verify the result, and update project memory only if project state/provenance/task status materially changed.
 
 Do not mark a deliverable complete in `STATE.md`/`TASKS.md` before the canonical artifact write succeeds and is verified.
 
@@ -521,7 +513,7 @@ During bootstrap/migration, install a concise infrastructure-managed block conta
 - GitHub is the project-state/control plane; Drive is the document/large-artifact plane;
 - existing canonical locations are preserved unless explicitly reorganized;
 - `SOURCES.md` is the cross-store canonical registry when installed;
-- each modifying session must check actual GitHub/Drive/execution write capabilities before choosing a workflow;
+- each modifying session must choose workflows from observable available operations/target state and treat unsupported/failed operations as unavailable rather than guessing capabilities;
 - connectors/APIs are preferred for discovery and safe native operations;
 - use the safe fallback ladder when the preferred write path is unavailable;
 - iterative/heavy work may materialize only the required subset into a non-canonical workspace;
@@ -535,7 +527,7 @@ During bootstrap/migration, install a concise infrastructure-managed block conta
 - secrets/credentials are never stored in project memory;
 - external `ai-workflow` standard access is not required for ordinary project work.
 
-Preserve project-specific/user-authored `AGENTS.md` content and update only the infrastructure-managed block when practical.
+Preserve project-specific/user-authored `AGENTS.md` content. When infrastructure rules share a pre-existing file with user/project content, maintain them only inside the mandatory managed block defined by `COMMON.md`.
 
 ## 22. G1 bootstrap procedure
 
@@ -560,7 +552,7 @@ Do not guess either target when multiple plausible resources exist.
 
 1. Read the bootstrap index, `COMMON.md`, and this scenario from authorized standard access or a provided local bundle.
 2. Ground the GitHub repository and Drive root.
-3. Perform the session capability check for required reads/writes.
+3. Ground the required targets and discover/verify the concrete read/write operations needed for the bootstrap without assuming capabilities.
 4. Inspect both stores with bounded metadata-first discovery.
 5. Determine project-memory profile/language from `COMMON.md` and existing project context.
 6. Identify important existing artifacts and competing/ambiguous canonical versions.
