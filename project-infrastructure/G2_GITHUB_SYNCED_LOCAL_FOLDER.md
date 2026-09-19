@@ -463,7 +463,7 @@ If the local artifact-root `AGENTS.md` and/or GitHub infrastructure metadata ind
 
 1. read the local artifact-root `AGENTS.md`;
 2. access the named GitHub repository;
-3. read AGENTS.md, manifest, and only required project memory;
+3. read the canonical GitHub `AGENTS.md`, manifest, and only required project memory;
 4. verify Project ID match;
 5. treat infrastructure work as reconcile/repair/migration rather than fresh bootstrap;
 6. preserve IDs/state/source registrations/project language/user content;
@@ -484,7 +484,7 @@ Do not create duplicate local project-memory files.
 8. Create/augment justified project-memory files in GitHub.
 9. Create SOURCES.md unless the project is exceptionally trivial.
 10. Create GitHub _ai/infrastructure/, manifest, and applied standard snapshot.
-11. Install G2 runtime rules in AGENTS.md.
+11. Install G2 runtime rules in the canonical GitHub `AGENTS.md`.
 12. Create or safely update the local artifact-root `AGENTS.md` bootstrap adapter.
 13. Register important artifact paths relative to the artifact root.
 14. Perform a basic sync-sanity check.
@@ -501,9 +501,9 @@ Do not create duplicate local project-memory files.
 7. Add SOURCES.md when artifact tracking begins to matter.
 8. Perform sync-sanity and cold-start validation.
 
-## 24. Required G2 runtime rules in AGENTS.md
+## 24. Required G2 runtime rules in canonical GitHub `AGENTS.md`
 
-During bootstrap/migration, install a concise infrastructure-managed section containing at least:
+During bootstrap/migration, install a concise infrastructure-managed section in the canonical GitHub `AGENTS.md` containing at least:
 
 - Scenario: G2;
 - Project ID;
