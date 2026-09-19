@@ -17,7 +17,7 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.7.3**  
+Current standard version: **0.7.4**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -26,7 +26,7 @@ Core conventions:
 
 - project state lives in project files/canonical stores, not chat history;
 - `AGENTS.md` is the vendor-neutral runtime instruction convention;
-- `CLAUDE.md` is optional and only for concrete Claude-specific/compatibility additions;
+- `CLAUDE.md` is temporarily created by default as a one-line `@AGENTS.md` compatibility adapter; `AGENTS.md` remains the only shared source of truth;
 - project-memory prose defaults to Russian (`ru`) unless another language is explicitly selected/established;
 - `COMMON.md` owns shared runtime, preservation, bounded-discovery, concurrency, proportional-work, security, and cold-start rules;
 - scenario files contain only environment/storage-specific deltas.
