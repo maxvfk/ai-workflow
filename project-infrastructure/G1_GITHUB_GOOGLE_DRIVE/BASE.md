@@ -65,13 +65,11 @@ This is a **placement default, not a migration command**. During brownfield boot
 
 A source already canonical in the “other” store may remain there and should simply be registered accurately in `SOURCES.md`.
 
-## 3. Project-memory profile and language
+## 3. G1 project-memory additions
 
-Use the Minimal/Standard profile rules from `COMMON.md`.
+Profile and language selection follow `COMMON.md`.
 
-For most substantial G1 projects, `Standard` will be appropriate because cross-store provenance matters. `SOURCES.md` is strongly recommended even when the rest of the project remains close to Minimal.
-
-Project-memory language follows `COMMON.md`; the default is Russian (`ru`). Deliverable language does not change project-memory language by itself.
+Because G1 spans two canonical stores, `SOURCES.md` is strongly recommended whenever cross-store provenance is non-trivial, even if the rest of the project remains close to Minimal.
 
 ## 4. Canonical runtime in GitHub
 
