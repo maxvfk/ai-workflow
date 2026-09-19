@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.7.1  
+**Standard version:** 0.7.2  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -58,6 +58,8 @@ Version **0.6.0** added **G2 — GitHub + Synced Local Folder**. G2 separates du
 Version **0.7.0** standardizes `AGENTS.md` as the required vendor-neutral runtime entry point. `CLAUDE.md` is no longer recommended by default; create it only for concrete Claude-specific additions, keeping it thin and linked to canonical `AGENTS.md`. G2 replaces `PROJECT_LINK.md` with a local bootstrap `AGENTS.md`, so Codex, Claude Code 2.1.277+, and other compatible agents can auto-discover the project entry file. Existing G2 0.6 projects migrate explicitly and non-destructively.
 
 Version **0.7.1** is a corrective/pre-pilot patch rather than a feature release. It adds proportional lightweight paths for small tasks, makes managed markers mandatory for infrastructure blocks in mixed-ownership files, fixes the project-memory-language example, replaces G1 capability self-report with observable operation routing, defines G2 control-repository access/write mechanics, scales G2 sync-sanity by task risk, and removes manually maintained mutable file metadata/checksums from ordinary G2 source tracking.
+
+Version **0.7.2** is a deduplication/refactor patch. `COMMON.md` now owns generic bounded discovery/source-registration and the common `AGENTS.md` runtime baseline. L1/G1/G2 runtime, brownfield, concurrency, cold-start, and completion sections were reduced to scenario-specific deltas. Scenario/profile `Minimal invocation` copies were removed; `PROJECT_INFRASTRUCTURE.md` is the single canonical location for invocation prompts, and README now points to it instead of duplicating commands.
 
 ## Bootstrap contract
 
@@ -187,7 +189,7 @@ Without standard-repository access, provide `PROJECT_INFRASTRUCTURE.md`, `COMMON
 
 ### Already initialized project
 
-> Read `AGENTS.md`, restore the current project context, check the capabilities available in this session, and continue with my request.
+> Read `AGENTS.md`, restore the current project context, use the operations actually available in this session, and continue with my request.
 
 No external-standard access should be required for that routine invocation.
 
