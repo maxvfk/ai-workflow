@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.7.3  
+**Standard version:** 0.7.4  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -62,6 +62,8 @@ Version **0.7.1** is a corrective/pre-pilot patch rather than a feature release.
 Version **0.7.2** is a deduplication/refactor patch. `COMMON.md` now owns generic bounded discovery/source-registration, the common bootstrap/reconcile flow, and the common `AGENTS.md` runtime baseline. L1/G1/G2 bootstrap, runtime, brownfield, concurrency, cold-start, and completion sections were reduced to scenario-specific deltas. Scenario/profile `Minimal invocation` copies were removed; `PROJECT_INFRASTRUCTURE.md` is the single canonical location for invocation prompts, and README now points to it instead of duplicating commands.
 
 Version **0.7.3** freezes pre-pilot scenario scope to the three implemented Draft scenarios: **L1, G1, and G2**. The unimplemented Y1/R1/H1 placeholders were removed from the active standard and moved to `project-infrastructure/ROADMAP.md` as deferred ideas. They are not reserved scenario commitments; a future real-project gap should first be solved by the smallest suitable common rule, scenario delta, or profile before introducing a new scenario.
+
+Version **0.7.4** temporarily restores a default minimal Claude compatibility adapter during the pre-pilot period: projects keep canonical shared instructions in `AGENTS.md` and, by default, also create a project-level `CLAUDE.md` containing only `@AGENTS.md`. Claude-specific additions may follow the import, but shared rules must not be duplicated. Retiring this adapter later requires an explicit migration.
 
 ## Bootstrap contract
 
@@ -200,4 +202,4 @@ A task ID may be added when useful, for example `continue task T-017`.
 
 ## Compatibility
 
-The common memory model is tool-agnostic. `AGENTS.md` is the canonical vendor-neutral runtime instruction file. Product-specific entry files or workspace instructions are optional thin adapters pointing to `AGENTS.md`; they must not become independent copies of project state. In particular, create `CLAUDE.md` only when concrete Claude-specific additions justify it.
+The common memory model is tool-agnostic. `AGENTS.md` is the canonical vendor-neutral runtime instruction file. During the current pre-pilot period, create a minimal project-level `CLAUDE.md` containing `@AGENTS.md` as a compatibility adapter; it is never an independent copy of project state. Product-specific additions must remain thin.
