@@ -189,6 +189,25 @@ Before updating any existing root/project-instruction file:
 
 Templates are shapes/defaults, not permission to overwrite existing content.
 
+### Common bootstrap/reconcile flow
+
+Scenario bootstrap procedures add only environment-specific steps to this common flow:
+
+1. read `PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and the selected scenario/profile;
+2. ground the scenario-defined canonical resources; do not guess among ambiguous targets;
+3. determine whether the project is already initialized, uninitialized brownfield, or greenfield;
+4. perform bounded discovery using §9 and read existing instructions/project-memory before modifying them;
+5. determine/preserve project-memory profile and language;
+6. identify canonical artifacts/sources and unresolved provenance conflicts without silently choosing among competing versions;
+7. create or non-destructively update only justified project-memory/runtime/infrastructure files;
+8. install the common runtime baseline plus scenario-specific `AGENTS.md` additions;
+9. create/update scenario manifest and installed standard snapshot when the scenario uses them;
+10. register important sources using the scenario's locator/path rules;
+11. verify every canonical write actually performed; unavailable required writes remain explicit pending work rather than simulated completion;
+12. run the common cold-start validation plus scenario/profile-specific additions.
+
+For an already initialized project, steps 4–10 become **reconcile/repair/migrate only what is needed**, preserving installed state/IDs/content unless the requested migration explicitly changes them.
+
 When infrastructure metadata shows that a project is already initialized:
 
 - treat the operation as reconcile/repair/migration, not a new bootstrap;
