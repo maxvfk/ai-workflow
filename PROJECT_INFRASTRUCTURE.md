@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.7.4  
+**Standard version:** 0.8.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -65,6 +65,10 @@ Version **0.7.3** freezes pre-pilot scenario scope to the three implemented Draf
 
 Version **0.7.4** temporarily restores a default minimal Claude compatibility adapter during the pre-pilot period: projects keep canonical shared instructions in `AGENTS.md` and, by default, also create a project-level `CLAUDE.md` containing only `@AGENTS.md`. Claude-specific additions may follow the import, but shared rules must not be duplicated. Retiring this adapter later requires an explicit migration.
 
+### Draft 0.8 note
+
+Version **0.8.0** adds **G0 — GitHub Repository**, prompted by the first real dogfood test. G0 covers Git-first projects where one GitHub repository is the single canonical store for runtime/project memory and ordinary Git-suitable artifacts; remote API/connector access and local clones are execution/access paths to that same canonical store. This closes the gap exposed by `maxvfk/ai-workflow` without weakening L1/G1/G2 canonical-store semantics.
+
 ## Bootstrap contract
 
 This file is the single external entry point for project initialization, infrastructure validation, repair, or migration.
@@ -88,6 +92,12 @@ The canonical standard repository may be private. A GitHub URL is only a conveni
 Do not assume that browser-visible `blob/...` or `raw` URLs grant access to a private repository.
 
 If the bootstrap agent cannot access the standard repository, the user may provide local/offline copies of the required standard files.
+
+For G0:
+
+- `PROJECT_INFRASTRUCTURE.md`;
+- `project-infrastructure/COMMON.md`;
+- `project-infrastructure/G0_GITHUB_REPOSITORY.md`.
 
 For L1:
 
@@ -129,6 +139,7 @@ External-standard access is required again only for explicit initialization, inf
 
 | ID | Scenario | Status | Use when |
 |---|---|---|---|
+| **G0** | [GitHub Repository](project-infrastructure/G0_GITHUB_REPOSITORY.md) | Draft | One GitHub repository is the single canonical store for project runtime/state and ordinary Git-suitable text/code/configuration artifacts; local clones are access/execution paths. |
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
 | **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; workflow selection is based on observable available operations and target state, with connectors/browser/local workspaces used only when they safely support the intended operation. |
 | **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root; a thin local `AGENTS.md` bootstraps GitHub access, project-memory access is API/connector-first or via a clone outside the sync root, and task checks scale with risk. |
@@ -142,6 +153,11 @@ External-standard access is required again only for explicit initialization, inf
 
 Choose the scenario according to **where canonical project state/artifacts live and how active agents access them**, not merely by file type.
 
+- use **G0** when one GitHub repository is the canonical home of both project memory/runtime and ordinary Git-suitable project artifacts;
+- use **L1** when a normal local folder itself is the canonical project home;
+- use **G1** when GitHub and Google Drive are complementary canonical stores;
+- use **G2** when GitHub is the control/state plane and a separate synchronized local folder is the canonical artifact root.
+
 If a project combines several environments, start with the closest primary scenario and add only specific required rules from another scenario. Do not duplicate canonical project state between scenarios.
 
 If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another service is used to present the project as a synchronized ordinary local folder, use **G2**. Provider-specific remote/API/MCP behavior is not a current scenario; if a real project later exposes a gap, evaluate it using the roadmap discipline in [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md).
@@ -151,6 +167,14 @@ If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another servic
 Provider-specific remote storage, remote-only agent access, and stronger multi-agent coordination are intentionally **outside the active pre-pilot scenario set**. See [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md). They should not influence scenario selection unless explicitly reintroduced through a future standard revision.
 
 ## Minimal invocation
+
+### G0
+
+With authorized standard-repository access:
+
+> Apply project infrastructure scenario **G0** to GitHub repository `<owner/repo>` using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
+
+Without standard-repository access, provide `PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G0_GITHUB_REPOSITORY.md`, then use the same request with the provided standard files.
 
 ### L1
 
