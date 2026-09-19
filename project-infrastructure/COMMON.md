@@ -305,9 +305,11 @@ When an independent fresh-agent run is available and proportionate, use it. Othe
 
 ## 15. Universal `AGENTS.md` and tool-specific adapters
 
-`AGENTS.md` is the **canonical, vendor-neutral runtime instruction file** for this standard.
+`AGENTS.md` is the **canonical vendor-neutral instruction convention** for this standard. Each project has one **canonical full-runtime `AGENTS.md`** in its scenario-defined runtime/control store.
 
-Rules that are valid regardless of the active agent belong in `AGENTS.md`. Current project state belongs in the project-memory files named from `AGENTS.md`, not in vendor-specific instruction files.
+A scenario may also use additional local/scoped `AGENTS.md` files as thin bootstrap adapters or path-scoped instruction files. Those additional files must not duplicate current project state or become competing full-runtime copies; they must lead to, or remain consistent with, the canonical full-runtime `AGENTS.md`.
+
+Rules that are valid regardless of the active agent belong in the canonical `AGENTS.md`. Current project state belongs in the project-memory files named from it, not in vendor-specific instruction files.
 
 Tool-specific entry files/workspace instructions are optional thin adapters. They must not become independent copies of project state or duplicate the general runtime rules.
 
