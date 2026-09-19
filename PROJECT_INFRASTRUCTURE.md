@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.6.0  
+**Standard version:** 0.7.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -51,7 +51,11 @@ Version **0.5.0** restructures G1 as a scenario family. The universal GitHub + G
 
 ### Draft 0.6 note
 
-Version **0.6.0** adds **G2 — GitHub + Synced Local Folder**. G2 separates durable project control/state into GitHub while keeping user artifacts in an ordinary local folder synchronized across machines by an external sync system. The local folder contains a lightweight `PROJECT_LINK.md`; artifact paths are root-relative; important writes use bounded sync-sanity checks; temporary execution prefers a harness/local workspace outside the synchronized folder.
+Version **0.6.0** added **G2 — GitHub + Synced Local Folder**. G2 separates durable project control/state into GitHub while keeping user artifacts in an ordinary local folder synchronized across machines by an external sync system. In 0.6 the local folder used `PROJECT_LINK.md` as its lightweight marker; artifact paths are root-relative, important writes use bounded sync-sanity checks, and temporary execution prefers a harness/local workspace outside the synchronized folder.
+
+### Draft 0.7 note
+
+Version **0.7.0** standardizes `AGENTS.md` as the required vendor-neutral runtime entry point. `CLAUDE.md` is no longer recommended by default; create it only for concrete Claude-specific additions, keeping it thin and linked to canonical `AGENTS.md`. G2 replaces `PROJECT_LINK.md` with a local bootstrap `AGENTS.md`, so Codex, Claude Code 2.1.277+, and other compatible agents can auto-discover the project entry file. Existing G2 0.6 projects migrate explicitly and non-destructively.
 
 ## Bootstrap contract
 
@@ -119,7 +123,7 @@ External-standard access is required again only for explicit initialization, inf
 |---|---|---|---|
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
 | **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; agents may work through connectors, browser/computer use, or optional local/ephemeral workspaces according to actual session capabilities. |
-| **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root across machines; temporary work preferably happens outside the sync root. |
+| **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root across machines; a thin local `AGENTS.md` bootstraps the canonical GitHub runtime; temporary work preferably happens outside the sync root. |
 | **Y1** | [GitHub + Yandex Disk](project-infrastructure/Y1_GITHUB_YANDEX.md) | Planned | GitHub stores code/text/project state while documents, CAD, data, or other large artifacts live in Yandex Disk and/or its synchronized local folder. |
 | **R1** | [Remote agent](project-infrastructure/R1_REMOTE_AGENT.md) | Planned | The active agent cannot directly access the user's local filesystem and must retrieve required artifacts through connectors, MCP, or remote storage. |
 | **H1** | [Hybrid multi-agent](project-infrastructure/H1_HYBRID_MULTI_AGENT.md) | Planned | Several agents/environments cooperate using local materialization, shared project state, validation, and publish-back rules. |
@@ -173,9 +177,9 @@ With authorized standard-repository access and the synchronized artifact folder 
 
 > Apply project infrastructure scenario **G2** to this synchronized local project folder using GitHub repository `<owner/repo>` and `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
 
-If `PROJECT_LINK.md` is already present:
+If the local bootstrap `AGENTS.md` is already present:
 
-> Read `PROJECT_LINK.md`, restore the G2 project from its GitHub repository, and continue with my request.
+> Read this folder's `AGENTS.md`, restore the G2 project from its GitHub repository, and continue with my request.
 
 Without standard-repository access, provide `PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G2_GITHUB_SYNCED_LOCAL_FOLDER.md`.
 
@@ -189,4 +193,4 @@ A task ID may be added when useful, for example `continue task T-017`.
 
 ## Compatibility
 
-The common memory model is tool-agnostic. Product-specific entry files or workspace instructions should be thin adapters pointing to the installed project runtime rather than independent copies of project state.
+The common memory model is tool-agnostic. `AGENTS.md` is the canonical vendor-neutral runtime instruction file. Product-specific entry files or workspace instructions are optional thin adapters pointing to `AGENTS.md`; they must not become independent copies of project state. In particular, create `CLAUDE.md` only when concrete Claude-specific additions justify it.
