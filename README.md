@@ -19,12 +19,12 @@ Shared AI workflow notes, routing rules, and project-infrastructure standards.
 
 ## Project infrastructure
 
-Current standard version: **0.7.0**  
+Current standard version: **0.7.1**  
 Lifecycle: **Draft**
 
 The external standard is used for initialization, validation, repair, and migration. After bootstrap, a project is expected to use its installed runtime and canonical stores without requiring the external standard repository for ordinary work.
 
-`AGENTS.md` is the required vendor-neutral runtime entry point. `CLAUDE.md` is optional and should exist only for concrete Claude-specific additions; when used, keep it thin and avoid duplicating shared rules from `AGENTS.md`.
+`AGENTS.md` is the required vendor-neutral runtime entry point. `CLAUDE.md` is optional and should exist only for concrete Claude-specific or compatibility requirements; when used, keep it thin, explicitly import/point to `AGENTS.md`, and avoid duplicating shared rules.
 
 Project-memory prose defaults to **Russian (`ru`)** unless the user explicitly selects another language or an existing project already has an established project-memory language. Deliverable language does not automatically change project-memory language; filenames, record IDs, and controlled status values remain in their defined English forms.
 
@@ -55,7 +55,7 @@ G1 treats GitHub and Google Drive as complementary canonical stores rather than 
 
 - GitHub is the project control/state plane for project memory, text/code knowledge, plans, and decisions;
 - Google Drive is the artifact plane for native Docs/Sheets/Slides, Office/PDF/media/large-file artifacts;
-- each modifying session checks the actual GitHub/Drive/execution capabilities currently available instead of assuming all connectors can write;
+- each modifying session selects workflows from observable available operations and target/revision state instead of asking the model to self-report capabilities;
 - connector/API-native work is preferred when it safely preserves canonical identity;
 - local/ephemeral materialization or browser/computer use may be selected when appropriate, but temporary workspaces are never canonical;
 - a safe fallback ladder prevents a missing in-place edit operation from being emulated by silently replacing the canonical artifact;
@@ -82,7 +82,7 @@ For a ChatGPT-only project, use the profile in `project-infrastructure/G1_GITHUB
 
 ### G2 — GitHub + Synced Local Folder
 
-G2 keeps durable project runtime/state in GitHub while the user's normal local project folder is the canonical artifact root and is synchronized across machines by an external sync system. The artifact root uses a thin local `AGENTS.md` bootstrap adapter that points to the canonical GitHub runtime; project artifact paths are stored relative to that root. Temporary execution preferably uses a harness/local workspace outside the synchronized folder.
+G2 keeps durable project runtime/state in GitHub while the user's normal local project folder is the canonical artifact root and is synchronized across machines by an external sync system. The artifact root uses a thin local `AGENTS.md` bootstrap adapter that points to the canonical GitHub runtime; project artifact paths are stored relative to that root. Small project-memory operations prefer authenticated GitHub API/connector access; a local checkout is used only when useful and must stay outside the synchronized artifact root. Small edits use proportional target-level checks; the full publish/promote transaction is reserved for substantial or risk-bearing work.
 
 Use G2 when Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, NAS/cloud sync, or similar tooling is acting primarily as a transparent local-folder synchronization layer.
 
