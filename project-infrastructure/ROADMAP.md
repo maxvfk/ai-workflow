@@ -4,6 +4,7 @@ This file records **deferred ideas**, not active or planned scenarios.
 
 The pre-pilot standard is intentionally scoped to the implemented Draft scenarios:
 
+- **G0 — GitHub Repository**
 - **L1 — Local Folder**
 - **G1 — GitHub + Google Drive**
 - **G2 — GitHub + Synced Local Folder**
@@ -34,7 +35,7 @@ Do not assume a separate Yandex-specific scenario in advance.
 
 The original placeholder **R1 — Remote Agent** is retired.
 
-Current L1/G1/G2 scenarios already describe canonical-store roles and may be used from different execution surfaces when those surfaces can access the required stores. Revisit remote-only behavior only after a real project exposes a gap that cannot be expressed through the active scenario plus its access mode/profile.
+Current G0/L1/G1/G2 scenarios already describe canonical-store roles and may be used from different execution surfaces when those surfaces can access the required stores. Revisit remote-only behavior only after a real project exposes a gap that cannot be expressed through the active scenario plus its access mode/profile.
 
 Likely questions, if this becomes necessary:
 - remote discovery and bounded retrieval;
@@ -64,7 +65,7 @@ Prefer extending `COMMON.md` with proven cross-cutting rules before introducing 
 
 Before promoting any deferred idea into the active standard:
 
-1. identify a real project/use case that is not adequately covered by L1/G1/G2;
+1. identify a real project/use case that is not adequately covered by G0/L1/G1/G2;
 2. document the concrete failure/gap;
 3. prefer the smallest compatible extension: common rule → scenario delta → profile/adapter → new scenario;
 4. avoid adding placeholder scenario files before implementation is justified;
