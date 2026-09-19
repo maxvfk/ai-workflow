@@ -309,68 +309,37 @@ In addition to the common checks, a fresh L1 agent must be able to determine:
 
 If any of these require hidden bootstrap-chat knowledge, L1 installation is incomplete.
 
-## Bootstrap procedure
+## L1 bootstrap/reconcile additions
 
-First classify the target as:
+Follow the common bootstrap/reconcile flow from `COMMON.md`.
 
-1. already initialized infrastructure;
-2. uninitialized brownfield; or
-3. greenfield.
+L1-specific additions by classification:
 
-### Already initialized L1
+**Already initialized**
+- use local `AGENTS.md`, manifest, installed snapshot, and only needed project memory as installed-state evidence;
+- preserve the installed `_ai/` or legacy `.ai/` namespace during ordinary work;
+- migrate legacy `.ai/` only through the explicit safe namespace-migration rule above.
 
-1. Read `AGENTS.md`, local manifest, and only project-memory needed to understand installed state.
-2. Compare installed infrastructure with the explicitly requested target standard.
-3. Reconcile/migrate non-destructively.
-4. Preserve project-specific instructions, current state, IDs, and established project-memory language unless explicitly changing it.
-5. If migrating a legacy `.ai/` namespace, apply the explicit migration rule above; never rename it during routine work.
-6. Refresh infrastructure-managed blocks, manifest, and snapshot only as needed.
-7. Perform cold-start validation from the installed local runtime.
+**Uninitialized brownfield**
+- the existing folder itself is the canonical project root;
+- create `_ai/infrastructure/` and only the additional `_ai/` subdirectories actually needed;
+- preserve all existing user paths and linked/dependent structures;
+- if Git already exists, apply L1 `.gitignore` additions non-destructively when relevant.
 
-### Existing project / uninitialized brownfield
+**Greenfield**
+- start with Minimal memory unless known complexity justifies Standard;
+- create only useful project/domain directories; do not invent a generic user-file hierarchy;
+- apply Git rules only when Git already exists or Git setup is independently requested.
 
-1. Read the bootstrap index, `COMMON.md`, and this scenario from authorized GitHub access or the provided local bundle.
-2. Perform bounded brownfield inventory before opening large amounts of content.
-3. Determine Minimal vs Standard profile from actual complexity.
-4. Determine project-memory language: use an already established project-memory language if clearly present; otherwise default to Russian (`ru`) unless the user explicitly requests another language.
-5. Identify high-value authoritative artifacts/dependency-sensitive structures using targeted inspection.
-6. Read existing root/instruction files before integrating infrastructure.
-7. Create only missing project-memory files justified by the selected profile and safely augment existing ones.
-8. Create `_ai/infrastructure/` and its `standard/` snapshot; create other `_ai/` subdirectories only when useful.
-9. Save the applied `COMMON.md`/`L1_LOCAL_FOLDER.md`, and create/update `MANIFEST.md` with profile, project-memory language, namespace, version/lifecycle/commit/ref when known.
-10. Ensure `AGENTS.md` contains required L1 runtime rules, installed language, and actual installed file list.
-11. Populate project memory from evidence without inventing missing facts.
-12. Register only important sources using current relative paths.
-13. If already a Git repository, apply `.gitignore` rules non-destructively when relevant.
-14. Do not move/rename files solely to standardize appearance.
-15. Summarize current state/supported next actions.
-16. Perform cold-start validation from local files only.
+All classifications finish with the L1 cold-start additions above.
 
-### New project / greenfield
+## L1 completion-report additions
 
-1. Start with Minimal profile unless known complexity justifies Standard.
-2. Use Russian (`ru`) project memory unless the user explicitly selects another language.
-3. Create `_ai/infrastructure/` and only other agent/domain directories actually needed.
-4. Preserve any target file that already exists.
-5. Record known objectives, constraints, sources, assumptions, and tasks without invention.
-6. Install L1 runtime rules, project-memory language, and actual installed-file list in `AGENTS.md`.
-7. Apply Git ignore rules only when Git already exists or Git setup is separately requested.
-8. Perform cold-start validation.
+For L1 infrastructure work, add to the common handoff only what is locally relevant:
 
-## Completion report
-
-After initialization/restructuring/repair/migration, report concisely:
-
-- classification: already initialized / brownfield / greenfield;
-- selected project-memory profile;
-- installed project-memory language;
-- installed agent namespace;
-- project-memory and `_ai/` files/directories created or updated;
-- existing files preserved/merged rather than replaced;
-- installed standard version/lifecycle/commit/ref when known;
-- main canonical sources when source tracking is installed;
-- reconstructed current state;
-- important unknowns/assumptions;
-- structural issues noticed but deliberately left unchanged;
-- cold-start validation result;
-- confirmation that normal future work no longer requires GitHub.
+- classification: initialized / brownfield / greenfield;
+- installed agent namespace and any legacy namespace preserved;
+- project-memory/`_ai/` files created or updated;
+- existing user structure deliberately preserved;
+- structural issues intentionally left unchanged;
+- confirmation that ordinary future work is self-contained in the local folder.
