@@ -205,7 +205,7 @@ Keep the local bootstrap `AGENTS.md` intentionally small and stable. Do not put 
 
 The local entry file is deliberately named `AGENTS.md` so agents that natively discover that convention can enter the project without a separate marker-specific prompt.
 
-Do not create a local `CLAUDE.md` merely for G2 bootstrap. If a concrete Claude-specific local rule is later required, follow `COMMON.md`: keep the local `AGENTS.md` canonical for shared bootstrap behavior and make any `CLAUDE.md` a thin adapter/addition rather than a duplicate.
+During the current pre-pilot compatibility period, create a local `CLAUDE.md` alongside the bootstrap `AGENTS.md` with exactly `@AGENTS.md` unless an existing substantive file must be preserved/merged. Shared bootstrap behavior remains canonical in `AGENTS.md`; any Claude-specific additions go only below the import.
 
 ### Migration from G2 0.6
 
