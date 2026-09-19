@@ -497,7 +497,7 @@ G2-specific additions:
 
 Already initialized G2 reconciles only what is needed and preserves IDs/state/source registrations/project language. Uninitialized brownfield preserves both existing planes. Greenfield starts Minimal unless known complexity justifies Standard.
 
-## 24. G2 runtime additions to canonical GitHub `AGENTS.md`
+## 22. G2 runtime additions to canonical GitHub `AGENTS.md`
 
 In addition to the common runtime baseline from `COMMON.md`, G2 must materialize:
 
@@ -512,7 +512,7 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - prefer an external/harness temporary workspace outside the synchronized folder when needed; any in-root fallback is non-canonical/disposable;
 - substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization.
 
-## 25. G2 cold-start additions
+## 23. G2 cold-start additions
 
 Apply the common cold-start validation from `COMMON.md` starting from the connected synchronized folder plus repository/network access.
 
@@ -525,7 +525,7 @@ A fresh G2 agent must additionally be able to:
 - understand the external-workspace preference and G2 sync-sanity/conflict rules;
 - continue without the originating chat or external standard repository.
 
-## 26. G2 completion-report additions
+## 24. G2 completion-report additions
 
 Use the common completion/handoff expectations. For G2 infrastructure work or substantial artifact changes, additionally report when relevant:
 
