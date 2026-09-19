@@ -481,49 +481,23 @@ G2-specific additions:
 - prioritize main application/CAD/data/report entry points rather than every dependent file;
 - preserve both planes and do not reorganize them merely to match G2 defaults.
 
-## 21. Already initialized G2
+## 21. G2 bootstrap/reconcile additions
 
-If the local artifact-root `AGENTS.md` and/or GitHub infrastructure metadata indicate G2 is already installed:
+Follow the common bootstrap/reconcile flow from `COMMON.md`.
 
-1. read the local artifact-root `AGENTS.md`;
-2. access the named GitHub repository;
-3. read the canonical GitHub `AGENTS.md`, manifest, and only required project memory;
-4. verify Project ID match;
-5. treat infrastructure work as reconcile/repair/migration rather than fresh bootstrap;
-6. preserve IDs/state/source registrations/project language/user content;
-7. perform bounded sync-sanity validation;
-8. update only managed infrastructure behavior that needs change.
+G2-specific additions:
 
-Do not create duplicate local project-memory files.
+- ground the synchronized artifact root and the dedicated GitHub control repository;
+- create/verify one stable Project ID across the local bootstrap `AGENTS.md` and GitHub manifest;
+- access project memory through an allowed control-repository mode; never clone the control repository inside the synchronized artifact root;
+- inspect the two planes using the G2 brownfield additions above;
+- store runtime/project memory/infrastructure in GitHub and keep the local artifact root free of duplicate project-memory files;
+- create or safely merge the local bootstrap `AGENTS.md`;
+- register important artifact paths relative to the artifact root;
+- use the proportional G2 sync-sanity check before canonical artifact writes;
+- prefer an external/harness temporary workspace when temporary processing is needed.
 
-## 22. Uninitialized brownfield bootstrap
-
-1. Read PROJECT_INFRASTRUCTURE.md, COMMON.md, and this scenario.
-2. Ground the target GitHub repository and connected synchronized local folder.
-3. Inspect both planes with bounded discovery.
-4. Determine/create a stable Project ID.
-5. Determine project-memory profile and language.
-6. Identify important canonical artifacts and ambiguous/conflicting versions.
-7. Preserve existing structures.
-8. Create/augment justified project-memory files in GitHub.
-9. Create SOURCES.md unless the project is exceptionally trivial.
-10. Create GitHub _ai/infrastructure/, manifest, and applied standard snapshot.
-11. Install G2 runtime rules in the canonical GitHub `AGENTS.md`.
-12. Create or safely update the local artifact-root `AGENTS.md` bootstrap adapter.
-13. Register important artifact paths relative to the artifact root.
-14. Perform a basic sync-sanity check.
-15. Perform G2 cold-start validation.
-
-## 23. Greenfield bootstrap
-
-1. Ground the new GitHub repository and synchronized local artifact root.
-2. Create a stable Project ID.
-3. Start with Minimal memory unless known complexity justifies Standard.
-4. Create GitHub runtime/infrastructure.
-5. Create the local artifact-root `AGENTS.md` bootstrap adapter.
-6. Do not invent an artifact subfolder hierarchy before real needs justify it.
-7. Add SOURCES.md when artifact tracking begins to matter.
-8. Perform sync-sanity and cold-start validation.
+Already initialized G2 reconciles only what is needed and preserves IDs/state/source registrations/project language. Uninitialized brownfield preserves both existing planes. Greenfield starts Minimal unless known complexity justifies Standard.
 
 ## 24. G2 runtime additions to canonical GitHub `AGENTS.md`
 
