@@ -18,7 +18,7 @@ The synchronization provider is transport, not a third canonical store.
          GitHub repo          synced local folder
        control/state plane       artifact plane
              │                         │
-         AGENTS.md                PROJECT_LINK.md
+         AGENTS.md                AGENTS.md
          PROJECT.md               CAD / DOCX / XLSX
          STATE.md                 data / reports
          TASKS.md                 results / media
@@ -86,7 +86,7 @@ The project's own GitHub repository is a **permanent canonical part of G2 runtim
 
 After bootstrap, ordinary work must not require the originating chat or the external standard repository.
 
-A new agent must be able to continue from the synced artifact folder, its PROJECT_LINK.md, and access to the project GitHub repository named there.
+A new agent must be able to continue from the synced artifact folder, its local bootstrap `AGENTS.md`, and access to the project GitHub repository named there.
 
 ## 5. Recommended GitHub structure
 
@@ -122,7 +122,7 @@ G2 imposes almost no structure on the user artifact root.
 
 ~~~text
 Synced-Project/
-├── PROJECT_LINK.md
+├── AGENTS.md
 ├── CAD/
 ├── Data/
 ├── Reports/
@@ -132,11 +132,11 @@ Synced-Project/
 
 Preserve the user's existing structure.
 
-The only required infrastructure-owned file in the artifact root is PROJECT_LINK.md.
+The only required local runtime entry file in the artifact root is `AGENTS.md`. If bootstrap creates it from scratch, it may be infrastructure-owned; if a substantive user-authored `AGENTS.md` already exists, preserve it and add only a clearly managed G2 bootstrap section.
 
 Do not add GitHub project-memory files, infrastructure snapshots, plans, or decisions to the artifact root.
 
-## 7. Project identity and PROJECT_LINK.md
+## 7. Project identity and local bootstrap `AGENTS.md`
 
 Every G2 project has a stable **Project ID**, preferably a short slug such as:
 
@@ -144,13 +144,14 @@ Every G2 project has a stable **Project ID**, preferably a short slug such as:
 tokamak-cost-study
 ~~~
 
-The same Project ID must appear in the GitHub infrastructure manifest and local PROJECT_LINK.md.
+The same Project ID must appear in the GitHub infrastructure manifest and the local artifact-root `AGENTS.md`.
 
-Recommended PROJECT_LINK.md:
+Recommended minimal local bootstrap `AGENTS.md` for a new artifact root:
 
 ~~~markdown
-# Project link
+# G2 local project bootstrap
 
+<!-- project-infrastructure:start -->
 Project: <human-readable project name>
 Project ID: <stable-project-id>
 Scenario: G2
@@ -158,19 +159,40 @@ Scenario: G2
 Canonical project control:
 https://github.com/<owner>/<repo>
 
-Local role:
-This directory is the synchronized project artifact root.
+This file is a thin local bootstrap adapter. The canonical full runtime
+instructions and project memory live in the project GitHub repository.
 
 Before substantial work:
-1. read AGENTS.md from the canonical project repository;
-2. restore current state/tasks from GitHub project memory;
-3. resolve project artifact paths relative to this directory;
-4. verify project identity and basic synchronization health before modifying important artifacts.
+1. access the canonical project repository;
+2. read its root AGENTS.md;
+3. restore current state/tasks from GitHub project memory;
+4. treat this directory as the synchronized canonical artifact root;
+5. resolve project artifact paths relative to this directory;
+6. verify Project ID and basic synchronization health before important writes.
 
 Do not create duplicate project-memory files in this folder.
+<!-- project-infrastructure:end -->
 ~~~
 
-Keep this file intentionally small and stable. Do not put active tasks, current state, source inventories, credentials, machine-specific absolute paths, or other volatile data into it.
+Keep the local bootstrap `AGENTS.md` intentionally small and stable. Do not put active tasks, current state, source inventories, credentials, machine-specific absolute paths, or other volatile data into it. Shared/general runtime rules belong in the canonical GitHub `AGENTS.md`; the local file contains only the minimum needed to locate and enter that runtime plus any genuinely local artifact-root instructions.
+
+### Tool compatibility of the local bootstrap
+
+The local entry file is deliberately named `AGENTS.md` so agents that natively discover that convention can enter the project without a separate marker-specific prompt.
+
+Do not create a local `CLAUDE.md` merely for G2 bootstrap. If a concrete Claude-specific local rule is later required, follow `COMMON.md`: keep the local `AGENTS.md` canonical for shared bootstrap behavior and make any `CLAUDE.md` a thin adapter/addition rather than a duplicate.
+
+### Migration from G2 0.6
+
+G2 0.6 used `PROJECT_LINK.md` as the artifact-root marker. Do not rename or delete it during ordinary work merely because the external standard changed.
+
+During an explicit migration to 0.7+:
+
+1. read and preserve any existing local `AGENTS.md`;
+2. create or merge the G2 bootstrap block into local `AGENTS.md`;
+3. verify that Project ID/repository mapping resolves correctly;
+4. update the GitHub manifest/runtime to use `Artifact root marker: AGENTS.md`;
+5. remove the old `PROJECT_LINK.md` only when it is clearly infrastructure-owned and its information is fully represented in the verified local `AGENTS.md`; otherwise preserve it as legacy user content.
 
 ## 8. Infrastructure manifest
 
@@ -197,7 +219,7 @@ GitHub repository: <owner/repo>
 GitHub default branch: <branch>
 
 Artifact root role: synchronized local folder
-Artifact root marker: PROJECT_LINK.md
+Artifact root marker: AGENTS.md
 Artifact path convention: relative to artifact root
 Synchronization assumption: synchronized across working machines
 
@@ -287,7 +309,7 @@ Before modifying an important canonical artifact, check enough evidence to detec
 
 When practical:
 
-1. confirm PROJECT_LINK.md exists;
+1. confirm the local artifact-root `AGENTS.md` exists;
 2. confirm its Project ID matches the GitHub manifest;
 3. confirm the intended relative target path resolves inside the connected artifact root;
 4. confirm the target exists when expected;
@@ -437,9 +459,9 @@ Do not reorganize either plane merely to match G2 defaults.
 
 ## 21. Already initialized G2
 
-If PROJECT_LINK.md and/or GitHub infrastructure metadata indicate G2 is already installed:
+If the local artifact-root `AGENTS.md` and/or GitHub infrastructure metadata indicate G2 is already installed:
 
-1. read PROJECT_LINK.md;
+1. read the local artifact-root `AGENTS.md`;
 2. access the named GitHub repository;
 3. read AGENTS.md, manifest, and only required project memory;
 4. verify Project ID match;
@@ -463,7 +485,7 @@ Do not create duplicate local project-memory files.
 9. Create SOURCES.md unless the project is exceptionally trivial.
 10. Create GitHub _ai/infrastructure/, manifest, and applied standard snapshot.
 11. Install G2 runtime rules in AGENTS.md.
-12. Create or safely update local PROJECT_LINK.md.
+12. Create or safely update the local artifact-root `AGENTS.md` bootstrap adapter.
 13. Register important artifact paths relative to the artifact root.
 14. Perform a basic sync-sanity check.
 15. Perform G2 cold-start validation.
@@ -474,7 +496,7 @@ Do not create duplicate local project-memory files.
 2. Create a stable Project ID.
 3. Start with Minimal memory unless known complexity justifies Standard.
 4. Create GitHub runtime/infrastructure.
-5. Create local PROJECT_LINK.md.
+5. Create the local artifact-root `AGENTS.md` bootstrap adapter.
 6. Do not invent an artifact subfolder hierarchy before real needs justify it.
 7. Add SOURCES.md when artifact tracking begins to matter.
 8. Perform sync-sanity and cold-start validation.
@@ -489,7 +511,7 @@ During bootstrap/migration, install a concise infrastructure-managed section con
 - project-memory profile/language and installed files;
 - GitHub repository identity/default branch;
 - path to GitHub infrastructure manifest;
-- the folder identified by matching PROJECT_LINK.md is the synchronized canonical artifact root;
+- the folder identified by the matching local bootstrap `AGENTS.md` is the synchronized canonical artifact root;
 - project artifact paths are relative to that root;
 - GitHub is canonical for runtime/state; do not duplicate that state locally;
 - verify Project ID before substantial work;
@@ -508,7 +530,7 @@ During bootstrap/migration, install a concise infrastructure-managed section con
 
 A fresh capable agent on another machine should be able to start from only the connected synced folder plus repository/network access:
 
-1. read PROJECT_LINK.md;
+1. read the local artifact-root `AGENTS.md`;
 2. identify Project ID and GitHub repository;
 3. access/read repository AGENTS.md;
 4. restore STATE.md / TASKS.md and relevant project memory;
@@ -528,7 +550,7 @@ After initialization, repair, or migration, report:
 - Project ID;
 - project-memory profile/language;
 - GitHub repository and artifact root grounded;
-- PROJECT_LINK.md created/updated/preserved;
+- local bootstrap `AGENTS.md` created/updated/preserved;
 - important artifacts registered with relative paths;
 - temporary-workspace route available/selected;
 - sync-sanity result and any conflict;
@@ -542,8 +564,8 @@ With authorized access to the private standard repository and the synchronized a
 
 > Apply project infrastructure scenario **G2** to this synchronized local project folder using GitHub repository <owner/repo> and https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md.
 
-If PROJECT_LINK.md already exists and names the repository:
+If the local artifact-root `AGENTS.md` already names the repository:
 
-> Read PROJECT_LINK.md, restore the G2 project from its GitHub repository, and continue with my request.
+> Read this folder's `AGENTS.md`, restore the G2 project from its GitHub repository, and continue with my request.
 
 Without standard-repository access, provide PROJECT_INFRASTRUCTURE.md, project-infrastructure/COMMON.md, and project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md and ask the same bootstrap request using the provided standard files.
