@@ -58,7 +58,7 @@ At minimum, Project Instructions should:
 - state that Drive holds canonical document/large-file artifacts;
 - preserve the installed project-memory language;
 - include only genuinely durable project-specific working rules/preferences;
-- instruct the agent to check current-session capabilities before assuming writes are possible;
+- instruct the agent to choose writes from observable currently available operations/target state rather than assuming capabilities;
 - point to the G1 completion/publish-back discipline through `AGENTS.md`.
 
 Do **not** put volatile state into Project Instructions, including:
@@ -186,49 +186,26 @@ Then:
 
 If ChatGPT cannot directly change Project settings or add a Project Source, complete all canonical repository work and return the exact final Project Instructions plus the minimal manual UI actions still required.
 
-## 11. Cold-start validation
+## 11. ChatGPT-profile cold-start additions
 
-Open or simulate a **new empty chat inside the same ChatGPT Project**.
+Apply the common cold-start validation from `COMMON.md` and the G1 additions from `BASE.md`, but run it from a **new empty chat inside the same ChatGPT Project**.
 
-Without using the originating bootstrap conversation, the new chat should be able to:
+That chat must additionally be able to:
 
 - identify the project from Project Instructions;
 - identify the correct GitHub repository and Drive root;
-- read `AGENTS.md` as the runtime contract;
-- restore current state/tasks from canonical project-memory;
-- find important Drive artifacts through `SOURCES.md` and/or the configured Drive source;
-- understand that chat history is non-authoritative;
-- check actual session capabilities before writes;
-- follow G1 publication and synchronization rules.
+- enter the canonical repository `AGENTS.md` runtime;
+- understand that chat history/remembered context is non-authoritative;
+- locate important Drive artifacts through `SOURCES.md` and/or the configured Drive Project Source;
+- follow current observable-operation routing rather than assuming connector writes.
 
-A failure here means the ChatGPT adapter is incomplete even if base G1 files are structurally valid.
+Failure means the ChatGPT adapter is incomplete even if base G1 is structurally valid.
 
-## 12. Completion report
+## 12. ChatGPT-profile completion additions
 
-After bootstrap, report:
+For ChatGPT-profile bootstrap/migration, report only the product-specific result in addition to the common/G1 completion report:
 
-- ChatGPT Project / GitHub repository / Drive root mapping;
-- selected project-memory profile/language;
-- project-memory files created/updated;
-- canonical sources established;
 - canonical Project Instructions path;
-- whether Project Instructions were deployed to ChatGPT settings;
+- whether the deployed Project Instructions were verified;
 - whether the Drive root was added as Project Source;
-- remaining manual UI steps, if any;
-- cold-start validation result;
-- any pending canonical publication or project-memory synchronization.
-
-## 13. Minimal invocation
-
-With authorized access to the standard repository:
-
-> Apply **G1 / ChatGPT Project** to this ChatGPT Project using GitHub repository `<owner/repo>` and Google Drive folder `<folder URL or ID>` from `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`.
-
-Without standard-repository access, provide:
-
-- `PROJECT_INFRASTRUCTURE.md`;
-- `project-infrastructure/COMMON.md`;
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`;
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md`;
-
-and ask the same bootstrap request using the provided standard files.
+- remaining manual UI steps, if any.
