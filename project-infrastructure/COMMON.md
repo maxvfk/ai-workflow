@@ -9,9 +9,9 @@ These rules define the canonical project-memory model. Scenario files add enviro
 
 The external project-infrastructure standard is an **installer and upgrader, not a runtime dependency**.
 
-After initialization, a project must be self-contained enough that a capable agent with access only to the project files can understand the project, follow the active scenario rules, and continue normal work without access to the standard repository, previous chat history, or the bootstrap agent.
+After initialization, a project must be self-contained enough that a capable agent with access to the scenario-defined project entry resources and canonical stores can understand the project, follow the active scenario rules, and continue normal work without access to the external standard repository, previous chat history, or the bootstrap agent.
 
-Every scenario bootstrap must therefore materialize locally:
+Every scenario bootstrap must therefore materialize in the project's canonical runtime/control store:
 
 - a self-contained `AGENTS.md` runtime entry point;
 - the active scenario identifier and installed infrastructure metadata;
@@ -19,7 +19,7 @@ Every scenario bootstrap must therefore materialize locally:
 - pointers to project-memory files and scenario-defined support locations;
 - enough infrastructure metadata to audit, repair, or migrate the setup later.
 
-For ordinary work, the authoritative runtime layer is `AGENTS.md` plus the current project-memory files. The local standard snapshot is for audit, repair, migration comparison, and offline recovery only; it is not part of normal startup.
+For ordinary work, the authoritative runtime layer is the canonical `AGENTS.md` plus the current project-memory files. A scenario may expose a thin local/product bootstrap adapter that leads to this canonical runtime. The installed standard snapshot is for audit, repair, migration comparison, and recovery only; it is not part of normal startup.
 
 Projects do not silently follow changes to a mutable branch such as `main`. During bootstrap/migration, record the standard version and, when available, exact commit/ref. Upgrade only when explicitly requested.
 
@@ -292,7 +292,7 @@ A dedicated multi-agent scenario may later add stronger coordination/locking rul
 
 A bootstrap, repair, or migration is not complete merely because files were created.
 
-Validate from the perspective of a fresh agent that has access only to the project folder and begins with `AGENTS.md`. It should be able to determine at least:
+Validate from the perspective of a fresh agent that has only the scenario-defined project entry resources/canonical-store access and no originating chat. The agent must be able to discover or enter the canonical `AGENTS.md` runtime (directly or through a thin scenario/product adapter) and determine at least:
 
 - installed scenario/profile/project-memory language;
 - current phase/status;
@@ -301,7 +301,7 @@ Validate from the perspective of a fresh agent that has access only to the proje
 - scenario/runtime constraints;
 - where temporary/generated work belongs.
 
-When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed local runtime.
+When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed runtime and scenario-defined entry resources.
 
 ## 15. Universal `AGENTS.md` and tool-specific adapters
 
