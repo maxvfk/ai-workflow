@@ -414,33 +414,27 @@ Tool-specific entry files/workspace instructions are optional thin adapters. The
 
 `AGENTS.md` remains the canonical shared source of truth.
 
-Claude Code 2.1.277+ can load `AGENTS.md` through its built-in `agents-md` support. In the default fallback mode, project-specific `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` on the project-root-to-working-directory path can cause Claude Code to use the Claude-specific project instructions instead of `AGENTS.md`. User/global managed instructions and `.claude/rules/` are separate layers and do not by themselves replace the project `AGENTS.md` fallback.
-
-Native `AGENTS.md` support is version/provider/configuration dependent. Do not assume it is available merely because the file exists. The 2.1.277 rollout explicitly did not initially cover some third-party/provider surfaces, and the built-in feature can also be disabled. `AGENTS.md` loaded through this mechanism is not necessarily listed by Claude's ordinary memory/context inspection UI, so use the behavioral cold-start validation rule above.
-
-Default for a new project:
-
-> **Always create/maintain `AGENTS.md`. Do not create `CLAUDE.md` unless the project has a concrete Claude-specific or compatibility requirement.**
-
-A valid compatibility requirement can be a need to support Claude environments where native `AGENTS.md` loading is unavailable/unreliable, or to make the relationship explicit despite an ancestor/project-specific Claude instruction file.
-
-When a Claude-specific adapter is justified, keep it thin and explicit:
+During the current pre-pilot period, create a minimal project-level `CLAUDE.md` compatibility adapter **by default** alongside the canonical `AGENTS.md`:
 
 ```markdown
 @AGENTS.md
-
-# Claude-specific additions
-
-...only instructions that are specific to Claude Code...
 ```
 
-Appropriate Claude-only additions include tool-specific skills, subagent policy, Claude hooks/rules, or compatibility requirements that do not apply to other agents.
+This is a temporary compatibility policy, not a second source of truth. The adapter exists to make Claude's relationship to `AGENTS.md` explicit across environments while native `AGENTS.md` support is still settling.
 
-Do not copy shared project rules from `AGENTS.md` into `CLAUDE.md`.
+Rules:
 
-Do not make project correctness depend on a user-global Claude setting such as loading both instruction formats. A repository/project-level adapter, when needed, should carry its own explicit relationship to `AGENTS.md`.
+- shared/runtime rules live only in `AGENTS.md`;
+- the default `CLAUDE.md` contains only `@AGENTS.md`;
+- add Claude-specific instructions below the import only when there is a concrete Claude-only requirement;
+- never copy shared project rules into `CLAUDE.md`;
+- preserve an existing substantive `CLAUDE.md` non-destructively and ensure it explicitly imports `@AGENTS.md` when safe;
+- do not make project correctness depend on a user-global Claude setting;
+- do not rely on Claude-specific `@path` imports inside canonical `AGENTS.md` for cross-tool behavior.
 
-If an existing `CLAUDE.md` or `CLAUDE.local.md` is present, preserve it non-destructively and ensure the effective Claude instructions still include the canonical `AGENTS.md` rules when required.
+Claude Code 2.1.277+ can load `AGENTS.md` natively in supported environments, but project-specific `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` can alter fallback behavior, and support remains version/provider/configuration dependent. The explicit adapter avoids relying on that fallback.
+
+A future standard revision may retire the default adapter after native support has been stable long enough in the target environments. Such removal must be an explicit migration, not an automatic deletion of user-authored `CLAUDE.md` files.
 
 ### Codex
 
