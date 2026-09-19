@@ -1,9 +1,9 @@
 # Задачи
 
 ## T-001 — Завершить G0 dogfood
-Status: active
+Status: done
 
-Установить G0 runtime/project memory в `maxvfk/ai-workflow`, затем выполнить cold-start validation fresh-agent способом.
+G0 runtime/project memory установлен в `maxvfk/ai-workflow`. Cold-start validation выполнена в разрешённом simulated-fresh mode только по installed runtime/project memory и repository metadata; проверка выявила и устранила недостающие temporary-work/branch-policy runtime hints.
 
 Evidence: GitHub issue #12.
 
