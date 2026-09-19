@@ -230,7 +230,7 @@ During bootstrap/migration, `AGENTS.md` must contain a concise infrastructure-ma
 - avoid simultaneous modification of the same task/canonical artifact by multiple agents unless coordinated;
 - the project must remain continuable without previous chat history or external-standard access.
 
-When `AGENTS.md` already exists, preserve project-specific/user-authored content and update only a clearly identifiable infrastructure-managed block when practical.
+When `AGENTS.md` already exists and contains user/project-authored content, preserve it and maintain infrastructure rules only inside the mandatory managed block defined by `COMMON.md`.
 
 ## Existing infrastructure and safe reapplication
 
