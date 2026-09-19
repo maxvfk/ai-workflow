@@ -142,7 +142,7 @@ Do not add unrelated Drive roots to the project merely because they are accessib
 
 The ChatGPT Project should use the configured project GitHub repository as the runtime/state source.
 
-If the current ChatGPT session has direct GitHub write capability, G1 project-memory synchronization may be performed in the same chat.
+If the current ChatGPT session exposes an authorized GitHub write operation and the intended write succeeds, G1 project-memory synchronization may be performed in the same chat.
 
 If GitHub is read-only in the current session:
 
@@ -160,7 +160,7 @@ For this profile, prefer the simplest safe ChatGPT-native path:
 3. other supported ChatGPT execution surfaces only when they materially improve the task;
 4. never introduce a local-materialization workflow merely because the generic base supports one.
 
-The base G1 capability check and fallback ladder still apply.
+The base G1 observable-operation discovery and fallback ladder still apply.
 
 ## 10. Bootstrap procedure
 
