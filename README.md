@@ -22,7 +22,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 
 ## Project infrastructure
 
-Current standard version: **0.8.0**  
+Current standard version: **0.8.1**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -33,7 +33,7 @@ Core conventions:
 - `AGENTS.md` is the vendor-neutral runtime instruction convention;
 - `CLAUDE.md` is temporarily created by default as a one-line `@AGENTS.md` compatibility adapter; `AGENTS.md` remains the only shared source of truth;
 - project-memory prose defaults to Russian (`ru`) unless another language is explicitly selected/established;
-- `COMMON.md` owns shared runtime, preservation, bounded-discovery, concurrency, proportional-work, security, and cold-start rules;
+- `COMMON.md` owns shared runtime, preservation, bounded-discovery, concurrency, proportional-work, canonical-target-first tool routing, security, and cold-start rules;
 - scenario files contain only environment/storage-specific deltas.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
