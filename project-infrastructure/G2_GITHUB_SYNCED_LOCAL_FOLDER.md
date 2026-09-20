@@ -507,6 +507,7 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - artifact paths in project memory are relative to that root;
 - project-memory access uses remote/API/connector operations or a local checkout **outside** the synchronized artifact root; never place the control-repository clone inside it;
 - GitHub is canonical for runtime/state; the synchronized folder is canonical for user artifacts;
+- resolve the target plane before choosing tools: project-memory/control writes go to canonical GitHub, artifact writes go to the canonical synchronized artifact root, and temporary workspace copies must not silently replace either;
 - assume synchronization is healthy by default, but use the proportional G2 sync-sanity rules before canonical artifact writes;
 - never silently resolve sync conflicts or overwrite suspicious/stale targets;
 - prefer an external/harness temporary workspace outside the synchronized folder when needed; any in-root fallback is non-canonical/disposable;
