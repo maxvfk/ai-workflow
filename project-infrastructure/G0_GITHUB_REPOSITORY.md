@@ -190,7 +190,8 @@ In addition to the common runtime baseline from `COMMON.md`, G0 must materialize
 - canonical GitHub repository identity/default branch and infrastructure-manifest path;
 - the GitHub repository is the single canonical project store for runtime/state and ordinary tracked artifacts;
 - local clones/checkouts/workspaces are access/execution paths, not separate canonical stores;
-- remote/API and local-checkout modes are both valid; select proportionately to the task;
+- remote/API and local-checkout modes are both valid; select proportionately to the task **after** grounding the canonical repository target;
+- for repository artifacts/project memory, prefer an available identity-preserving GitHub operation rather than creating a workspace/local substitute; use checkout/workspace only when the task materially requires it;
 - repository-relative paths are the default artifact locators;
 - before shared writes, re-read/fetch current repository state and reconcile concurrent changes;
 - preserve existing branch/PR/contribution policy;
