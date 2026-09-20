@@ -1,10 +1,10 @@
 # Текущее состояние
 
-Last updated: 2026-09-19
+Last updated: 2026-09-20
 
 ## Статус
 
-Project Infrastructure: **0.8.0 Draft**, pre-pilot.
+Project Infrastructure: **0.8.1 Draft**, pre-pilot.
 
 Первый dogfood выявил отсутствующий GitHub-only canonical-store case; на этом основании добавлен сценарий **G0 — GitHub Repository**. G0 установлен на самом `maxvfk/ai-workflow`, а cold-start simulation по installed runtime прошла успешно.
 
@@ -25,6 +25,7 @@ Project Infrastructure: **0.8.0 Draft**, pre-pilot.
 - G0 создан после реального dogfood gap, а не заранее.
 - Repository self-application G0 завершён: установлены `AGENTS.md`, `CLAUDE.md`, Standard project memory, manifest и local standard snapshot.
 - Cold-start simulation без исходного чата/внешнего стандарта прошла; в ходе проверки уточнены temporary/generated-work и branch-policy discovery rules в runtime.
+- Тест из ChatGPT app/Work выявил, что доступный connector может не выбираться автоматически при двусмысленной цели. В 0.8.1 добавлено общее canonical-target-first tool routing: сначала определить authoritative store/artifact, затем выбирать connector/filesystem/browser/workspace.
 
 ## В работе
 
