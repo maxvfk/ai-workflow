@@ -481,6 +481,7 @@ In addition to the common runtime baseline from `COMMON.md`, G1 must materialize
 - `Scenario: G1`;
 - GitHub repository identity/default branch and Google Drive root folder ID/human reference;
 - GitHub is the project control/state plane; Drive is the artifact plane;
+- before choosing a connector/browser/workspace path, resolve whether the requested canonical target belongs to GitHub or Drive; never substitute a workspace copy for a reachable canonical target merely because local file tools are available;
 - `SOURCES.md`, when installed, bridges the two stores using stable IDs/relative paths;
 - modifying work selects from observable available operations/target state rather than guessed capabilities;
 - use the G1 safe fallback ladder when a preferred identity-preserving write path is unavailable;
