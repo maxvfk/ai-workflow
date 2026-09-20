@@ -41,3 +41,11 @@ Status: todo
 После стабилизации native `AGENTS.md` support у Claude решить, оставлять ли default `CLAUDE.md -> @AGENTS.md` или выполнить явную миграцию к AGENTS-only.
 
 Evidence: GitHub issue #4.
+
+
+## T-007 — Canonical-target-first tool routing
+Status: done
+
+По результату теста ChatGPT app/Work добавлено правило: сначала определить canonical store/target по project infrastructure, затем выбирать доступный identity-preserving tool/access path. G0/G1/G2 получили scenario-specific runtime consequences; установленный G0 runtime синхронизирован с правилом.
+
+Evidence: Project Infrastructure 0.8.1.
