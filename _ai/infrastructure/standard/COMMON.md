@@ -132,6 +132,22 @@ Use the **full scenario transaction** when work is substantial or risk-bearing, 
 
 When uncertain, escalate one level rather than automatically using the full workflow.
 
+### Canonical-target-first tool routing
+
+Select the **canonical target before selecting the tool or workspace**.
+
+For any read or write that is intended to affect project state or a canonical artifact:
+
+1. determine the intended canonical store and exact target from the installed scenario/runtime, `SOURCES.md`, project metadata, and the user's request;
+2. when an identity-preserving operation against that canonical target is available and suitable, use it directly;
+3. do **not** create or edit a local/workspace substitute merely because filesystem, browser, computer-use, or generic file tools are available;
+4. use a local checkout, materialized copy, or temporary workspace only when the task materially requires local execution, transformation, validation/staging, multi-file work, application-specific tooling, or an operation unavailable safely against the canonical target;
+5. treat every such working copy as non-canonical until the scenario-defined publish/promote step succeeds and is verified;
+6. when several stores or similarly named resources are available, resolve the target from project infrastructure rather than guessing from the filename/project name alone;
+7. successful work on a non-canonical copy does not satisfy a requested canonical read/write.
+
+Tool availability influences **how** to reach the target, not **which target is authoritative**.
+
 ## 4. Current state is not a session log
 
 `STATE.md` is the default handoff snapshot. It describes the **present**, not a chronological diary.
@@ -322,6 +338,7 @@ Every scenario's **canonical full-runtime `AGENTS.md`** must materialize the com
 - canonical project/runtime authority and the rule that remembered chat context is non-authoritative when it conflicts with project files;
 - progressive disclosure/startup order;
 - proportional task path (read-only / bounded small edit / full scenario transaction);
+- canonical-target-first tool routing: identify the authoritative store/artifact before choosing connector, filesystem, browser, or workspace operations;
 - installed project-memory language rule;
 - canonical/source preservation and one-canonical-copy rule;
 - secrets/credentials prohibition;
