@@ -73,3 +73,13 @@ Status: done
 Зафиксировано, что пользователь, domain applications и локальные/delegated agents могут выполнять bounded artifact-only edits без обязательного обращения к основному оркестратору. Project memory может временно отставать; по явной команде выполняется bounded change-focused reconciliation без автоматического признания нового/более свежего файла canonical replacement.
 
 Evidence: Project Infrastructure 0.8.4.
+
+
+## T-011 — G2 Project Registry profile
+Status: done
+
+Добавлен профиль для обслуживания личного `PROJECTS/` workspace. Рекомендуемый control repository: `maxvfk/projects-registry`, Project ID: `PROJECTS-REGISTRY`. GitHub хранит runtime/state; локально профиль владеет только `PROJECTS/PROJECTS.md`. Parent `AGENTS.md` в `PROJECTS/` запрещён, чтобы не влиять на runtime дочерних проектов.
+
+Следующее практическое действие вне стандарта: создать private repository `maxvfk/projects-registry` и применить к нему профиль.
+
+Evidence: Project Infrastructure 0.8.5.
