@@ -22,7 +22,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 
 ## Project infrastructure
 
-Current standard version: **0.8.3**  
+Current standard version: **0.8.4**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -37,6 +37,7 @@ Core conventions:
 - scenario files contain only environment/storage-specific deltas.
 - small personal multi-project workspaces may use one optional `PROJECTS/PROJECTS.md` catalog; projects remain authoritative, organizational group folders remain plain folders by default, and cross-project dependencies use stable Project IDs.
 - a workspace may expose the whole `PROJECTS/` tree while one project remains active; sibling/other projects are external read-only sources by default, and `PROJECTS.md` is only a resolver/catalog, not a combined runtime.
+- users, domain applications, and delegated/local agents may edit canonical artifacts directly; project memory can be reconciled later through an explicit bounded refresh rather than requiring the main orchestrator for every small artifact change.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
