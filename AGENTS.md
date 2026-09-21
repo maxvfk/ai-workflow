@@ -2,7 +2,7 @@
 
 ## Infrastructure
 Scenario: G0
-Installed standard version/commit: 0.8.3 / 4e92cf92f003e37b9a9a821e31762aab48cb3b50
+Installed standard version/commit: 0.8.4 / c9c9a46577d9828d4728bc3b98d6b9620e27d1c7
 Local infrastructure metadata: _ai/infrastructure/MANIFEST.md
 Project-memory profile: Standard
 Project-memory language: ru
