@@ -57,3 +57,11 @@ Status: active
 По результатам двух L1 brownfield-установок последовательно закрыть подтверждённые пограничные дефекты без расширения scenario scope. Cross-project workspace/catalog/reference rule уже закрыт в 0.8.2; остальные пункты аудита рассматривать отдельно и принимать только после обсуждения.
 
 Evidence: L1 audit 2026-09-20; GitHub issue #2.
+
+
+## T-009 — Active-project workspace boundary
+Status: done
+
+Зафиксировано, что workspace может включать весь `PROJECTS/`, но это не объединяет проекты. Один проект остаётся active по умолчанию; `PROJECTS.md` используется как resolver, а остальные видимые проекты считаются read-only external sources, если пользователь явно не включил их в write-scope.
+
+Evidence: Project Infrastructure 0.8.3.
