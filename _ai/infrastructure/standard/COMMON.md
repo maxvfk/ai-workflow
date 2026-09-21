@@ -185,6 +185,60 @@ Recommended standalone filenames:
 - `D-001-short-decision-title.md`;
 - `P-001-short-plan-title.md`.
 
+### Project IDs, personal workspace catalog, and cross-project references
+
+For a small personal workspace containing multiple related projects, keep cross-project coordination deliberately lightweight.
+
+**Stable Project ID**
+
+- assign a stable Project ID when a project participates in a workspace catalog or cross-project references;
+- the ID should remain stable across folder moves, repository renames, and scenario migrations;
+- Project IDs need only be unique within the user's maintained project workspace unless a wider scope is explicitly required;
+- when another project's record is referenced, qualify the local record ID as `<ProjectID>/<RecordID>`, for example `TOK-COST/D-001`.
+
+**Optional workspace catalog**
+
+A personal workspace root such as `PROJECTS/` may contain one maintained `PROJECTS.md` catalog. It is a convenience/discovery index, **not canonical project state**.
+
+A compact catalog may record:
+
+- Project ID;
+- human-readable project name;
+- organizational group, such as `Tokamak`;
+- local path relative to the workspace root;
+- installed scenario;
+- GitHub repository when applicable;
+- lightweight lifecycle such as `active` or `completed`.
+
+Projects themselves remain authoritative. If `PROJECTS.md` disagrees with a project's own runtime/manifest/project-memory files, trust the project and repair the catalog during the next maintenance pass.
+
+Organizational folders such as `PROJECTS/Tokamak/` are ordinary grouping folders by default. Do **not** create `AGENTS.md`, `STATE.md`, `TASKS.md`, nested registries, or a separate project runtime there merely because the folder contains several projects. Promote a group folder into its own project only when it acquires an independent objective/state/task lifecycle.
+
+Catalog maintenance may be performed by a dedicated maintenance agent on demand or periodically. A maintenance pass should use bounded discovery: inventory likely project folders, inspect project markers/runtime/manifests, compare them with `PROJECTS.md`, and update stale/missing catalog entries. Do not recursively ingest project artifacts merely to reconcile the catalog.
+
+**Cross-project relationships**
+
+Keep relationship ownership distributed rather than maintaining a central dependency graph:
+
+- the **consuming project** records meaningful project-level dependencies in its own `PROJECT.md`;
+- the producer does not need to mirror a `downstream-consumer` relationship unless that reverse relationship is independently useful;
+- concrete external artifacts consumed from another project are registered in the consumer's `SOURCES.md`.
+
+Recommended cross-project source fields:
+
+```markdown
+Source project: <ProjectID>
+Source store/plane: <project root | artifact root | repository | other canonical store, when needed>
+Path: <path relative to that source project's named canonical root/store>
+Canonical: external
+Modification: read-only | editable-by-explicit-agreement
+Baseline/version: <when provenance matters>
+```
+
+Use `Project ID + source-relative path` as the durable identity. A current filesystem path such as `../SiblingProject/... ` may be used as a session-resolution hint, but should not be the durable cross-project identity.
+
+This workspace/catalog layer does not introduce a new infrastructure scenario and does not require every project to share the same scenario.
+
 ## 7. One canonical copy
 
 For every important artifact, identify one canonical copy. Avoid competing “latest” copies across folders or services.
