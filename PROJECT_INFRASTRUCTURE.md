@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.1  
+**Standard version:** 0.8.2  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -70,6 +70,8 @@ Version **0.7.4** temporarily restores a default minimal Claude compatibility ad
 Version **0.8.0** adds **G0 — GitHub Repository**, prompted by the first real dogfood test. G0 covers Git-first projects where one GitHub repository is the single canonical store for runtime/project memory and ordinary Git-suitable artifacts; remote API/connector access and local clones are execution/access paths to that same canonical store. This closes the gap exposed by `maxvfk/ai-workflow` without weakening L1/G1/G2 canonical-store semantics.
 
 Version **0.8.1** is a corrective routing patch from application/Work testing. `COMMON.md` now requires **canonical-target-first tool routing**: resolve the authoritative project store/artifact before choosing GitHub/Drive/local filesystem/browser/workspace operations. Available tools determine how to reach the canonical target, not which copy becomes authoritative. G0/G1/G2 runtime additions make the store-specific consequences explicit.
+
+Version **0.8.2** is a corrective cross-project patch from two real L1 brownfield installations. It adds stable Project IDs for cross-project identity, an optional single `PROJECTS/PROJECTS.md` personal-workspace catalog, plain organizational groups without nested runtime by default, consumer-owned project relationships, and `Project ID + source-relative path` references for concrete dependencies. The catalog is maintained discovery metadata, not canonical project state; project runtime/manifest files win on conflict.
 
 ## Bootstrap contract
 
