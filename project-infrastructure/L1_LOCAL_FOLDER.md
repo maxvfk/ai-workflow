@@ -135,6 +135,7 @@ The two files under `standard/` should be exact local copies of the applied comm
 # Project infrastructure manifest
 
 Scenario: L1
+Project ID: <stable-project-id when used>
 Project-memory profile: Minimal | Standard
 Project-memory language: ru
 Agent namespace: _ai/
@@ -166,6 +167,7 @@ L1-specific points:
 In addition to the common runtime baseline in `COMMON.md`, L1 must materialize:
 
 - `Scenario: L1`;
+- stable Project ID when the project participates in a workspace catalog or cross-project references;
 - installed agent namespace and infrastructure-manifest path;
 - normal work is fully local and does not require the external standard repository;
 - preserve the user's existing folder structure; do not move/rename/regroup/convert user-owned files merely to fit infrastructure;
@@ -234,7 +236,9 @@ For artifacts inside the project, prefer relative paths in `SOURCES.md`.
 
 There is no requirement to rename/move an artifact into a standardized directory merely to register it.
 
-Use absolute paths only when an important dependency necessarily lives outside the project folder and document that dependency.
+For a dependency owned by another registered project, prefer the common cross-project form `Source project: <ProjectID>` plus a path relative to that source project's canonical root/store. Do not make a raw sibling path such as `../OtherProject/...` the durable identity.
+
+Use absolute paths only when an important dependency necessarily lives outside the project folder **and is not resolvable as a registered project/source**, and document that dependency.
 
 ## L1 task-archive location
 
