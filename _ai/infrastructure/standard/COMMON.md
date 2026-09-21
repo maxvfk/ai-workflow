@@ -239,6 +239,31 @@ Use `Project ID + source-relative path` as the durable identity. A current files
 
 This workspace/catalog layer does not introduce a new infrastructure scenario and does not require every project to share the same scenario.
 
+**Workspace scope and active-project boundary**
+
+An agent workspace may expose a broader filesystem root than the active project, including the whole `PROJECTS/` tree. Broader visibility is an access convenience, not a change in project ownership.
+
+When a workspace contains multiple projects:
+
+- identify one **active project** for the task unless the user explicitly requests coordinated modification of several projects;
+- load that active project's runtime/project memory as the working authority;
+- use the workspace-root `PROJECTS.md` only to resolve Project IDs to current project locations and lightweight catalog metadata;
+- other visible projects are **external projects** relative to the active project;
+- cross-project visibility grants read access only by default; it does **not** grant write authority;
+- do not modify another project's project memory, canonical artifacts, repository, or source records unless the user/task explicitly includes that project as a modification target;
+- when another project is used only as a source, follow the consuming project's recorded dependency/source references and preserve the source project's canonical files;
+- if several projects must be modified in one task, treat each as an explicit canonical target and apply its own runtime/concurrency/write rules rather than treating the workspace root as one combined project.
+
+A useful session declaration is:
+
+```text
+Workspace root: PROJECTS/
+Active project: TOK-COST
+External source projects: TOK-HTS-SYS, TOK-RSF-HTS
+```
+
+The existence of `PROJECTS.md` at the workspace root does not make `PROJECTS/` itself a Project Infrastructure project.
+
 ## 7. One canonical copy
 
 For every important artifact, identify one canonical copy. Avoid competing “latest” copies across folders or services.
