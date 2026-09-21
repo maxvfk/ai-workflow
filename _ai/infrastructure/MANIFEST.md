@@ -9,9 +9,9 @@ GitHub repository: maxvfk/ai-workflow
 GitHub default branch: main
 
 Standard source: maxvfk/ai-workflow (self-hosted dogfood)
-Standard version: 0.8.2
+Standard version: 0.8.3
 Standard lifecycle: Draft
-Standard commit/ref: 612735109bb903071f4c961ead897a00c8ee1a42
+Standard commit/ref: 4e92cf92f003e37b9a9a821e31762aab48cb3b50
 Initialized: 2026-09-19
 Last infrastructure update: 2026-09-21
 Runtime entry point: ../../AGENTS.md
