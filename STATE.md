@@ -4,7 +4,7 @@ Last updated: 2026-09-21
 
 ## Статус
 
-Project Infrastructure: **0.8.2 Draft**, pre-pilot.
+Project Infrastructure: **0.8.3 Draft**, pre-pilot.
 
 Первый dogfood выявил отсутствующий GitHub-only canonical-store case; на этом основании добавлен сценарий **G0 — GitHub Repository**. G0 установлен на самом `maxvfk/ai-workflow`, а cold-start simulation по installed runtime прошла успешно.
 
@@ -28,6 +28,7 @@ Project Infrastructure: **0.8.2 Draft**, pre-pilot.
 - Тест из ChatGPT app/Work выявил, что доступный connector может не выбираться автоматически при двусмысленной цели. В 0.8.1 добавлено общее canonical-target-first tool routing: сначала определить authoritative store/artifact, затем выбирать connector/filesystem/browser/workspace.
 - Проведены две реальные L1 brownfield-установки для связанных токамак-проектов; аудит подтвердил работоспособность базовой L1-структуры и выявил пограничные проблемы вокруг соседних проектов и межпроектных ссылок.
 - В 0.8.2 принят упрощённый cross-project layer: stable Project ID, optional `PROJECTS/PROJECTS.md` catalog, plain organizational groups, consumer-owned dependencies и `Project ID + source-relative path` для внешних project artifacts.
+- В 0.8.3 уточнена active-project boundary: агент может видеть whole `PROJECTS/` workspace, но по умолчанию работает только с одним active project; остальные проекты read-only external sources, а `PROJECTS.md` служит resolver/catalog.
 
 ## В работе
 
