@@ -15,9 +15,9 @@ Status: todo
 Evidence: GitHub issues #1, #3–#11.
 
 ## T-003 — Первый real-project pilot
-Status: todo
+Status: active
 
-Применить стандарт к representative реальному проекту, предпочтительно G2 или L1, и зафиксировать friction/failures до дальнейшего расширения стандарта.
+Две реальные L1 brownfield-установки выполнены и проаудированы. Базовая структура сработала; corrective cross-project rule принят в 0.8.2. До завершения pilot нужно разобрать оставшиеся существенные замечания аудита и проверить дальнейшую миграцию одного проекта L1 → G2.
 
 Evidence: GitHub issue #2.
 
@@ -49,3 +49,11 @@ Status: done
 По результату теста ChatGPT app/Work добавлено правило: сначала определить canonical store/target по project infrastructure, затем выбирать доступный identity-preserving tool/access path. G0/G1/G2 получили scenario-specific runtime consequences; установленный G0 runtime синхронизирован с правилом.
 
 Evidence: Project Infrastructure 0.8.1.
+
+
+## T-008 — Разобрать L1 audit
+Status: active
+
+По результатам двух L1 brownfield-установок последовательно закрыть подтверждённые пограничные дефекты без расширения scenario scope. Cross-project workspace/catalog/reference rule уже закрыт в 0.8.2; остальные пункты аудита рассматривать отдельно и принимать только после обсуждения.
+
+Evidence: L1 audit 2026-09-20; GitHub issue #2.
