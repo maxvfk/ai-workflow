@@ -16,13 +16,14 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 - `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
 - `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
-- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md` — **Draft** GitHub + synchronized local artifact-folder scenario.
+- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md`
+- `project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md` — special G2 profile for maintaining a personal `PROJECTS/PROJECTS.md` catalog from a dedicated GitHub control repo without placing parent runtime files in `PROJECTS/`. — **Draft** GitHub + synchronized local artifact-folder scenario.
 - `project-infrastructure/ROADMAP.md` — deferred ideas intentionally outside the active scenario set.
 - `skills/model-router/SKILL.md` — reusable Agent Skill for applying the routing memo/current-state snapshot.
 
 ## Project infrastructure
 
-Current standard version: **0.8.4**  
+Current standard version: **0.8.5**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -38,6 +39,7 @@ Core conventions:
 - small personal multi-project workspaces may use one optional `PROJECTS/PROJECTS.md` catalog; projects remain authoritative, organizational group folders remain plain folders by default, and cross-project dependencies use stable Project IDs.
 - a workspace may expose the whole `PROJECTS/` tree while one project remains active; sibling/other projects are external read-only sources by default, and `PROJECTS.md` is only a resolver/catalog, not a combined runtime.
 - users, domain applications, and delegated/local agents may edit canonical artifacts directly; project memory can be reconciled later through an explicit bounded refresh rather than requiring the main orchestrator for every small artifact change.
+- a dedicated G2 Project Registry may maintain `PROJECTS/PROJECTS.md`; its GitHub repo owns runtime/state, while the workspace root gets no parent `AGENTS.md`, and child projects remain authoritative/read-only during registry maintenance.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
