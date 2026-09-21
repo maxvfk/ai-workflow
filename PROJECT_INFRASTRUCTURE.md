@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.4  
+**Standard version:** 0.8.5  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -77,6 +77,8 @@ Version **0.8.3** clarifies multi-project workspace access. A session may expose
 
 Version **0.8.4** adds reconciliation for manual/external/delegated artifact changes. Canonical artifacts may be edited directly by the user, domain applications, or local agents without routing every bounded edit through the main orchestrator. Project memory may temporarily lag; an explicit refresh/reconcile pass uses bounded change-focused discovery, updates only materially affected project memory, and never treats a newer-looking file as superseding canonical work without evidence.
 
+Version **0.8.5** adds the **G2 / Project Registry** profile for a small personal `PROJECTS/` workspace. A dedicated GitHub repository owns registry runtime/state, while the only normal local registry artifact is `PROJECTS/PROJECTS.md`. The profile deliberately forbids a parent `AGENTS.md` in `PROJECTS/` to avoid instruction inheritance into child projects; child projects are authoritative and read-only during registry maintenance by default.
+
 ## Bootstrap contract
 
 This file is the single external entry point for project initialization, infrastructure validation, repair, or migration.
@@ -129,6 +131,10 @@ For G2:
 - `project-infrastructure/COMMON.md`;
 - `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md`.
 
+For G2 / Project Registry, also provide:
+
+- `project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md`.
+
 Treat supplied files exactly as the bootstrap specification and record available version/commit/ref provenance without invention.
 
 After successful bootstrap, access to the external infrastructure-standard repository is not required for ordinary project work.
@@ -156,6 +162,10 @@ External-standard access is required again only for explicit initialization, inf
 
 - **Base:** [`project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md`](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md)
 - **ChatGPT Project:** [`project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md`](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md) — recommended when one ChatGPT Project is intentionally paired with one GitHub repository and one Google Drive root folder. Project Instructions are treated as a versioned product adapter, not as project state.
+
+### G2 profiles
+
+- **Project Registry:** [`project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md`](project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md) — use for a small personal `PROJECTS/` workspace whose dedicated GitHub control repository maintains the single local catalog `PROJECTS.md` without creating parent runtime files that could affect child projects.
 
 ## Scenario selection rule
 
@@ -223,6 +233,14 @@ If the local bootstrap `AGENTS.md` is already present:
 > Read this folder's `AGENTS.md`, restore the G2 project from its GitHub repository, and continue with my request.
 
 Without standard-repository access, provide `PROJECT_INFRASTRUCTURE.md`, `COMMON.md`, and `G2_GITHUB_SYNCED_LOCAL_FOLDER.md`.
+
+### G2 / Project Registry
+
+With authorized standard-repository access, a dedicated registry repository, and the `PROJECTS/` workspace connected:
+
+> Apply **G2 / Project Registry** to GitHub repository `maxvfk/projects-registry` and this connected `PROJECTS/` workspace using `https://github.com/maxvfk/ai-workflow/blob/main/PROJECT_INFRASTRUCTURE.md`. Use Project ID `PROJECTS-REGISTRY`. Maintain only `PROJECTS.md` in the workspace; do not create parent `AGENTS.md` or other registry runtime files under `PROJECTS/`.
+
+Without standard-repository access, also provide `G2_PROJECT_REGISTRY_PROFILE.md` with the normal G2 offline bootstrap files.
 
 ### Already initialized project
 
