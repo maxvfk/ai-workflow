@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.3  
+**Standard version:** 0.8.4  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -74,6 +74,8 @@ Version **0.8.1** is a corrective routing patch from application/Work testing. `
 Version **0.8.2** is a corrective cross-project patch from two real L1 brownfield installations. It adds stable Project IDs for cross-project identity, an optional single `PROJECTS/PROJECTS.md` personal-workspace catalog, plain organizational groups without nested runtime by default, consumer-owned project relationships, and `Project ID + source-relative path` references for concrete dependencies. The catalog is maintained discovery metadata, not canonical project state; project runtime/manifest files win on conflict.
 
 Version **0.8.3** clarifies multi-project workspace access. A session may expose the whole `PROJECTS/` tree while keeping exactly one active project by default. `PROJECTS.md` acts only as a Project-ID/location resolver; other visible projects are external and read-only by default. Cross-project visibility does not imply write authority. Multi-project writes require each affected project to be an explicit target and to retain its own runtime/canonical-boundary rules.
+
+Version **0.8.4** adds reconciliation for manual/external/delegated artifact changes. Canonical artifacts may be edited directly by the user, domain applications, or local agents without routing every bounded edit through the main orchestrator. Project memory may temporarily lag; an explicit refresh/reconcile pass uses bounded change-focused discovery, updates only materially affected project memory, and never treats a newer-looking file as superseding canonical work without evidence.
 
 ## Bootstrap contract
 
