@@ -65,3 +65,11 @@ Status: done
 Зафиксировано, что workspace может включать весь `PROJECTS/`, но это не объединяет проекты. Один проект остаётся active по умолчанию; `PROJECTS.md` используется как resolver, а остальные видимые проекты считаются read-only external sources, если пользователь явно не включил их в write-scope.
 
 Evidence: Project Infrastructure 0.8.3.
+
+
+## T-010 — External artifact reconciliation
+Status: done
+
+Зафиксировано, что пользователь, domain applications и локальные/delegated agents могут выполнять bounded artifact-only edits без обязательного обращения к основному оркестратору. Project memory может временно отставать; по явной команде выполняется bounded change-focused reconciliation без автоматического признания нового/более свежего файла canonical replacement.
+
+Evidence: Project Infrastructure 0.8.4.
