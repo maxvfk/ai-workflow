@@ -148,6 +148,26 @@ For any read or write that is intended to affect project state or a canonical ar
 
 Tool availability influences **how** to reach the target, not **which target is authoritative**.
 
+### Manual, external, and delegated artifact changes
+
+Canonical project artifacts may be changed outside the main/orchestrating agent workflow by the user, a domain application, a local/delegated agent, or another authorized tool. This is normal and does not require every bounded artifact edit to pass through the project orchestrator.
+
+Project memory is a maintained operational view of the project and may temporarily lag behind canonical artifacts changed through those paths.
+
+When the user asks to **refresh**, **reconcile**, or **update project state from current artifacts**:
+
+1. treat the current canonical stores/artifacts as the observed artifact state;
+2. perform bounded, change-focused discovery rather than rescanning the whole project;
+3. compare only relevant observations with installed `PROJECT.md`, `STATE.md`, `TASKS.md`, `SOURCES.md`, `ASSUMPTIONS.md`, decisions, and other project memory;
+4. update project memory only where the observed changes materially affect scope, current state, tasks, provenance, assumptions, decisions, canonical outputs, paths, or dependencies;
+5. do **not** infer that a newer-looking filename, timestamp, revision suffix, or newly discovered file automatically supersedes an existing canonical artifact;
+6. preserve ambiguity explicitly when the intended canonical/superseding artifact cannot be established safely;
+7. do not reorganize, rename, rewrite, or otherwise alter user artifacts merely to make project memory agree with them.
+
+A local/delegated agent performing an artifact-only task does not need to update the project's control/state plane merely because it touched a canonical artifact. If its task explicitly includes project-state synchronization, or the change materially requires immediate state/provenance updates and the agent has safe access to the control plane, apply the normal scenario write/concurrency rules. Otherwise a later reconciliation pass may update project memory.
+
+Do not add mandatory filesystem watchers, per-file change logs, or mutable hashes merely to detect such edits. Use explicit reconciliation when continuity or downstream work requires it.
+
 ## 4. Current state is not a session log
 
 `STATE.md` is the default handoff snapshot. It describes the **present**, not a chronological diary.
@@ -422,6 +442,7 @@ Every scenario's **canonical full-runtime `AGENTS.md`** must materialize the com
 - canonical/source preservation and one-canonical-copy rule;
 - secrets/credentials prohibition;
 - optimistic concurrency: re-read shared state immediately before writes and reconcile changes;
+- manual/external/delegated artifact reconciliation: project memory may temporarily lag artifact changes, and explicit refresh/reconcile uses bounded discovery without guessing supersession;
 - end-of-substantial-work synchronization/handoff expectations;
 - scenario-specific runtime additions.
 
