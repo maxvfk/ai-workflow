@@ -74,6 +74,8 @@ For this profile:
 
 This rule intentionally overrides the normal G2 expectation of a local bootstrap `AGENTS.md` in the artifact root.
 
+Because this profile deliberately has no local parent bootstrap, the ordinary G2 artifact-only fallback does **not** define a standalone registry-maintenance mode. If the registry GitHub control/runtime is unavailable, do not perform autonomous registry reconciliation from `PROJECTS.md` alone. A user may still manually edit `PROJECTS.md`, after which the registry project can reconcile it when full access is restored.
+
 ## 4. PROJECTS.md contract
 
 `PROJECTS.md` is a maintained convenience catalog and resolver. It is **not canonical project state** for any child project.
