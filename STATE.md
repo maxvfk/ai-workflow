@@ -1,10 +1,10 @@
 # Текущее состояние
 
-Last updated: 2026-09-21
+Last updated: 2026-09-22
 
 ## Статус
 
-Project Infrastructure: **0.8.5 Draft**, pre-pilot.
+Project Infrastructure: **0.8.6 Draft**, pre-pilot.
 
 Первый dogfood выявил отсутствующий GitHub-only canonical-store case; на этом основании добавлен сценарий **G0 — GitHub Repository**. G0 установлен на самом `maxvfk/ai-workflow`, а cold-start simulation по installed runtime прошла успешно.
 
@@ -31,6 +31,7 @@ Project Infrastructure: **0.8.5 Draft**, pre-pilot.
 - В 0.8.3 уточнена active-project boundary: агент может видеть whole `PROJECTS/` workspace, но по умолчанию работает только с одним active project; остальные проекты read-only external sources, а `PROJECTS.md` служит resolver/catalog.
 - В 0.8.4 добавлено manual/external/delegated artifact reconciliation: пользователь, приложения и локальные агенты могут менять canonical artifacts напрямую; project memory допускается синхронизировать позже отдельным bounded reconciliation pass.
 - В 0.8.5 добавлен профиль **G2 / Project Registry**: отдельный GitHub control repo ведёт `PROJECTS/PROJECTS.md`, а в корне `PROJECTS/` намеренно нет parent `AGENTS.md`; дочерние проекты используются как authoritative read-only evidence.
+- В 0.8.6 добавлен G2 artifact-only fallback: локальный/delegated агент без GitHub может выполнять явно заданную bounded работу с artifacts, не имитируя полный project runtime, и оставляет scoped `_LOCAL_AGENT_REPORT.md` для последующего reconciliation.
 
 ## В работе
 
