@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.5  
+**Standard version:** 0.8.6  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -78,6 +78,8 @@ Version **0.8.3** clarifies multi-project workspace access. A session may expose
 Version **0.8.4** adds reconciliation for manual/external/delegated artifact changes. Canonical artifacts may be edited directly by the user, domain applications, or local agents without routing every bounded edit through the main orchestrator. Project memory may temporarily lag; an explicit refresh/reconcile pass uses bounded change-focused discovery, updates only materially affected project memory, and never treats a newer-looking file as superseding canonical work without evidence.
 
 Version **0.8.5** adds the **G2 / Project Registry** profile for a small personal `PROJECTS/` workspace. A dedicated GitHub repository owns registry runtime/state, while the only normal local registry artifact is `PROJECTS/PROJECTS.md`. The profile deliberately forbids a parent `AGENTS.md` in `PROJECTS/` to avoid instruction inheritance into child projects; child projects are authoritative and read-only during registry maintenance by default.
+
+Version **0.8.6** adds G2 **artifact-only fallback** for local/delegated agents without GitHub control-plane access. The local bootstrap now permits explicitly assigned bounded artifact work from sufficient user/local context, forbids substitute project-memory/state claims, and standardizes a scoped `_LOCAL_AGENT_REPORT.md` handoff near changed files. Full-access agents may use these reports during later reconciliation. The Project Registry profile explicitly does not treat this fallback as autonomous registry maintenance.
 
 ## Bootstrap contract
 
