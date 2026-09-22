@@ -195,6 +195,17 @@ Before substantial work:
 5. resolve project artifact paths relative to this directory;
 6. verify Project ID and basic synchronization health before important writes.
 
+If the canonical GitHub control repository is unavailable, you may still perform an explicitly assigned bounded **artifact-only** task when the user's request plus local artifacts provide enough context to do so safely.
+
+In artifact-only mode:
+- do not claim that full project state was restored;
+- do not invent or create local STATE.md, TASKS.md, SOURCES.md, ASSUMPTIONS.md, or other duplicate project memory;
+- do not make project-level decisions that depend on unavailable control-plane context;
+- preserve existing structure and dependencies;
+- make only the requested bounded artifact changes;
+- leave a _LOCAL_AGENT_REPORT.md handoff near the changed files as defined by the G2 runtime;
+- if the task cannot be completed safely from the explicit request and local evidence, report the missing project context rather than guessing.
+
 Do not create duplicate project-memory files in this folder.
 <!-- project-infrastructure:end -->
 ~~~
@@ -206,6 +217,69 @@ Keep the local bootstrap `AGENTS.md` intentionally small and stable. Do not put 
 The local entry file is deliberately named `AGENTS.md` so agents that natively discover that convention can enter the project without a separate marker-specific prompt.
 
 During the current pre-pilot compatibility period, create a local `CLAUDE.md` alongside the bootstrap `AGENTS.md` with exactly `@AGENTS.md` unless an existing substantive file must be preserved/merged. Shared bootstrap behavior remains canonical in `AGENTS.md`; any Claude-specific additions go only below the import.
+
+### Artifact-only fallback and local handoff report
+
+A local/delegated agent that can read the synchronized artifact root but cannot access the GitHub control repository may operate in **artifact-only mode** for an explicitly assigned bounded task.
+
+Artifact-only mode is intentionally narrower than full G2 runtime:
+
+- the agent may read the root local `AGENTS.md` and relevant local artifacts;
+- the agent may modify only the explicitly requested artifact scope;
+- the agent must not claim full project restoration or infer current project priorities from local files alone;
+- the agent must not create substitute project-memory files in the artifact root;
+- the agent must not make project-level decisions whose rationale depends on unavailable `STATE.md`, `TASKS.md`, `SOURCES.md`, `ASSUMPTIONS.md`, decisions, or other GitHub control-plane context;
+- normal G2 artifact preservation, dependency, synchronization-sanity, and canonical-target rules still apply.
+
+After a delegated/local agent changes artifacts in artifact-only mode, it should leave a concise handoff file named:
+
+```text
+_LOCAL_AGENT_REPORT.md
+```
+
+Place it in the **nearest common directory containing the changed work scope**. Examples:
+
+```text
+CAD/TF-Coil/_LOCAL_AGENT_REPORT.md
+Calculations/_LOCAL_AGENT_REPORT.md
+```
+
+If one bounded task legitimately changes artifacts across several top-level areas, the nearest useful common scope may be the project root.
+
+Reuse the existing report file for that directory when present. Append or add a clearly separated dated/task section; do not overwrite unrelated prior handoff entries.
+
+Recommended section shape:
+
+```markdown
+## YYYY-MM-DD — <short task title>
+
+Task:
+<what the user asked>
+
+Files changed:
+- <relative path>
+
+What changed:
+- <concise factual summary>
+
+Validation:
+- <checks actually performed>
+
+Project-state impact:
+- <known likely impact, or "unknown — GitHub control plane unavailable">
+
+Unresolved:
+- <ambiguities / missing context / none>
+
+Suggested reconciliation:
+- <what a full G2 agent should verify or update, if anything>
+```
+
+The report is **handoff evidence, not project memory and not a canonical source registry**. Do not register it in `SOURCES.md` merely because it exists. The changed artifacts remain the factual result of the task; the report only helps a later full-access agent understand what was done.
+
+A report is recommended for delegated/local-agent artifact changes. It is **not required for ordinary manual edits by the user** or normal saves performed directly in domain applications.
+
+During a later explicit project reconciliation, a full-access G2 agent may use nearby `_LOCAL_AGENT_REPORT.md` files as bounded evidence alongside the actual artifacts. The report never overrides contradictory canonical artifact evidence or GitHub project state.
 
 ### Migration from G2 0.6
 
@@ -422,7 +496,9 @@ A synchronized folder is not automatically a good scratch area.
 
 ## 18. Publish/promote transaction
 
-For a bounded low-risk single-artifact edit, use the proportional small-edit path from `COMMON.md` plus the minimum G2 sync-sanity check above. Do not update GitHub project memory unless the edit materially changes project state, task status, provenance, or a recorded decision.
+For a bounded low-risk single-artifact edit by a full-access G2 agent, use the proportional small-edit path from `COMMON.md` plus the minimum G2 sync-sanity check above. Do not update GitHub project memory unless the edit materially changes project state, task status, provenance, or a recorded decision.
+
+For a bounded artifact-only edit performed without GitHub access, complete and verify the requested artifact change, then leave/update the scoped `_LOCAL_AGENT_REPORT.md`. Project-memory synchronization is deferred to a later full-access reconciliation pass.
 
 For substantial artifact-changing work:
 
@@ -511,7 +587,10 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - assume synchronization is healthy by default, but use the proportional G2 sync-sanity rules before canonical artifact writes;
 - never silently resolve sync conflicts or overwrite suspicious/stale targets;
 - prefer an external/harness temporary workspace outside the synchronized folder when needed; any in-root fallback is non-canonical/disposable;
-- substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization.
+- substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization;
+- if GitHub control access is unavailable, an explicitly assigned bounded artifact-only task may proceed from the local bootstrap plus sufficient user/local context, without pretending full project state was restored;
+- artifact-only agents do not create local substitute project memory and leave a scoped `_LOCAL_AGENT_REPORT.md` after delegated changes;
+- later full-access reconciliation may use local-agent reports as evidence, but actual canonical artifacts and authoritative GitHub project memory remain higher authority.
 
 ## 23. G2 cold-start additions
 
@@ -524,7 +603,8 @@ A fresh G2 agent must additionally be able to:
 - confirm the Project ID matches the GitHub manifest;
 - resolve important artifact paths relative to the connected folder;
 - understand the external-workspace preference and G2 sync-sanity/conflict rules;
-- continue without the originating chat or external standard repository.
+- continue without the originating chat or external standard repository;
+- if GitHub is unavailable, recognize artifact-only fallback correctly: perform only explicitly assigned bounded local work, do not claim full restoration, and leave the local handoff report after delegated changes.
 
 ## 24. G2 completion-report additions
 
