@@ -83,3 +83,11 @@ Status: done
 Следующее практическое действие вне стандарта: создать private repository `maxvfk/projects-registry` и применить к нему профиль.
 
 Evidence: Project Infrastructure 0.8.5.
+
+
+## T-012 — G2 artifact-only fallback
+Status: done
+
+Добавлен локальный fallback для G2 без GitHub: bounded artifact work + `_LOCAL_AGENT_REPORT.md`, без локальной копии project memory. Registry profile исключён из автономного fallback.
+
+Evidence: Project Infrastructure 0.8.6.
