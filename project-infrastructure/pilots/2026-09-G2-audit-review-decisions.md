@@ -283,3 +283,38 @@ The issue mechanism also generalizes beyond initial registration to later rename
 Child projects should not directly edit registry-owned routing files such as `CLOUD_PROJECTS.md`.
 
 When relevant, the registry agent updates those derived/maintained representations as part of processing the verified request.
+
+
+---
+
+## F-13 — Workspace-level cloud routing/adapters
+
+Status: **NEEDS MORE EVIDENCE / locally addressed**
+
+### Decision
+
+The architectural gap is real: a cloud/workspace-level agent may need a GitHub-visible routing entry point before it can determine which child project runtime to enter, while the local `PROJECTS.md` registry artifact is unavailable to that agent.
+
+However, do not generalize this into a mandatory Project Infrastructure feature yet.
+
+The current workspace need is already handled locally by:
+
+`maxvfk/projects-registry/CLOUD_PROJECTS.md`
+
+which acts as a thin routing index from workspace-level cloud agents to the selected child repository and its canonical `AGENTS.md`.
+
+### Current policy
+
+- keep and use `CLOUD_PROJECTS.md` in the registry control repository;
+- treat `projects-registry` as its natural owner;
+- do not put a parent runtime or adapter into the local `PROJECTS/` root;
+- do not move workspace-level routing into an arbitrary child project;
+- do not standardize a general workspace-adapter hierarchy until another real use case appears.
+
+Package A may contain only a light allowance that thin product/workspace adapters are permitted when useful, without defining a required structure or lifecycle.
+
+### Rationale
+
+This follows the standard's preference for codifying repeated real patterns rather than designing infrastructure in advance.
+
+Revisit F-13 if a second distinct workspace-level adapter/routing need appears.
