@@ -143,3 +143,62 @@ The full G2 agent may recommend adding/removing snapshots when repeated cloud-ag
 ### Implementation batching
 
 Implement with the F-01 cloud/control-only package rather than as an independent scenario or mandatory G2 component.
+
+
+---
+
+## F-03 — Verified redundant/stale copies
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do not standardize a sync-provider-specific concept such as “provable synchronizer duplicate”.
+
+Instead, add a general G2 rule for **verified redundant/stale copies**: a suspicious additional file does not need to block work when exact-content comparison proves that it contains no new competing state.
+
+### Classification criteria
+
+A suspicious additional copy may be treated as redundant/stale only when all of the following are true:
+
+1. the canonical target is unambiguously identified;
+2. the current canonical target has been checked and remains intact;
+3. the suspicious copy is proven by exact-content comparison (e.g. SHA-256 or direct byte comparison) to be identical either to:
+   - the verified current canonical artifact, or
+   - a specific known prior/archive revision;
+4. the comparison was actually performed; matching name, size, timestamp, revision suffix, or visual similarity alone is insufficient;
+5. there is no evidence that the copy contains independent user work or otherwise represents a distinct state.
+
+Two useful cases:
+
+- **exact duplicate of current** — content-identical to the current canonical artifact;
+- **proven stale copy** — content-identical to a known prior/archive revision while the current canonical artifact remains intact.
+
+### Behavior
+
+When the above criteria are satisfied:
+
+- the copy is not treated as an unresolved competing version;
+- work on the verified canonical target may continue;
+- the duplicate/stale copy may be recorded or reported when material;
+- the agent must not automatically delete it merely because redundancy was proven.
+
+Cleanup/deletion requires explicit authority because deletion in a synchronized filesystem may propagate to other machines.
+
+### Unresolved competing state
+
+If the suspicious copy is not content-identical to a verified current or known prior state, or the canonical target itself is uncertain/damaged, the existing conservative G2 rule remains unchanged:
+
+- do not choose a winner silently;
+- do not overwrite or delete competing copies;
+- reconcile or ask the user.
+
+### Migration hygiene
+
+Do not make “check every other machine” a mandatory G2 rule.
+
+Add only a short migration recommendation: after moving an existing synchronized tree, account for the possibility that another device may later publish an older location/state; when practical, verify that other relevant devices have synchronized or no longer publish the old state.
+
+### Implementation batching
+
+Implement in the G2 synchronization/conflict-handling package together with related operational findings rather than as a standalone version bump.
