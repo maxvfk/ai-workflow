@@ -82,3 +82,64 @@ Explicit user-directed exceptional edits to control-plane files remain possible,
 ### Implementation batching
 
 Implement together with the related cloud/control-only findings, especially F-02, F-13 and F-15, rather than patching the standard immediately after F-01 alone.
+
+
+---
+
+## F-02 — Snapshots for agents without artifact-root access
+
+Status: **ACCEPT**
+
+### Decision
+
+Add an optional `_ai/snapshots/` mechanism to G2 for bounded read-only representations of selected canonical artifact-root text documents, primarily for control-plane-only/cloud-agent sessions.
+
+Snapshots are derived context, not a second canonical artifact store and not a mirror of the artifact root.
+
+### Snapshot requirements
+
+Each snapshot should clearly record at least:
+
+- read-only / derived status;
+- canonical source path relative to the artifact root;
+- capture date;
+- full source fingerprint (SHA-256) for the original at capture time;
+- explicit statement that the canonical original remains in the artifact root.
+
+Optional metadata may include source record ID and source revision.
+
+### Behavior
+
+Control-plane-only agents:
+
+- may read snapshots;
+- must not edit them;
+- must not present a snapshot as the current original;
+- must account for snapshot age/provenance in conclusions.
+
+Full G2 agents:
+
+- create snapshots only from the actual canonical original;
+- may compare the recorded source fingerprint during reconciliation;
+- replace stale snapshots as a whole rather than editing them as independent documents;
+- keep snapshot selection deliberate and bounded rather than mirroring the artifact root.
+
+Snapshots are not registered as independent sources in `SOURCES.md` when the canonical original is already the source of record.
+
+### Index
+
+If snapshots are enabled, `_ai/snapshots/README.md` should act as the index and explain the rules.
+
+A derived project-parameter summary inside that README is optional. If present, it is also derived context and may be stale; source snapshots outrank the summary, and canonical originals outrank snapshots.
+
+The index does not need a second authoritative abbreviated hash representation; the full fingerprint in snapshot metadata is sufficient.
+
+### Relationship to F-01
+
+Snapshots are optional. Enabling control-plane-only mode does not automatically create snapshots or copy artifact-root documents.
+
+The full G2 agent may recommend adding/removing snapshots when repeated cloud-agent work would benefit, but snapshot composition should remain deliberate and bounded.
+
+### Implementation batching
+
+Implement with the F-01 cloud/control-only package rather than as an independent scenario or mandatory G2 component.
