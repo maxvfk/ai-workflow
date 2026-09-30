@@ -202,3 +202,84 @@ Add only a short migration recommendation: after moving an existing synchronized
 ### Implementation batching
 
 Implement in the G2 synchronization/conflict-handling package together with related operational findings rather than as a standalone version bump.
+
+
+---
+
+## F-04 — Registry registration/update request
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do **not** allow child projects to directly modify the registry-owned `PROJECTS/PROJECTS.md`.
+
+Preserve the existing ownership boundary:
+
+- child project owns and is authoritative for its own runtime/manifest/project metadata;
+- `PROJECTS-REGISTRY` owns the workspace catalog `PROJECTS.md`;
+- child projects do not receive a special bootstrap exception for writing another project's canonical artifact.
+
+### Handoff mechanism
+
+When a project in a workspace with a configured Project Registry is created, adopted, migrated, renamed/moved, archived, or otherwise changes registry-relevant metadata, its full/bootstrap agent may create a **GitHub Issue in the registry control repository** as a registration/update request.
+
+For the current reference implementation:
+
+`maxvfk/projects-registry`
+
+The issue is a handoff/trigger, not authoritative registry state.
+
+Suggested minimal fields:
+
+- requested operation: add / update / move-or-rename / scenario migration / archive;
+- Project ID;
+- human-readable project name;
+- GitHub repository when applicable;
+- scenario/profile;
+- local path hint when known;
+- short reason/context when useful.
+
+### Registry processing
+
+The registry agent must not blindly copy issue fields into `PROJECTS.md`.
+
+When processing a request it should:
+
+1. read the authoritative child runtime/manifest/project metadata needed to verify identity;
+2. re-read the current `PROJECTS.md`;
+3. verify Project ID, repository, scenario and other relevant metadata;
+4. verify the local path against the connected workspace when available;
+5. add/update the registry entry only after verification;
+6. update any registry-owned derived routing metadata when applicable;
+7. close the request with a concise result or leave it open when required verification is unavailable.
+
+If the local workspace is unavailable, the request may remain pending rather than inventing/assuming a verified local path.
+
+### Bootstrap behavior
+
+When the active workspace is known to use a configured Project Registry, project bootstrap should check whether registry registration is already satisfied.
+
+If not, and the registry repository is known and writable, creating the issue is an appropriate completion handoff and does not require direct catalog modification.
+
+If the request cannot be created, bootstrap remains valid; report registry registration as pending.
+
+Do not guess a registry repository when it is not explicitly configured/discoverable.
+
+### Rationale
+
+This preserves:
+
+- one canonical writer/owner for `PROJECTS.md`;
+- child-project authority over its own identity;
+- no cross-project direct writes;
+- optimistic/concurrent safety around the shared catalog;
+- a lightweight, auditable lifecycle for pending registry work.
+
+The issue mechanism also generalizes beyond initial registration to later rename/move/migration/archive events.
+
+### Related registry-derived metadata
+
+Child projects should not directly edit registry-owned routing files such as `CLOUD_PROJECTS.md`.
+
+When relevant, the registry agent updates those derived/maintained representations as part of processing the verified request.
