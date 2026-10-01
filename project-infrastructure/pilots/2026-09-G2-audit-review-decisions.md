@@ -505,3 +505,78 @@ A later pilot refinement (SP-LAB-GRANT commit `628fc48`) identified a practical 
 ### Implementation batching
 
 Implement with Package B together with F-04 and F-05.
+
+
+---
+
+## F-06 — Artifact-only build tooling handoff
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do not turn the synchronized artifact root into a second canonical code/tooling store.
+
+Artifact-only work must preserve enough information for later verification/reproduction. Use two layers:
+
+1. `_LOCAL_AGENT_REPORT.md` always records the minimally sufficient build/reproduction procedure;
+2. when prose/commands are not enough, the artifact-only agent may retain the smallest exact file payload needed for reproduction/review in a scoped noncanonical handoff directory:
+
+`_LOCAL_AGENT_HANDOFF/`
+
+Place the handoff directory next to the relevant `_LOCAL_AGENT_REPORT.md` / changed work scope.
+
+### Report requirements
+
+For artifact-only generated/transformed outputs, the report should record as applicable:
+
+- tools/runtime used;
+- important versions when they materially affect reproduction;
+- commands or ordered build steps;
+- input/output relationship;
+- retained handoff payload files;
+- validation actually performed;
+- what a full-access agent should review/promote/discard.
+
+A simple reproducible command does not justify creating retained helper files.
+
+### Handoff payload
+
+Use `_LOCAL_AGENT_HANDOFF/` only when exact files are materially useful for reproduction, verification, or later promotion, for example:
+
+- custom scripts;
+- nontrivial build configuration;
+- exact templates/config fragments created for the task.
+
+Rules:
+
+- retain only the minimal necessary payload;
+- do not copy the whole temporary/execution workspace;
+- do not use normal project code/tool directories such as `src/`, `tools/`, or `Calculations/scripts/` merely because GitHub is unavailable;
+- handoff payload is noncanonical staging evidence, not permanent artifact-root tooling;
+- do not register it as an ordinary canonical source merely because it exists.
+
+### Reconciliation lifecycle
+
+During full-access reconciliation:
+
+1. read the report and inspect retained payload;
+2. verify whether the output remains reproducible/applicable;
+3. decide whether any helper file is reusable project tooling;
+4. if reusable, promote it to the proper canonical GitHub location under normal project rules;
+5. otherwise leave/discard the staged payload according to user/project cleanup authority after reconciliation.
+
+Promotion changes canonical status; the artifact-root handoff copy never becomes canonical merely by existing.
+
+### Relationship to temporary work
+
+Keep a strict distinction:
+
+- temporary execution workspace = scratch/intermediate work, preferably outside the artifact root and not expected to survive;
+- `_LOCAL_AGENT_HANDOFF/` = deliberately retained minimal handoff payload awaiting reconciliation.
+
+The handoff directory must not become a substitute persistent workspace.
+
+### Implementation batching
+
+Implement in Package C together with F-03, F-07 and F-08.
