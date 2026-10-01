@@ -23,7 +23,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 
 ## Project infrastructure
 
-Current standard version: **0.8.8**  
+Current standard version: **0.8.9**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -43,6 +43,7 @@ Core conventions:
 - ordinary G2 local/delegated agents without GitHub may perform explicitly bounded artifact-only tasks from sufficient local/user context and leave `_LOCAL_AGENT_REPORT.md` near the changed work for later full-access reconciliation; they do not create substitute project memory or claim full project restoration.
 - G2 may optionally enable a complementary control-plane-only fallback for GitHub-visible/cloud agents without artifact-root access: canonical project memory is read-only by default, handoff uses `_ai/inbox/`, selected text artifacts may be exposed through bounded read-only `_ai/snapshots/`, and an external incoming artifact area is configured only when the user actually needs one.
 - multi-project workspaces keep one active project by default: registry-owned catalogs are updated through verified handoffs rather than child direct writes, important cross-project dependencies use Project ID + source-relative path as durable identity, and auto-loaded sibling instructions never expand write scope.
+- G2 operational hardening distinguishes exact-content verified redundant/stale copies from unresolved conflicts, preserves nontrivial artifact-only build helpers only as minimal `_LOCAL_AGENT_HANDOFF/` staging, and limits temp-leftover hygiene to brownfield/migration events.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
