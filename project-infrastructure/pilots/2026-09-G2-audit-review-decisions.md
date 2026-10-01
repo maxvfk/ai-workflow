@@ -646,3 +646,36 @@ Trigger it only when there is a real structural event such as:
 ### Implementation batching
 
 Implement in Package C together with F-03, F-06 and F-08.
+
+
+---
+
+## F-08 — Scope-limited artifact-only handoff
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the useful lesson from the finding, but do not introduce a special verification/audit procedure for `_LOCAL_AGENT_REPORT.md`.
+
+Any agent-generated handoff can contain mistakes. The artifact-only case is distinctive mainly because the reporting agent **did not have the full project picture**: it could see the assigned artifact scope but not the canonical GitHub control plane and therefore may lack current state, priorities, source registrations, decisions, assumptions, or broader dependencies.
+
+### Interpretation rule
+
+Treat `_LOCAL_AGENT_REPORT.md` as scoped handoff evidence about the local work the artifact-only agent actually performed.
+
+When using it during full-access reconciliation, remember that:
+
+- factual observations about changed artifacts are useful navigation/evidence but do not outrank the artifacts themselves;
+- conclusions about project-wide completeness, absence of other problems, project-state impact, priority, provenance, or whether further work is needed may be limited by the agent's missing control-plane context;
+- the full-access agent should combine the report with the canonical artifacts and relevant project memory before making project-level conclusions or updates.
+
+Do not require a special line-by-line re-audit or mandatory spot-check regime solely because the source is `_LOCAL_AGENT_REPORT.md`. Verification remains proportional to the task and consequence, as with other agent-generated handoffs.
+
+### Pilot evidence
+
+In the pilot, the artifact-only report listed four broken links while later full-context reconciliation found seven. This demonstrates the expected limitation of a scoped handoff rather than requiring a separate report-verification subsystem.
+
+### Implementation batching
+
+Implement as a concise clarification in the G2 artifact-only reconciliation guidance together with Package C (F-03, F-06, F-07).
