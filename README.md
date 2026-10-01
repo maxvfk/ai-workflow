@@ -50,7 +50,7 @@ Implemented Draft scenarios — and the complete active pre-pilot scenario set �
 - **G1 — GitHub + Google Drive:** GitHub is the control/state plane and Drive is the artifact plane; G1 has a ChatGPT Project profile.
 - **G2 — GitHub + Synced Local Folder:** GitHub is the control/state plane, a synchronized ordinary local folder is the artifact root, and control-repo clones never live inside the sync root.
 
-Provider-specific remote storage, remote-only agents, and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios.
+Provider-specific remote-storage scenarios and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios. G2 control-plane-only access is handled as a bounded fallback inside G2 rather than as a separate remote-only scenario.
 
 For bootstrap, migration, or the exact start prompt, read `PROJECT_INFRASTRUCTURE.md`.
 
