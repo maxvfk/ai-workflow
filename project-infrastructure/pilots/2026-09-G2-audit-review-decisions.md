@@ -361,3 +361,39 @@ reconcile = validate result + validate premises + reconcile state impact
 ### Pilot status
 
 The SP-LAB-GRANT inbox template already contains a working implementation through its “Расхождения с данными проекта” section. Package A should generalize this behavior into the standard control-plane-only fallback.
+
+
+---
+
+## F-14 — Escape-sensitive text writes
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying operational failure mode, but do not make it a cloud-specific rule and do not ban LaTeX or backslash syntax globally.
+
+Treat this as a general text-write integrity issue for programmatic/API-driven writes where escape-sensitive sequences may be transformed by an intermediate serialization layer.
+
+### Standard rule
+
+When writing text through an API/tool path that may interpret escape sequences:
+
+- do not assume the transmitted string was preserved byte-for-byte;
+- for important escape-sensitive content (for example LaTeX commands, regexes, Windows paths, shell/code fragments), verify the stored result after the write;
+- when a human-readable equivalent is sufficient, plain Unicode notation may be preferred to reduce escaping risk;
+- if the exact syntax matters, preserve the syntax and validate the persisted file rather than replacing it with a lossy workaround.
+
+Examples of risky sequences include backslash-prefixed text such as `\r`, `\n`, `\t`, LaTeX commands, and path separators when they pass through string-literal or JSON-like layers.
+
+### Scope
+
+This is not a defect in GitHub, Markdown, LaTeX, or G2 itself. It is a possible failure in a specific tool/serialization path.
+
+The SP-LAB-GRANT inbox template's preference for Unicode formulas is a valid local mitigation, but the general standard should remain syntax-neutral.
+
+### Implementation batching
+
+Implement with Package D (small operational clarifications), not with Package A.
+
+Package A may keep any project-specific inbox guidance already present, but the architectural control-plane-only fallback should not depend on a LaTeX prohibition.
