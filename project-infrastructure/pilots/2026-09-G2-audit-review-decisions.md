@@ -450,3 +450,56 @@ Resources outside `PROJECTS/` are treated as exceptional/legacy external sources
 ### Implementation batching
 
 Implement with Package B together with F-04 and F-16.
+
+
+---
+
+## F-16 — External-project instruction auto-loading
+
+Status: **ACCEPT**
+
+### Decision
+
+Accept the finding and address it with two layers: preferred session rooting plus explicit authority semantics.
+
+### Preferred session root
+
+For an ordinary single-project task in a multi-project workspace, prefer opening the execution session/workspace at the **active project root**, not at the shared `PROJECTS/` root, when the tool/environment allows this.
+
+Broader workspace access may still be granted for reading external/source projects.
+
+This reduces accidental discovery/auto-loading of sibling project instruction files in environments that scan child directories.
+
+This is a recommended operational default, not a guarantee. The user/operator remains responsible for how a local agent session is launched.
+
+### Authority when foreign instructions are auto-loaded
+
+Automatically discovered instructions from an external/source project:
+
+- do **not** make that project active;
+- do **not** expand the session's write scope;
+- do **not** override the active project's task-control/runtime authority.
+
+The active project's runtime governs the current task and write authority.
+
+External-project instructions remain relevant only for interpreting and preserving that external project's own sources, canonical locations, read-only constraints, provenance, and other source-specific safety semantics.
+
+If an external project later becomes an explicit modification target, then its own runtime governs writes to that project under the existing multi-project write rules.
+
+### Product-specific defense in depth
+
+Tool-specific mechanisms such as Claude Code permissions, project-local settings, or instruction-exclusion settings may be used as additional defense in depth, but they are not the foundation of the Project Infrastructure boundary.
+
+Do not make correctness depend on a specific vendor setting or on successfully preventing instruction auto-loading.
+
+Project-local tool configuration directories (for example `.claude/`) may exist as tool configuration when justified; they are not project memory merely because they live in the project tree.
+
+### Pilot evidence
+
+The SP-LAB-GRANT pilot first showed that avoiding `cd` into an external project was insufficient: the environment could still auto-load its instructions when reading a file there.
+
+A later pilot refinement (SP-LAB-GRANT commit `628fc48`) identified a practical mitigation for Claude Code: root the session in the active project rather than the shared `PROJECTS/` root, then optionally use product-specific permissions/exclusion settings for broader workspace access.
+
+### Implementation batching
+
+Implement with Package B together with F-04 and F-05.
