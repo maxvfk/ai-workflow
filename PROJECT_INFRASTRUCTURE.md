@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.8  
+**Standard version:** 0.8.9  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -84,6 +84,8 @@ Version **0.8.6** adds G2 **artifact-only fallback** for local/delegated agents 
 Version **0.8.7** adds the complementary optional G2 **control-plane-only fallback** for agents that can access canonical GitHub control/state but not the synchronized artifact root. Projects enable it only when needed. The mode defaults project memory to read-only, uses one-new-report-per-task handoff under `_ai/inbox/`, may optionally use a user-configured external incoming artifact area, and supports bounded read-only `_ai/snapshots/` of selected artifact-root texts with provenance/fingerprints. Reconciliation now explicitly validates task premises as well as results before updating canonical project state.
 
 Version **0.8.8** hardens the lightweight multi-project workspace model from the G2 pilot. Dedicated Project Registry workspaces use verified GitHub-issue registration/update handoffs instead of child projects writing `PROJECTS.md` directly; significant cross-project dependencies keep `Project ID + source-relative path` as durable identity while embedded relative links remain navigation hints; and single-project sessions should prefer the active-project root. Automatically discovered instructions from external/source projects do not activate them or expand write scope, while their source-specific preservation semantics still apply.
+
+Version **0.8.9** implements the G2 pilot operational-hardening package. Sync conflicts may distinguish exact-content verified redundant/stale copies from unknown competing state without auto-deleting them; artifact-only work may retain a minimal noncanonical `_LOCAL_AGENT_HANDOFF/` payload when a report alone cannot preserve reproducibility; brownfield adoption/migration performs only bounded hygiene for inherited execution leftovers; and `_LOCAL_AGENT_REPORT.md` is explicitly interpreted as scope-limited evidence because the reporting agent lacked the GitHub control plane.
 
 ## Bootstrap contract
 
