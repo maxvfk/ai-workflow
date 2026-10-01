@@ -580,3 +580,69 @@ The handoff directory must not become a substitute persistent workspace.
 ### Implementation batching
 
 Implement in Package C together with F-03, F-07 and F-08.
+
+
+---
+
+## F-07 — Imported temporary-work leftovers
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the failure mode, but treat it as a **brownfield/migration/adoption hygiene** issue rather than ordinary G2 runtime overhead.
+
+The pilot case came from work performed before the folder was formalized as a Project Infrastructure project: previous agents had used the folder directly, and one left temporary work files behind. When the existing tree was later adopted/moved into the G2 artifact root, those leftovers arrived with it.
+
+This is expected to be uncommon once normal project workflows are established.
+
+### Bounded hygiene check
+
+After migration/adoption/relocation of an existing tree or substantial folder into the G2 artifact root, perform a bounded check for known or reasonably evidenced execution leftovers.
+
+Prioritize:
+
+- temporary/work directories known from the migration context;
+- agent/harness work areas;
+- `_ai-local-work/`;
+- temporary export/build directories;
+- intermediate files the current context identifies as disposable.
+
+Do not recursively scan the whole project merely for suspicious names, and do not classify a directory as temporary based on its name alone.
+
+### Cleanup authority
+
+Inherited/suspected leftovers are not deleted automatically.
+
+If a directory predates the current managed workflow or its purpose is not fully established:
+
+- identify/report it as a cleanup candidate;
+- preserve it until its status is clear;
+- let the user or an existing explicit cleanup policy decide whether to delete, retain, or reclassify it.
+
+Normal cleanup of a temporary directory created by the current agent during the current task remains allowed when that agent knows it is disposable, canonical outputs are already verified, no required handoff files remain, and ordinary cleanup authority exists.
+
+### Relationship to F-06
+
+Keep three states distinct:
+
+- canonical project artifacts — durable project content;
+- `_LOCAL_AGENT_HANDOFF/` — intentionally retained noncanonical payload awaiting reconciliation;
+- temporary execution leftovers — disposable candidates that should not become project content merely because a folder was moved.
+
+A retained F-06 handoff directory must not be mistaken for migration garbage before reconciliation.
+
+### Scope
+
+Do not run this hygiene check on every G2 startup or ordinary file addition.
+
+Trigger it only when there is a real structural event such as:
+
+- brownfield project adoption;
+- migration into G2;
+- moving/importing an existing substantial folder/tree;
+- relocation where prior temporary work may have been carried into the artifact root.
+
+### Implementation batching
+
+Implement in Package C together with F-03, F-06 and F-08.
