@@ -7,6 +7,8 @@ Purpose: record decisions on F-01…F-16 before applying accepted changes to the
 This file is not part of the standard and does not itself change Project Infrastructure behavior.
 After the audit is fully reviewed, its accepted decisions should be implemented in the standard and this file may be archived, condensed, or removed.
 
+Package A implementation: **Project Infrastructure 0.8.7**, standard commit `ef5dfead4887cdc9c1e35ac4d0d396eeadac5ec2`. Implemented: F-01, F-02, F-15. F-13 remains locally addressed / needs more evidence. F-14 is deferred to Package D.
+
 ## Decision statuses
 
 - `ACCEPT` — accept the finding and implement the agreed change.
