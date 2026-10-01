@@ -9,6 +9,8 @@ After the audit is fully reviewed, its accepted decisions should be implemented 
 
 Package A implementation: **Project Infrastructure 0.8.7**, standard commit `ef5dfead4887cdc9c1e35ac4d0d396eeadac5ec2`. Implemented: F-01, F-02, F-15. F-13 remains locally addressed / needs more evidence. F-14 is deferred to Package D.
 
+Package B implementation: **Project Infrastructure 0.8.8**, standard commit `3c6364cdb570065a103b6e70f6577dffcb6802b8`. Implemented: F-04, F-05, F-16.
+
 ## Decision statuses
 
 - `ACCEPT` — accept the finding and implement the agreed change.
