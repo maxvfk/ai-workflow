@@ -818,4 +818,5 @@ Use the common completion/handoff expectations. For G2 infrastructure work or su
 - temporary-workspace route used when applicable;
 - sync-sanity/conflict result;
 - canonical artifact verification and GitHub project-memory synchronization result;
+- when artifact-only work was reconciled: any retained `_LOCAL_AGENT_HANDOFF/` payload and its disposition, plus any verified redundant/stale copies that materially affected conflict handling;
 - when control-plane-only work was involved: unresolved/processed inbox handoffs, premise discrepancies or task-local overrides that affected applicability, and the disposition of staged external artifacts.
