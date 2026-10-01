@@ -17,9 +17,9 @@ Evidence: GitHub issues #1, #3–#11.
 ## T-003 — Первый real-project pilot
 Status: active
 
-Две реальные L1 brownfield-установки выполнены и проаудированы. Базовая структура сработала; corrective cross-project rule принят в 0.8.2. До завершения pilot нужно разобрать оставшиеся существенные замечания аудита и проверить дальнейшую миграцию одного проекта L1 → G2.
+Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Package A (control-plane-only, snapshots, premise reconciliation) внедрён в 0.8.7. До завершения pilot нужно разобрать и внедрить только согласованные пункты оставшихся пакетов B/C/D.
 
-Evidence: GitHub issue #2.
+Evidence: GitHub issue #2; G2 pilot audit 2026-09.
 
 ## T-004 — Решить private-bootstrap strategy
 Status: todo
