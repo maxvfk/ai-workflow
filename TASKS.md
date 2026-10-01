@@ -17,7 +17,7 @@ Evidence: GitHub issues #1, #3–#11.
 ## T-003 — Первый real-project pilot
 Status: active
 
-Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Package A (control-plane-only, snapshots, premise reconciliation) внедрён в 0.8.7. До завершения pilot нужно разобрать и внедрить только согласованные пункты оставшихся пакетов B/C/D.
+Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Package A внедрён в 0.8.7, Package B — в 0.8.8. До завершения pilot нужно разобрать и внедрить только согласованные пункты оставшихся пакетов C/D.
 
 Evidence: GitHub issue #2; G2 pilot audit 2026-09.
 
@@ -99,3 +99,11 @@ Status: done
 По результатам representative G2 pilot стандартизирован complementary fallback для агента с доступом к GitHub control plane без artifact root. Режим опционален и включается только при реальной потребности; project memory по умолчанию read-only, handoff идёт одним новым отчётом на задачу через `_ai/inbox/`, selected artifact-root texts могут предоставляться как provenance-aware read-only `_ai/snapshots/`, а внешний incoming artifact area создаётся только по запросу пользователя. Full reconciliation проверяет результат, premises и влияние на project state.
 
 Evidence: Project Infrastructure 0.8.7; G2 pilot audit F-01, F-02, F-15.
+
+
+## T-014 — Multi-project workspace hardening
+Status: done
+
+По G2 pilot audit реализован Package B. Для workspace с Project Registry child-проекты не пишут `PROJECTS.md` напрямую, а отправляют registry-owned GitHub Issue handoff, который реестр проверяет по authoritative child metadata. Для значимых cross-project dependencies durable identity остаётся `Project ID + source-relative path`; embedded relative links остаются navigation hints и reconciled boundedly только при реальной реструктуризации. Для single-project local sessions рекомендован active-project root; auto-loaded external-project instructions не активируют соседний проект и не расширяют write scope.
+
+Evidence: Project Infrastructure 0.8.8; G2 pilot audit F-04, F-05, F-16.
