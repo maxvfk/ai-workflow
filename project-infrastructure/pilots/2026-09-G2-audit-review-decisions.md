@@ -318,3 +318,46 @@ Package A may contain only a light allowance that thin product/workspace adapter
 This follows the standard's preference for codifying repeated real patterns rather than designing infrastructure in advance.
 
 Revisit F-13 if a second distinct workspace-level adapter/routing need appears.
+
+
+---
+
+## F-15 — Premise reconciliation for control-only handoff
+
+Status: **ACCEPT**
+
+### Decision
+
+A control-plane-only agent must compare the task's materially relevant premises against the authoritative project context actually available to it before treating a result as applicable to the current project state.
+
+This does not require broad project rereading. Use progressive disclosure and check only premises that materially affect the task against relevant available project memory and approved snapshots.
+
+### Handoff requirements
+
+The control-only handoff report should explicitly record, when applicable:
+
+- conflicts between task/conversation assumptions and recorded project state;
+- explicit task-local hypothetical/sensitivity assumptions that intentionally differ from canonical project values;
+- user-stated project changes that are not yet reflected in canonical project memory;
+- "none" when the relevant premises were checked and no discrepancy exists.
+
+A task-local hypothetical is not itself an error and must not silently replace canonical project state.
+
+A user-stated change may be reported as a proposed state update, but the control-only agent does not update canonical project memory under the default F-01 policy.
+
+### Full-agent reconciliation
+
+Full-access reconciliation must validate not only arithmetic/output correctness but also:
+
+1. which premises the control-only result used;
+2. whether those premises matched project state or were deliberate task-local overrides;
+3. whether a new user decision/state change must be reflected in canonical project memory;
+4. whether the result remains applicable after premise reconciliation.
+
+In short:
+
+reconcile = validate result + validate premises + reconcile state impact
+
+### Pilot status
+
+The SP-LAB-GRANT inbox template already contains a working implementation through its “Расхождения с данными проекта” section. Package A should generalize this behavior into the standard control-plane-only fallback.
