@@ -4,7 +4,7 @@ Last updated: 2026-10-01
 
 ## Статус
 
-Project Infrastructure: **0.8.8 Draft**, pilot-review.
+Project Infrastructure: **0.8.9 Draft**, pilot-review.
 
 Первый dogfood выявил отсутствующий GitHub-only canonical-store case; на этом основании добавлен сценарий **G0 — GitHub Repository**. G0 установлен на самом `maxvfk/ai-workflow`, а cold-start simulation по installed runtime прошла успешно.
 
@@ -34,6 +34,7 @@ Project Infrastructure: **0.8.8 Draft**, pilot-review.
 - В 0.8.6 добавлен G2 artifact-only fallback: локальный/delegated агент без GitHub может выполнять явно заданную bounded работу с artifacts, не имитируя полный project runtime, и оставляет scoped `_LOCAL_AGENT_REPORT.md` для последующего reconciliation.
 - В 0.8.7 по результатам реального G2 pilot добавлен complementary control-plane-only fallback: режим включается только при реальной потребности, default project-memory boundary read-only, handoff идёт через `_ai/inbox/`, selected artifact texts могут передаваться через provenance-aware `_ai/snapshots/`, external incoming area опциональна, а full reconciliation проверяет не только результат, но и premises задачи.
 - В 0.8.8 реализован Package B G2 pilot audit: child→registry lifecycle идёт через verified GitHub Issue handoff без прямой записи в `PROJECTS.md`; cross-project durable identity остаётся `Project ID + source-relative path` без обязательного дублирования каждой embedded link; single-project session рекомендуется root-ить на active project, а auto-loaded external instructions не расширяют write authority.
+- В 0.8.9 реализован Package C: exact-content verified redundant/stale copies не блокируют intact canonical и не удаляются автоматически; artifact-only reproducibility при необходимости сохраняется минимальным `_LOCAL_AGENT_HANDOFF/`; legacy temp-leftover hygiene ограничена brownfield/migration; local-agent report трактуется как scope-limited evidence из-за отсутствия GitHub control-plane context.
 
 ## В работе
 
@@ -42,6 +43,6 @@ Project Infrastructure: **0.8.8 Draft**, pilot-review.
 ## Ближайшие следующие шаги
 
 1. Провести независимый re-review установленного G0 runtime и последних corrective изменений.
-2. Продолжить разбор G2 pilot audit тематическими пакетами C/D и внедрять только согласованные изменения.
+2. Продолжить разбор G2 pilot audit пакетом D и внедрить только согласованные изменения.
 3. После завершения аудита оценить, какие Draft правила требуют дополнительного упрощения или повторной проверки на реальном проекте.
 4. Отдельно решить оставшиеся repository-level вопросы: private bootstrap и граница между infrastructure/model-routing workstreams.
