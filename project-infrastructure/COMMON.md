@@ -236,6 +236,8 @@ Organizational folders such as `PROJECTS/Tokamak/` are ordinary grouping folders
 
 Catalog maintenance may be performed by a dedicated maintenance agent on demand or periodically. A maintenance pass should use bounded discovery: inventory likely project folders, inspect project markers/runtime/manifests, compare them with `PROJECTS.md`, and update stale/missing catalog entries. Do not recursively ingest project artifacts merely to reconcile the catalog.
 
+When the catalog is owned by a dedicated registry project, child projects do **not** gain direct write authority to that registry-owned catalog merely because their own metadata changed. If the workspace has an explicitly configured registry handoff mechanism, a child/bootstrap agent may submit a registration/update request to the registry owner; otherwise report registration as pending. Do not guess a registry repository or handoff endpoint.
+
 **Cross-project relationships**
 
 Keep relationship ownership distributed rather than maintaining a central dependency graph:
@@ -257,11 +259,19 @@ Baseline/version: <when provenance matters>
 
 Use `Project ID + source-relative path` as the durable identity. A current filesystem path such as `../SiblingProject/... ` may be used as a session-resolution hint, but should not be the durable cross-project identity.
 
+For materially important cross-project dependencies referenced **inside user artifacts**, the same durable identity rule applies. An embedded relative filesystem link may remain as a clickable/navigation convenience, but it should not be the only durable identity for a dependency that needs to survive workspace restructuring. The durable locator may live in the artifact itself or in the consuming project's `SOURCES.md`/project memory when that is sufficient; do not mechanically duplicate infrastructure annotations beside every link. Ordinary intra-project relative links are unaffected.
+
+The maintained personal-workspace model assumes normal cross-project resources remain inside the managed `PROJECTS/` workspace and participating projects have stable Project IDs. Legacy/exceptional resources outside that workspace continue to use the existing external-source model; do not invent a Project ID merely to repair a link.
+
+When the workspace structure is actually reorganized, or a project move/adoption can affect cross-project paths, perform a **bounded link reconciliation** for affected projects: inspect relevant cross-boundary relative links, resolve important dependencies through Project ID + canonical source-relative path, update navigation links only where the target is clear and the task requires it, and preserve ambiguity rather than mass-rewriting unrelated user documents.
+
 This workspace/catalog layer does not introduce a new infrastructure scenario and does not require every project to share the same scenario.
 
 **Workspace scope and active-project boundary**
 
 An agent workspace may expose a broader filesystem root than the active project, including the whole `PROJECTS/` tree. Broader visibility is an access convenience, not a change in project ownership.
+
+For an ordinary **single-project** task, prefer opening/rooting the execution session at the active project rather than at the shared `PROJECTS/` root when the tool/environment permits it. Broader workspace access may still be granted for reading external/source projects. This is a recommended operational default that reduces accidental discovery of sibling-project instructions; it is not a security boundary or a guarantee, and the user/operator remains responsible for how a local agent session is launched.
 
 When a workspace contains multiple projects:
 
@@ -273,6 +283,20 @@ When a workspace contains multiple projects:
 - do not modify another project's project memory, canonical artifacts, repository, or source records unless the user/task explicitly includes that project as a modification target;
 - when another project is used only as a source, follow the consuming project's recorded dependency/source references and preserve the source project's canonical files;
 - if several projects must be modified in one task, treat each as an explicit canonical target and apply its own runtime/concurrency/write rules rather than treating the workspace root as one combined project.
+
+**Automatically discovered external-project instructions**
+
+Some execution environments may automatically load `AGENTS.md`, `CLAUDE.md`, or other instruction files from an external/source project when files inside that project are accessed. Project Infrastructure cannot rely on preventing that behavior.
+
+If external-project instructions are auto-loaded:
+
+- they do **not** make that project active;
+- they do **not** expand the current session's write scope;
+- they do **not** override the active project's task-control/runtime authority;
+- they remain relevant for interpreting and preserving that external project's own source semantics, canonical locations, provenance, immutable/read-only constraints, and other source-specific safety rules;
+- if that external project later becomes an explicit modification target, its own runtime governs writes to that project under the multi-project-write rule above.
+
+Product-specific permission, exclusion, or workspace settings may be used as defense in depth, but correctness must not depend on a particular vendor setting or on successfully suppressing instruction auto-loading. Project-local tool-configuration directories such as `.claude/` may exist when useful; they are tool configuration, not project memory merely because they live in the project tree.
 
 A useful session declaration is:
 
