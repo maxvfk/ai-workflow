@@ -91,3 +91,11 @@ Status: done
 Добавлен локальный fallback для G2 без GitHub: bounded artifact work + `_LOCAL_AGENT_REPORT.md`, без локальной копии project memory. Registry profile исключён из автономного fallback.
 
 Evidence: Project Infrastructure 0.8.6.
+
+
+## T-013 — G2 control-plane-only fallback
+Status: done
+
+По результатам representative G2 pilot стандартизирован complementary fallback для агента с доступом к GitHub control plane без artifact root. Режим опционален и включается только при реальной потребности; project memory по умолчанию read-only, handoff идёт одним новым отчётом на задачу через `_ai/inbox/`, selected artifact-root texts могут предоставляться как provenance-aware read-only `_ai/snapshots/`, а внешний incoming artifact area создаётся только по запросу пользователя. Full reconciliation проверяет результат, premises и влияние на project state.
+
+Evidence: Project Infrastructure 0.8.7; G2 pilot audit F-01, F-02, F-15.
