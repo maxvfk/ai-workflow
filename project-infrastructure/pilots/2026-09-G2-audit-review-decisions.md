@@ -399,3 +399,54 @@ The SP-LAB-GRANT inbox template's preference for Unicode formulas is a valid loc
 Implement with Package D (small operational clarifications), not with Package A.
 
 Package A may keep any project-specific inbox guidance already present, but the architectural control-plane-only fallback should not depend on a LaTeX prohibition.
+
+
+---
+
+## F-05 — Durable cross-project references inside artifacts
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but keep the standard change deliberately small and aligned with the expected workspace model.
+
+Normal assumption for the maintained personal workspace:
+
+- cross-project resources live inside the managed `PROJECTS/` workspace;
+- participating projects have stable Project IDs;
+- the workspace folder structure is expected to remain relatively stable, although future restructuring is possible.
+
+Do not introduce a new “resource outside workspace” status and do not require every relative link in every user artifact to carry duplicate infrastructure metadata.
+
+### Durable identity
+
+For materially important cross-project dependencies, the durable identity remains:
+
+`Project ID + path relative to that project's canonical root/store`
+
+A relative filesystem link embedded in a user document may remain as a convenient clickable/navigation hint, but it should not be the only durable identity for a significant cross-project dependency that needs to survive workspace restructuring.
+
+The durable locator may be recorded in the artifact itself when useful, or in the consuming project's `SOURCES.md` / project memory when that is sufficient. Do not add duplicate annotations mechanically to every link.
+
+Ordinary intra-project relative links are unaffected.
+
+### Restructuring / migration
+
+Do not continuously scan or rewrite links merely because future folder restructuring is possible.
+
+When the `PROJECTS/` structure is actually reorganized, or a project is moved/adopted in a way that may affect cross-project paths, perform a **bounded link reconciliation** for the affected projects:
+
+- inspect relevant cross-boundary relative links;
+- resolve important dependencies through Project ID + canonical source-relative path;
+- update navigation links where the task requires it and the target is clear;
+- preserve ambiguity rather than guessing;
+- do not mass-rewrite unrelated user documents.
+
+### Legacy resources outside the workspace
+
+Resources outside `PROJECTS/` are treated as exceptional/legacy external sources using the existing external-source model. Do not add a new infrastructure category for them and do not invent a Project ID merely for link repair.
+
+### Implementation batching
+
+Implement with Package B together with F-04 and F-16.
