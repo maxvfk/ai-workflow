@@ -283,6 +283,41 @@ A report is recommended for delegated/local-agent artifact changes. It is **not 
 
 During a later explicit project reconciliation, a full-access G2 agent may use nearby `_LOCAL_AGENT_REPORT.md` files as bounded evidence alongside the actual artifacts. The report never overrides contradictory canonical artifact evidence or GitHub project state.
 
+Because an artifact-only agent did not have the full GitHub control-plane context, interpret its report as **scope-limited handoff evidence**. It may accurately describe the local work while still lacking current project state, priorities, source registrations, assumptions, decisions, or broader dependencies. In particular, project-wide claims about completeness, absence of other problems, provenance, priority, or state impact require the full-access agent to combine the report with the canonical artifacts and relevant project memory before making project-level conclusions. Do not introduce a special line-by-line re-audit solely because the source is a local-agent report; verification remains proportional to task risk and consequence.
+
+#### Artifact-only reproduction handoff
+
+For generated/transformed outputs, `_LOCAL_AGENT_REPORT.md` should record enough information for later verification/reproduction, as applicable:
+
+- tools/runtime used and materially relevant versions;
+- commands or ordered build steps;
+- important input/output relationships;
+- validation actually performed;
+- retained helper files, if any;
+- what a full-access agent should review, promote, or discard.
+
+A simple reproducible command does not justify retaining extra files.
+
+When exact helper files are materially needed for reproduction, review, or later promotion and the artifact-only agent cannot write them to their proper GitHub home, it may retain the **smallest necessary payload** in a scoped noncanonical directory named:
+
+~~~text
+_LOCAL_AGENT_HANDOFF/
+~~~
+
+Place it next to the relevant `_LOCAL_AGENT_REPORT.md` / changed work scope. Suitable payloads include custom scripts, nontrivial build configuration, or exact templates/config fragments created for the task.
+
+Rules:
+
+- retain only the minimal necessary payload;
+- do not copy the whole temporary/execution workspace;
+- do not place such files into normal project code/tool directories merely because GitHub is unavailable;
+- `_LOCAL_AGENT_HANDOFF/` is staging evidence, not permanent artifact-root tooling and not a canonical source;
+- do not register it as an ordinary canonical source merely because it exists.
+
+During full-access reconciliation, inspect the retained payload. If a helper is reusable project tooling, promote it into the proper canonical GitHub location under normal project rules. Otherwise leave/discard the staged payload according to user/project cleanup authority after reconciliation. The artifact-root handoff copy never becomes canonical merely by existing.
+
+Keep `_LOCAL_AGENT_HANDOFF/` distinct from temporary execution work: the former is intentionally retained until reconciliation; the latter is disposable scratch/intermediate work and should preferably remain outside the artifact root.
+
 ### Control-plane-only fallback
 
 G2 also supports an optional **control-plane-only** fallback for a session/agent that can access the canonical GitHub control repository but cannot access the canonical synchronized artifact root.
@@ -572,6 +607,20 @@ If the artifact root may not be current or internally consistent:
 
 Examples include provider-generated conflict copies, unexpectedly stale files, missing CAD dependencies, offline placeholders, mismatched Project ID, or incompatible edits from another machine.
 
+A suspicious additional copy may be classified as a **verified redundant/stale copy** rather than an unresolved competing version only when **all** of the following are true:
+
+1. the canonical target is unambiguously identified;
+2. the current canonical target has been checked and remains intact;
+3. exact-content comparison (for example SHA-256 or direct byte comparison) proves the suspicious copy is identical either to the verified current canonical artifact or to a specific known prior/archive revision;
+4. the comparison was actually performed — name, size, timestamp, suffix, or visual similarity alone are insufficient;
+5. there is no evidence that the copy contains independent user work or otherwise represents a distinct state.
+
+Two common cases are an exact duplicate of current canonical content and a proven stale copy identical to a known prior/archive revision while the current canonical artifact remains intact.
+
+When these criteria are satisfied, the copy does not block work on the verified canonical target. Report/record it when material, but do **not** automatically delete it merely because redundancy was proven. Cleanup requires ordinary explicit authority because deletion inside a synchronized tree may propagate to other machines.
+
+If any criterion is not satisfied, or the canonical target itself is uncertain/damaged, keep the conservative conflict behavior above.
+
 For CAD/linked-document projects, missing dependencies or unresolved references are possible sync failures; do not automatically rewrite paths.
 
 ## 15. Temporary execution workspace priority
@@ -692,6 +741,12 @@ G2-specific additions:
 - prioritize main application/CAD/data/report entry points rather than every dependent file;
 - preserve both planes and do not reorganize them merely to match G2 defaults.
 
+When adopting/migrating/relocating an **existing substantial tree** into the G2 artifact root, perform a bounded hygiene check for known or reasonably evidenced execution leftovers that may have been carried in from pre-project work. Prioritize temporary/work directories known from migration context, agent/harness work areas, `_ai-local-work/`, temporary export/build directories, and intermediate files whose disposable role is established by context.
+
+Do not recursively scan the whole tree merely for suspicious names, and do not classify a directory as temporary from its name alone. Inherited/suspected leftovers are cleanup candidates, not automatic deletions: preserve them until their status is clear and let the user or an explicit cleanup policy decide whether to delete, retain, or reclassify them.
+
+This hygiene check is for brownfield adoption/migration/structural relocation, not ordinary G2 startup or routine file additions. Do not mistake an intentional `_LOCAL_AGENT_HANDOFF/` payload awaiting reconciliation for disposable migration garbage.
+
 ## 21. G2 bootstrap/reconcile additions
 
 Follow the common bootstrap/reconcile flow from `COMMON.md`.
@@ -706,6 +761,7 @@ G2-specific additions:
 - create or safely merge the local bootstrap `AGENTS.md`;
 - register important artifact paths relative to the artifact root;
 - use the proportional G2 sync-sanity check before canonical artifact writes;
+- after moving an existing synchronized tree, account for the possibility that another device may later publish an older location/state; when practical, verify that relevant devices have synchronized or no longer publish the old state, without making an all-device check mandatory;
 - prefer an external/harness temporary workspace when temporary processing is needed;
 - always make the optional control-plane-only capability discoverable in the canonical GitHub runtime, but leave it disabled/unconfigured unless there is a real user need;
 - when the user explicitly asks to enable control-only/cloud work, configure its canonical `AGENTS.md` section plus only the justified support areas (`_ai/inbox/`, optional `_ai/snapshots/`, optional external incoming area); never create external storage merely because the capability exists.
@@ -729,6 +785,9 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization;
 - if GitHub control access is unavailable, an explicitly assigned bounded artifact-only task may proceed from the local bootstrap plus sufficient user/local context, without pretending full project state was restored;
 - artifact-only agents do not create local substitute project memory and leave a scoped `_LOCAL_AGENT_REPORT.md` after delegated changes;
+- artifact-only reports are scope-limited because the reporting agent lacked the GitHub control plane; full-access reconciliation combines them with canonical artifacts/project memory before project-level conclusions;
+- when reproduction requires retained exact helper files, artifact-only agents may use a minimal scoped `_LOCAL_AGENT_HANDOFF/` payload that remains noncanonical until reviewed/promoted/discarded;
+- verified redundant/stale copies proven by exact-content comparison do not block work on an intact, unambiguous canonical target, but are never auto-deleted solely on that basis;
 - later full-access reconciliation may use local-agent reports as evidence, but actual canonical artifacts and authoritative GitHub project memory remain higher authority;
 - the runtime must state that optional control-plane-only support exists and whether it is currently configured; if disabled, enabling it is an explicit infrastructure task rather than an improvised session behavior;
 - when control-plane-only support is enabled, `AGENTS.md` must self-contain its default read-only project-memory boundary, `_ai/inbox/` handoff rule, any configured external incoming-area locator, snapshot rules when installed, and full-agent reconciliation responsibility.
