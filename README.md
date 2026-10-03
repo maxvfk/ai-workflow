@@ -23,7 +23,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 
 ## Project infrastructure
 
-Current standard version: **0.8.6**  
+Current standard version: **0.8.9**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -41,6 +41,9 @@ Core conventions:
 - users, domain applications, and delegated/local agents may edit canonical artifacts directly; project memory can be reconciled later through an explicit bounded refresh rather than requiring the main orchestrator for every small artifact change.
 - a dedicated G2 Project Registry may maintain `PROJECTS/PROJECTS.md`; its GitHub repo owns runtime/state, while the workspace root gets no parent `AGENTS.md`, and child projects remain authoritative/read-only during registry maintenance.
 - ordinary G2 local/delegated agents without GitHub may perform explicitly bounded artifact-only tasks from sufficient local/user context and leave `_LOCAL_AGENT_REPORT.md` near the changed work for later full-access reconciliation; they do not create substitute project memory or claim full project restoration.
+- G2 may optionally enable a complementary control-plane-only fallback for GitHub-visible/cloud agents without artifact-root access: canonical project memory is read-only by default, handoff uses `_ai/inbox/`, selected text artifacts may be exposed through bounded read-only `_ai/snapshots/`, and an external incoming artifact area is configured only when the user actually needs one.
+- multi-project workspaces keep one active project by default: registry-owned catalogs are updated through verified handoffs rather than child direct writes, important cross-project dependencies use Project ID + source-relative path as durable identity, and auto-loaded sibling instructions never expand write scope.
+- G2 operational hardening distinguishes exact-content verified redundant/stale copies from unresolved conflicts, preserves nontrivial artifact-only build helpers only as minimal `_LOCAL_AGENT_HANDOFF/` staging, and limits temp-leftover hygiene to brownfield/migration events.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
@@ -49,7 +52,7 @@ Implemented Draft scenarios — and the complete active pre-pilot scenario set �
 - **G1 — GitHub + Google Drive:** GitHub is the control/state plane and Drive is the artifact plane; G1 has a ChatGPT Project profile.
 - **G2 — GitHub + Synced Local Folder:** GitHub is the control/state plane, a synchronized ordinary local folder is the artifact root, and control-repo clones never live inside the sync root.
 
-Provider-specific remote storage, remote-only agents, and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios.
+Provider-specific remote-storage scenarios and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios. G2 control-plane-only access is handled as a bounded fallback inside G2 rather than as a separate remote-only scenario.
 
 For bootstrap, migration, or the exact start prompt, read `PROJECT_INFRASTRUCTURE.md`.
 

@@ -17,9 +17,9 @@ Evidence: GitHub issues #1, #3–#11.
 ## T-003 — Первый real-project pilot
 Status: active
 
-Две реальные L1 brownfield-установки выполнены и проаудированы. Базовая структура сработала; corrective cross-project rule принят в 0.8.2. До завершения pilot нужно разобрать оставшиеся существенные замечания аудита и проверить дальнейшую миграцию одного проекта L1 → G2.
+Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Package A внедрён в 0.8.7, Package B — в 0.8.8, Package C — в 0.8.9. До завершения pilot нужно разобрать и внедрить только согласованные пункты Package D.
 
-Evidence: GitHub issue #2.
+Evidence: GitHub issue #2; G2 pilot audit 2026-09.
 
 ## T-004 — Решить private-bootstrap strategy
 Status: todo
@@ -91,3 +91,27 @@ Status: done
 Добавлен локальный fallback для G2 без GitHub: bounded artifact work + `_LOCAL_AGENT_REPORT.md`, без локальной копии project memory. Registry profile исключён из автономного fallback.
 
 Evidence: Project Infrastructure 0.8.6.
+
+
+## T-013 — G2 control-plane-only fallback
+Status: done
+
+По результатам representative G2 pilot стандартизирован complementary fallback для агента с доступом к GitHub control plane без artifact root. Режим опционален и включается только при реальной потребности; project memory по умолчанию read-only, handoff идёт одним новым отчётом на задачу через `_ai/inbox/`, selected artifact-root texts могут предоставляться как provenance-aware read-only `_ai/snapshots/`, а внешний incoming artifact area создаётся только по запросу пользователя. Full reconciliation проверяет результат, premises и влияние на project state.
+
+Evidence: Project Infrastructure 0.8.7; G2 pilot audit F-01, F-02, F-15.
+
+
+## T-014 — Multi-project workspace hardening
+Status: done
+
+По G2 pilot audit реализован Package B. Для workspace с Project Registry child-проекты не пишут `PROJECTS.md` напрямую, а отправляют registry-owned GitHub Issue handoff, который реестр проверяет по authoritative child metadata. Для значимых cross-project dependencies durable identity остаётся `Project ID + source-relative path`; embedded relative links остаются navigation hints и reconciled boundedly только при реальной реструктуризации. Для single-project local sessions рекомендован active-project root; auto-loaded external-project instructions не активируют соседний проект и не расширяют write scope.
+
+Evidence: Project Infrastructure 0.8.8; G2 pilot audit F-04, F-05, F-16.
+
+
+## T-015 — G2 operational hardening
+Status: done
+
+По G2 pilot audit реализован Package C. Exact-content verified redundant/stale copies могут быть отделены от неизвестного competing state при intact/unambiguous canonical, но не удаляются автоматически. Artifact-only агент обязан оставить воспроизводимый handoff; при необходимости exact helper files сохраняются минимальным noncanonical payload в `_LOCAL_AGENT_HANDOFF/` до full reconciliation. Brownfield/migration hygiene проверяет только обоснованные inherited execution leftovers, а `_LOCAL_AGENT_REPORT.md` трактуется как scope-limited evidence из-за отсутствия у reporting agent GitHub control-plane context.
+
+Evidence: Project Infrastructure 0.8.9; G2 pilot audit F-03, F-06, F-07, F-08.

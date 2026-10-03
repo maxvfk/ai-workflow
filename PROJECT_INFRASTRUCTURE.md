@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.6  
+**Standard version:** 0.8.9  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -81,6 +81,12 @@ Version **0.8.5** adds the **G2 / Project Registry** profile for a small persona
 
 Version **0.8.6** adds G2 **artifact-only fallback** for local/delegated agents without GitHub control-plane access. The local bootstrap now permits explicitly assigned bounded artifact work from sufficient user/local context, forbids substitute project-memory/state claims, and standardizes a scoped `_LOCAL_AGENT_REPORT.md` handoff near changed files. Full-access agents may use these reports during later reconciliation. The Project Registry profile explicitly does not treat this fallback as autonomous registry maintenance.
 
+Version **0.8.7** adds the complementary optional G2 **control-plane-only fallback** for agents that can access canonical GitHub control/state but not the synchronized artifact root. Projects enable it only when needed. The mode defaults project memory to read-only, uses one-new-report-per-task handoff under `_ai/inbox/`, may optionally use a user-configured external incoming artifact area, and supports bounded read-only `_ai/snapshots/` of selected artifact-root texts with provenance/fingerprints. Reconciliation now explicitly validates task premises as well as results before updating canonical project state.
+
+Version **0.8.8** hardens the lightweight multi-project workspace model from the G2 pilot. Dedicated Project Registry workspaces use verified GitHub-issue registration/update handoffs instead of child projects writing `PROJECTS.md` directly; significant cross-project dependencies keep `Project ID + source-relative path` as durable identity while embedded relative links remain navigation hints; and single-project sessions should prefer the active-project root. Automatically discovered instructions from external/source projects do not activate them or expand write scope, while their source-specific preservation semantics still apply.
+
+Version **0.8.9** implements the G2 pilot operational-hardening package. Sync conflicts may distinguish exact-content verified redundant/stale copies from unknown competing state without auto-deleting them; artifact-only work may retain a minimal noncanonical `_LOCAL_AGENT_HANDOFF/` payload when a report alone cannot preserve reproducibility; brownfield adoption/migration performs only bounded hygiene for inherited execution leftovers; and `_LOCAL_AGENT_REPORT.md` is explicitly interpreted as scope-limited evidence because the reporting agent lacked the GitHub control plane.
+
 ## Bootstrap contract
 
 This file is the single external entry point for project initialization, infrastructure validation, repair, or migration.
@@ -158,7 +164,7 @@ External-standard access is required again only for explicit initialization, inf
 | **G0** | [GitHub Repository](project-infrastructure/G0_GITHUB_REPOSITORY.md) | Draft | One GitHub repository is the single canonical store for project runtime/state and ordinary Git-suitable text/code/configuration artifacts; local clones are access/execution paths. |
 | **L1** | [Local folder](project-infrastructure/L1_LOCAL_FOLDER.md) | Draft | The project primarily lives in a normal local filesystem folder and the active agent has direct filesystem access. |
 | **G1** | [GitHub + Google Drive](project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md) | Draft | One logical project uses a dedicated GitHub repository for project state/text/code and a dedicated Google Drive folder for documents/large artifacts; workflow selection is based on observable available operations and target state, with connectors/browser/local workspaces used only when they safely support the intended operation. |
-| **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root; a thin local `AGENTS.md` bootstraps GitHub access, project-memory access is API/connector-first or via a clone outside the sync root, and task checks scale with risk. |
+| **G2** | [GitHub + Synced Local Folder](project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md) | Draft | GitHub is the canonical project control/state plane while a synchronized ordinary local folder is the canonical artifact root; a thin local `AGENTS.md` bootstraps GitHub access, task checks scale with risk, and optional bounded artifact-only/control-plane-only fallbacks cover sessions that can access only one canonical plane. |
 
 ### G1 profiles
 
@@ -184,7 +190,7 @@ If Yandex Disk, OneDrive, Google Drive for desktop, Syncthing, or another servic
 
 ## Deferred ideas
 
-Provider-specific remote storage, remote-only agent access, and stronger multi-agent coordination are intentionally **outside the active pre-pilot scenario set**. See [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md). They should not influence scenario selection unless explicitly reintroduced through a future standard revision.
+Provider-specific remote-storage scenarios and stronger multi-agent coordination are intentionally **outside the active pre-pilot scenario set**. G2's bounded control-plane-only fallback is an access mode within G2, not a provider-specific remote-storage scenario. See [`project-infrastructure/ROADMAP.md`](project-infrastructure/ROADMAP.md). They should not influence scenario selection unless explicitly reintroduced through a future standard revision.
 
 ## Minimal invocation
 

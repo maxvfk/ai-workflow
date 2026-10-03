@@ -1,0 +1,683 @@
+# Review decisions: G2 pilot audit 2026-09
+
+Status: temporary working file for review of `2026-09-G2-SP-LAB-GRANT.md`.
+Branch: `claude/g2-pilot-report-sp-lab-grant`.
+Purpose: record decisions on F-01…F-16 before applying accepted changes to the standard in thematic batches.
+
+This file is not part of the standard and does not itself change Project Infrastructure behavior.
+After the audit is fully reviewed, its accepted decisions should be implemented in the standard and this file may be archived, condensed, or removed.
+
+Package A implementation: **Project Infrastructure 0.8.7**, standard commit `ef5dfead4887cdc9c1e35ac4d0d396eeadac5ec2`. Implemented: F-01, F-02, F-15. F-13 remains locally addressed / needs more evidence. F-14 is deferred to Package D.
+
+Package B implementation: **Project Infrastructure 0.8.8**, standard commit `3c6364cdb570065a103b6e70f6577dffcb6802b8`. Implemented: F-04, F-05, F-16.
+
+Package C implementation: **Project Infrastructure 0.8.9**, standard commit `ead9eebcfd8b0e253b9c1b6230dd3dd71a78def4`. Implemented: F-03, F-06, F-07, F-08.
+
+## Decision statuses
+
+- `ACCEPT` — accept the finding and implement the agreed change.
+- `MODIFY` — accept the underlying issue, but implement a different solution.
+- `ALREADY ADDRESSED` — the issue is already sufficiently covered by later work.
+- `REJECT` — do not change the standard for this finding.
+- `NEEDS MORE EVIDENCE` — keep under observation before standardizing.
+
+---
+
+## F-01 — Control-plane-only / cloud-agent mode
+
+Status: **ACCEPT**
+
+### Decision
+
+Add an optional capability-based control-plane-only mode to G2 for agents that can access the canonical GitHub control plane but cannot access the canonical artifact root.
+
+Do not create a new G2 scenario or project type. This is a session/access mode within an ordinary G2 project.
+
+The implementation already piloted in `SP-LAB-GRANT` is the preferred baseline.
+
+### Default behavior
+
+When the mode is enabled for a project, its canonical `AGENTS.md` must contain the operational rules for such agents.
+
+Default permissions:
+
+- project memory and other available control-plane context: read;
+- approved snapshots, when configured: read-only;
+- existing project-memory/control files: do not modify;
+- handoff: create one new report per task under `_ai/inbox/`;
+- artifact-root content not actually seen by the agent must not be treated as verified.
+
+A full-access G2 agent later reconciles the report, updates canonical project memory as needed, and handles promotion/registration of artifacts.
+
+### External incoming artifact area
+
+A writable external incoming area is **optional**, not a required part of G2 or of control-plane-only mode.
+
+It is configured only when the user wants cloud/control-only agents to create artifacts that cannot or should not live in the GitHub control repository.
+
+The standard must be provider-neutral. Google Drive is one valid implementation, not a requirement.
+
+If configured:
+
+- its exact locator/configuration is recorded in the project's canonical `AGENTS.md`;
+- files created there are noncanonical until reconciliation/promotion;
+- the full G2 agent understands how to process them during reconciliation;
+- destructive cleanup of the external incoming area is not automatic unless the project explicitly defines otherwise.
+
+If no incoming area is configured, the mode can still be enabled for analysis and GitHub-side handoff, but the cloud agent must not invent another writable artifact store.
+
+### Installation / enablement
+
+Ordinary G2 bootstrap must **not** automatically create an external Drive folder or other third-party storage.
+
+The full G2 agent should know from the standard that this optional mode exists and should enable/configure it when the user asks to use cloud/control-only agents for the project.
+
+Enabling the mode may involve:
+
+- adding the cloud/control-only section to canonical `AGENTS.md`;
+- creating/configuring `_ai/inbox/` and its report template;
+- optionally configuring an external incoming artifact area at the user's request;
+- optionally installing snapshots and thin product adapters, subject to the decisions for F-02 and F-13.
+
+### Rationale
+
+The strict read-only project-memory policy from the `SP-LAB-GRANT` pilot is preferred as the default because a control-only agent cannot verify the second canonical G2 plane. Proposed state changes should flow through the inbox report and be reconciled by an agent with full access.
+
+Explicit user-directed exceptional edits to control-plane files remain possible, but are not the default behavior of this fallback mode.
+
+### Implementation batching
+
+Implement together with the related cloud/control-only findings, especially F-02, F-13 and F-15, rather than patching the standard immediately after F-01 alone.
+
+
+---
+
+## F-02 — Snapshots for agents without artifact-root access
+
+Status: **ACCEPT**
+
+### Decision
+
+Add an optional `_ai/snapshots/` mechanism to G2 for bounded read-only representations of selected canonical artifact-root text documents, primarily for control-plane-only/cloud-agent sessions.
+
+Snapshots are derived context, not a second canonical artifact store and not a mirror of the artifact root.
+
+### Snapshot requirements
+
+Each snapshot should clearly record at least:
+
+- read-only / derived status;
+- canonical source path relative to the artifact root;
+- capture date;
+- full source fingerprint (SHA-256) for the original at capture time;
+- explicit statement that the canonical original remains in the artifact root.
+
+Optional metadata may include source record ID and source revision.
+
+### Behavior
+
+Control-plane-only agents:
+
+- may read snapshots;
+- must not edit them;
+- must not present a snapshot as the current original;
+- must account for snapshot age/provenance in conclusions.
+
+Full G2 agents:
+
+- create snapshots only from the actual canonical original;
+- may compare the recorded source fingerprint during reconciliation;
+- replace stale snapshots as a whole rather than editing them as independent documents;
+- keep snapshot selection deliberate and bounded rather than mirroring the artifact root.
+
+Snapshots are not registered as independent sources in `SOURCES.md` when the canonical original is already the source of record.
+
+### Index
+
+If snapshots are enabled, `_ai/snapshots/README.md` should act as the index and explain the rules.
+
+A derived project-parameter summary inside that README is optional. If present, it is also derived context and may be stale; source snapshots outrank the summary, and canonical originals outrank snapshots.
+
+The index does not need a second authoritative abbreviated hash representation; the full fingerprint in snapshot metadata is sufficient.
+
+### Relationship to F-01
+
+Snapshots are optional. Enabling control-plane-only mode does not automatically create snapshots or copy artifact-root documents.
+
+The full G2 agent may recommend adding/removing snapshots when repeated cloud-agent work would benefit, but snapshot composition should remain deliberate and bounded.
+
+### Implementation batching
+
+Implement with the F-01 cloud/control-only package rather than as an independent scenario or mandatory G2 component.
+
+
+---
+
+## F-03 — Verified redundant/stale copies
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do not standardize a sync-provider-specific concept such as “provable synchronizer duplicate”.
+
+Instead, add a general G2 rule for **verified redundant/stale copies**: a suspicious additional file does not need to block work when exact-content comparison proves that it contains no new competing state.
+
+### Classification criteria
+
+A suspicious additional copy may be treated as redundant/stale only when all of the following are true:
+
+1. the canonical target is unambiguously identified;
+2. the current canonical target has been checked and remains intact;
+3. the suspicious copy is proven by exact-content comparison (e.g. SHA-256 or direct byte comparison) to be identical either to:
+   - the verified current canonical artifact, or
+   - a specific known prior/archive revision;
+4. the comparison was actually performed; matching name, size, timestamp, revision suffix, or visual similarity alone is insufficient;
+5. there is no evidence that the copy contains independent user work or otherwise represents a distinct state.
+
+Two useful cases:
+
+- **exact duplicate of current** — content-identical to the current canonical artifact;
+- **proven stale copy** — content-identical to a known prior/archive revision while the current canonical artifact remains intact.
+
+### Behavior
+
+When the above criteria are satisfied:
+
+- the copy is not treated as an unresolved competing version;
+- work on the verified canonical target may continue;
+- the duplicate/stale copy may be recorded or reported when material;
+- the agent must not automatically delete it merely because redundancy was proven.
+
+Cleanup/deletion requires explicit authority because deletion in a synchronized filesystem may propagate to other machines.
+
+### Unresolved competing state
+
+If the suspicious copy is not content-identical to a verified current or known prior state, or the canonical target itself is uncertain/damaged, the existing conservative G2 rule remains unchanged:
+
+- do not choose a winner silently;
+- do not overwrite or delete competing copies;
+- reconcile or ask the user.
+
+### Migration hygiene
+
+Do not make “check every other machine” a mandatory G2 rule.
+
+Add only a short migration recommendation: after moving an existing synchronized tree, account for the possibility that another device may later publish an older location/state; when practical, verify that other relevant devices have synchronized or no longer publish the old state.
+
+### Implementation batching
+
+Implement in the G2 synchronization/conflict-handling package together with related operational findings rather than as a standalone version bump.
+
+
+---
+
+## F-04 — Registry registration/update request
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do **not** allow child projects to directly modify the registry-owned `PROJECTS/PROJECTS.md`.
+
+Preserve the existing ownership boundary:
+
+- child project owns and is authoritative for its own runtime/manifest/project metadata;
+- `PROJECTS-REGISTRY` owns the workspace catalog `PROJECTS.md`;
+- child projects do not receive a special bootstrap exception for writing another project's canonical artifact.
+
+### Handoff mechanism
+
+When a project in a workspace with a configured Project Registry is created, adopted, migrated, renamed/moved, archived, or otherwise changes registry-relevant metadata, its full/bootstrap agent may create a **GitHub Issue in the registry control repository** as a registration/update request.
+
+For the current reference implementation:
+
+`maxvfk/projects-registry`
+
+The issue is a handoff/trigger, not authoritative registry state.
+
+Suggested minimal fields:
+
+- requested operation: add / update / move-or-rename / scenario migration / archive;
+- Project ID;
+- human-readable project name;
+- GitHub repository when applicable;
+- scenario/profile;
+- local path hint when known;
+- short reason/context when useful.
+
+### Registry processing
+
+The registry agent must not blindly copy issue fields into `PROJECTS.md`.
+
+When processing a request it should:
+
+1. read the authoritative child runtime/manifest/project metadata needed to verify identity;
+2. re-read the current `PROJECTS.md`;
+3. verify Project ID, repository, scenario and other relevant metadata;
+4. verify the local path against the connected workspace when available;
+5. add/update the registry entry only after verification;
+6. update any registry-owned derived routing metadata when applicable;
+7. close the request with a concise result or leave it open when required verification is unavailable.
+
+If the local workspace is unavailable, the request may remain pending rather than inventing/assuming a verified local path.
+
+### Bootstrap behavior
+
+When the active workspace is known to use a configured Project Registry, project bootstrap should check whether registry registration is already satisfied.
+
+If not, and the registry repository is known and writable, creating the issue is an appropriate completion handoff and does not require direct catalog modification.
+
+If the request cannot be created, bootstrap remains valid; report registry registration as pending.
+
+Do not guess a registry repository when it is not explicitly configured/discoverable.
+
+### Rationale
+
+This preserves:
+
+- one canonical writer/owner for `PROJECTS.md`;
+- child-project authority over its own identity;
+- no cross-project direct writes;
+- optimistic/concurrent safety around the shared catalog;
+- a lightweight, auditable lifecycle for pending registry work.
+
+The issue mechanism also generalizes beyond initial registration to later rename/move/migration/archive events.
+
+### Related registry-derived metadata
+
+Child projects should not directly edit registry-owned routing files such as `CLOUD_PROJECTS.md`.
+
+When relevant, the registry agent updates those derived/maintained representations as part of processing the verified request.
+
+
+---
+
+## F-13 — Workspace-level cloud routing/adapters
+
+Status: **NEEDS MORE EVIDENCE / locally addressed**
+
+### Decision
+
+The architectural gap is real: a cloud/workspace-level agent may need a GitHub-visible routing entry point before it can determine which child project runtime to enter, while the local `PROJECTS.md` registry artifact is unavailable to that agent.
+
+However, do not generalize this into a mandatory Project Infrastructure feature yet.
+
+The current workspace need is already handled locally by:
+
+`maxvfk/projects-registry/CLOUD_PROJECTS.md`
+
+which acts as a thin routing index from workspace-level cloud agents to the selected child repository and its canonical `AGENTS.md`.
+
+### Current policy
+
+- keep and use `CLOUD_PROJECTS.md` in the registry control repository;
+- treat `projects-registry` as its natural owner;
+- do not put a parent runtime or adapter into the local `PROJECTS/` root;
+- do not move workspace-level routing into an arbitrary child project;
+- do not standardize a general workspace-adapter hierarchy until another real use case appears.
+
+Package A may contain only a light allowance that thin product/workspace adapters are permitted when useful, without defining a required structure or lifecycle.
+
+### Rationale
+
+This follows the standard's preference for codifying repeated real patterns rather than designing infrastructure in advance.
+
+Revisit F-13 if a second distinct workspace-level adapter/routing need appears.
+
+
+---
+
+## F-15 — Premise reconciliation for control-only handoff
+
+Status: **ACCEPT**
+
+### Decision
+
+A control-plane-only agent must compare the task's materially relevant premises against the authoritative project context actually available to it before treating a result as applicable to the current project state.
+
+This does not require broad project rereading. Use progressive disclosure and check only premises that materially affect the task against relevant available project memory and approved snapshots.
+
+### Handoff requirements
+
+The control-only handoff report should explicitly record, when applicable:
+
+- conflicts between task/conversation assumptions and recorded project state;
+- explicit task-local hypothetical/sensitivity assumptions that intentionally differ from canonical project values;
+- user-stated project changes that are not yet reflected in canonical project memory;
+- "none" when the relevant premises were checked and no discrepancy exists.
+
+A task-local hypothetical is not itself an error and must not silently replace canonical project state.
+
+A user-stated change may be reported as a proposed state update, but the control-only agent does not update canonical project memory under the default F-01 policy.
+
+### Full-agent reconciliation
+
+Full-access reconciliation must validate not only arithmetic/output correctness but also:
+
+1. which premises the control-only result used;
+2. whether those premises matched project state or were deliberate task-local overrides;
+3. whether a new user decision/state change must be reflected in canonical project memory;
+4. whether the result remains applicable after premise reconciliation.
+
+In short:
+
+reconcile = validate result + validate premises + reconcile state impact
+
+### Pilot status
+
+The SP-LAB-GRANT inbox template already contains a working implementation through its “Расхождения с данными проекта” section. Package A should generalize this behavior into the standard control-plane-only fallback.
+
+
+---
+
+## F-14 — Escape-sensitive text writes
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying operational failure mode, but do not make it a cloud-specific rule and do not ban LaTeX or backslash syntax globally.
+
+Treat this as a general text-write integrity issue for programmatic/API-driven writes where escape-sensitive sequences may be transformed by an intermediate serialization layer.
+
+### Standard rule
+
+When writing text through an API/tool path that may interpret escape sequences:
+
+- do not assume the transmitted string was preserved byte-for-byte;
+- for important escape-sensitive content (for example LaTeX commands, regexes, Windows paths, shell/code fragments), verify the stored result after the write;
+- when a human-readable equivalent is sufficient, plain Unicode notation may be preferred to reduce escaping risk;
+- if the exact syntax matters, preserve the syntax and validate the persisted file rather than replacing it with a lossy workaround.
+
+Examples of risky sequences include backslash-prefixed text such as `\r`, `\n`, `\t`, LaTeX commands, and path separators when they pass through string-literal or JSON-like layers.
+
+### Scope
+
+This is not a defect in GitHub, Markdown, LaTeX, or G2 itself. It is a possible failure in a specific tool/serialization path.
+
+The SP-LAB-GRANT inbox template's preference for Unicode formulas is a valid local mitigation, but the general standard should remain syntax-neutral.
+
+### Implementation batching
+
+Implement with Package D (small operational clarifications), not with Package A.
+
+Package A may keep any project-specific inbox guidance already present, but the architectural control-plane-only fallback should not depend on a LaTeX prohibition.
+
+
+---
+
+## F-05 — Durable cross-project references inside artifacts
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but keep the standard change deliberately small and aligned with the expected workspace model.
+
+Normal assumption for the maintained personal workspace:
+
+- cross-project resources live inside the managed `PROJECTS/` workspace;
+- participating projects have stable Project IDs;
+- the workspace folder structure is expected to remain relatively stable, although future restructuring is possible.
+
+Do not introduce a new “resource outside workspace” status and do not require every relative link in every user artifact to carry duplicate infrastructure metadata.
+
+### Durable identity
+
+For materially important cross-project dependencies, the durable identity remains:
+
+`Project ID + path relative to that project's canonical root/store`
+
+A relative filesystem link embedded in a user document may remain as a convenient clickable/navigation hint, but it should not be the only durable identity for a significant cross-project dependency that needs to survive workspace restructuring.
+
+The durable locator may be recorded in the artifact itself when useful, or in the consuming project's `SOURCES.md` / project memory when that is sufficient. Do not add duplicate annotations mechanically to every link.
+
+Ordinary intra-project relative links are unaffected.
+
+### Restructuring / migration
+
+Do not continuously scan or rewrite links merely because future folder restructuring is possible.
+
+When the `PROJECTS/` structure is actually reorganized, or a project is moved/adopted in a way that may affect cross-project paths, perform a **bounded link reconciliation** for the affected projects:
+
+- inspect relevant cross-boundary relative links;
+- resolve important dependencies through Project ID + canonical source-relative path;
+- update navigation links where the task requires it and the target is clear;
+- preserve ambiguity rather than guessing;
+- do not mass-rewrite unrelated user documents.
+
+### Legacy resources outside the workspace
+
+Resources outside `PROJECTS/` are treated as exceptional/legacy external sources using the existing external-source model. Do not add a new infrastructure category for them and do not invent a Project ID merely for link repair.
+
+### Implementation batching
+
+Implement with Package B together with F-04 and F-16.
+
+
+---
+
+## F-16 — External-project instruction auto-loading
+
+Status: **ACCEPT**
+
+### Decision
+
+Accept the finding and address it with two layers: preferred session rooting plus explicit authority semantics.
+
+### Preferred session root
+
+For an ordinary single-project task in a multi-project workspace, prefer opening the execution session/workspace at the **active project root**, not at the shared `PROJECTS/` root, when the tool/environment allows this.
+
+Broader workspace access may still be granted for reading external/source projects.
+
+This reduces accidental discovery/auto-loading of sibling project instruction files in environments that scan child directories.
+
+This is a recommended operational default, not a guarantee. The user/operator remains responsible for how a local agent session is launched.
+
+### Authority when foreign instructions are auto-loaded
+
+Automatically discovered instructions from an external/source project:
+
+- do **not** make that project active;
+- do **not** expand the session's write scope;
+- do **not** override the active project's task-control/runtime authority.
+
+The active project's runtime governs the current task and write authority.
+
+External-project instructions remain relevant only for interpreting and preserving that external project's own sources, canonical locations, read-only constraints, provenance, and other source-specific safety semantics.
+
+If an external project later becomes an explicit modification target, then its own runtime governs writes to that project under the existing multi-project write rules.
+
+### Product-specific defense in depth
+
+Tool-specific mechanisms such as Claude Code permissions, project-local settings, or instruction-exclusion settings may be used as additional defense in depth, but they are not the foundation of the Project Infrastructure boundary.
+
+Do not make correctness depend on a specific vendor setting or on successfully preventing instruction auto-loading.
+
+Project-local tool configuration directories (for example `.claude/`) may exist as tool configuration when justified; they are not project memory merely because they live in the project tree.
+
+### Pilot evidence
+
+The SP-LAB-GRANT pilot first showed that avoiding `cd` into an external project was insufficient: the environment could still auto-load its instructions when reading a file there.
+
+A later pilot refinement (SP-LAB-GRANT commit `628fc48`) identified a practical mitigation for Claude Code: root the session in the active project rather than the shared `PROJECTS/` root, then optionally use product-specific permissions/exclusion settings for broader workspace access.
+
+### Implementation batching
+
+Implement with Package B together with F-04 and F-05.
+
+
+---
+
+## F-06 — Artifact-only build tooling handoff
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the underlying issue, but do not turn the synchronized artifact root into a second canonical code/tooling store.
+
+Artifact-only work must preserve enough information for later verification/reproduction. Use two layers:
+
+1. `_LOCAL_AGENT_REPORT.md` always records the minimally sufficient build/reproduction procedure;
+2. when prose/commands are not enough, the artifact-only agent may retain the smallest exact file payload needed for reproduction/review in a scoped noncanonical handoff directory:
+
+`_LOCAL_AGENT_HANDOFF/`
+
+Place the handoff directory next to the relevant `_LOCAL_AGENT_REPORT.md` / changed work scope.
+
+### Report requirements
+
+For artifact-only generated/transformed outputs, the report should record as applicable:
+
+- tools/runtime used;
+- important versions when they materially affect reproduction;
+- commands or ordered build steps;
+- input/output relationship;
+- retained handoff payload files;
+- validation actually performed;
+- what a full-access agent should review/promote/discard.
+
+A simple reproducible command does not justify creating retained helper files.
+
+### Handoff payload
+
+Use `_LOCAL_AGENT_HANDOFF/` only when exact files are materially useful for reproduction, verification, or later promotion, for example:
+
+- custom scripts;
+- nontrivial build configuration;
+- exact templates/config fragments created for the task.
+
+Rules:
+
+- retain only the minimal necessary payload;
+- do not copy the whole temporary/execution workspace;
+- do not use normal project code/tool directories such as `src/`, `tools/`, or `Calculations/scripts/` merely because GitHub is unavailable;
+- handoff payload is noncanonical staging evidence, not permanent artifact-root tooling;
+- do not register it as an ordinary canonical source merely because it exists.
+
+### Reconciliation lifecycle
+
+During full-access reconciliation:
+
+1. read the report and inspect retained payload;
+2. verify whether the output remains reproducible/applicable;
+3. decide whether any helper file is reusable project tooling;
+4. if reusable, promote it to the proper canonical GitHub location under normal project rules;
+5. otherwise leave/discard the staged payload according to user/project cleanup authority after reconciliation.
+
+Promotion changes canonical status; the artifact-root handoff copy never becomes canonical merely by existing.
+
+### Relationship to temporary work
+
+Keep a strict distinction:
+
+- temporary execution workspace = scratch/intermediate work, preferably outside the artifact root and not expected to survive;
+- `_LOCAL_AGENT_HANDOFF/` = deliberately retained minimal handoff payload awaiting reconciliation.
+
+The handoff directory must not become a substitute persistent workspace.
+
+### Implementation batching
+
+Implement in Package C together with F-03, F-07 and F-08.
+
+
+---
+
+## F-07 — Imported temporary-work leftovers
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the failure mode, but treat it as a **brownfield/migration/adoption hygiene** issue rather than ordinary G2 runtime overhead.
+
+The pilot case came from work performed before the folder was formalized as a Project Infrastructure project: previous agents had used the folder directly, and one left temporary work files behind. When the existing tree was later adopted/moved into the G2 artifact root, those leftovers arrived with it.
+
+This is expected to be uncommon once normal project workflows are established.
+
+### Bounded hygiene check
+
+After migration/adoption/relocation of an existing tree or substantial folder into the G2 artifact root, perform a bounded check for known or reasonably evidenced execution leftovers.
+
+Prioritize:
+
+- temporary/work directories known from the migration context;
+- agent/harness work areas;
+- `_ai-local-work/`;
+- temporary export/build directories;
+- intermediate files the current context identifies as disposable.
+
+Do not recursively scan the whole project merely for suspicious names, and do not classify a directory as temporary based on its name alone.
+
+### Cleanup authority
+
+Inherited/suspected leftovers are not deleted automatically.
+
+If a directory predates the current managed workflow or its purpose is not fully established:
+
+- identify/report it as a cleanup candidate;
+- preserve it until its status is clear;
+- let the user or an existing explicit cleanup policy decide whether to delete, retain, or reclassify it.
+
+Normal cleanup of a temporary directory created by the current agent during the current task remains allowed when that agent knows it is disposable, canonical outputs are already verified, no required handoff files remain, and ordinary cleanup authority exists.
+
+### Relationship to F-06
+
+Keep three states distinct:
+
+- canonical project artifacts — durable project content;
+- `_LOCAL_AGENT_HANDOFF/` — intentionally retained noncanonical payload awaiting reconciliation;
+- temporary execution leftovers — disposable candidates that should not become project content merely because a folder was moved.
+
+A retained F-06 handoff directory must not be mistaken for migration garbage before reconciliation.
+
+### Scope
+
+Do not run this hygiene check on every G2 startup or ordinary file addition.
+
+Trigger it only when there is a real structural event such as:
+
+- brownfield project adoption;
+- migration into G2;
+- moving/importing an existing substantial folder/tree;
+- relocation where prior temporary work may have been carried into the artifact root.
+
+### Implementation batching
+
+Implement in Package C together with F-03, F-06 and F-08.
+
+
+---
+
+## F-08 — Scope-limited artifact-only handoff
+
+Status: **MODIFY**
+
+### Decision
+
+Accept the useful lesson from the finding, but do not introduce a special verification/audit procedure for `_LOCAL_AGENT_REPORT.md`.
+
+Any agent-generated handoff can contain mistakes. The artifact-only case is distinctive mainly because the reporting agent **did not have the full project picture**: it could see the assigned artifact scope but not the canonical GitHub control plane and therefore may lack current state, priorities, source registrations, decisions, assumptions, or broader dependencies.
+
+### Interpretation rule
+
+Treat `_LOCAL_AGENT_REPORT.md` as scoped handoff evidence about the local work the artifact-only agent actually performed.
+
+When using it during full-access reconciliation, remember that:
+
+- factual observations about changed artifacts are useful navigation/evidence but do not outrank the artifacts themselves;
+- conclusions about project-wide completeness, absence of other problems, project-state impact, priority, provenance, or whether further work is needed may be limited by the agent's missing control-plane context;
+- the full-access agent should combine the report with the canonical artifacts and relevant project memory before making project-level conclusions or updates.
+
+Do not require a special line-by-line re-audit or mandatory spot-check regime solely because the source is `_LOCAL_AGENT_REPORT.md`. Verification remains proportional to the task and consequence, as with other agent-generated handoffs.
+
+### Pilot evidence
+
+In the pilot, the artifact-only report listed four broken links while later full-context reconciliation found seven. This demonstrates the expected limitation of a scoped handoff rather than requiring a separate report-verification subsystem.
+
+### Implementation batching
+
+Implement as a concise clarification in the G2 artifact-only reconciliation guidance together with Package C (F-03, F-06, F-07).
