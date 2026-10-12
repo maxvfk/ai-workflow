@@ -733,3 +733,43 @@ Package D should:
 ### Implementation batching
 
 Implement with Package D together with F-10, F-11, F-12 and F-14.
+
+
+---
+
+## F-10 — Bootstrap language
+
+Status: **ACCEPT**
+
+### Decision
+
+The human-facing prose of a project's local/bootstrap `AGENTS.md` should normally follow the project's installed **Project-memory language**.
+
+For the user's projects the expected default is usually `ru`, consistent with the existing COMMON default, unless the user explicitly chooses another language or the project already has an established different project-memory language.
+
+Keep stable infrastructure labels, filenames, identifiers, and controlled machine-like values in their defined English forms.
+
+Example for a Russian G2 project:
+
+```text
+Project: <human-readable project name>
+Project ID: TOK-HTS-SYS
+Scenario: G2
+Project-memory language: ru
+Canonical project control:
+https://github.com/<owner>/<repo>
+```
+
+The explanatory/bootstrap prose below those fields should be written in Russian when `Project-memory language: ru`.
+
+### Local bootstrap language field
+
+Add an explicit `Project-memory language: <code>` field to the recommended G2 local bootstrap so an artifact-only agent that cannot access the GitHub control plane can still determine the intended language for handoff prose such as `_LOCAL_AGENT_REPORT.md`.
+
+### Preservation rule
+
+Do not translate already initialized bootstrap/runtime files merely for cosmetic consistency. Preserve the installed project language unless the user explicitly changes it or an explicit infrastructure migration/update justifies rewriting the managed bootstrap block.
+
+### Implementation batching
+
+Implement with Package D together with F-09, F-11, F-12 and F-14.
