@@ -1,314 +1,162 @@
 # AI Model Current State
 
-**Last updated:** 2026-10-05  
-**Previous snapshot:** 2026-10-03  
-**Scope:** OpenAI + Anthropic, optimized for **ChatGPT Plus** and **Claude Pro (~$20/month)**.  
-**Policy:** Treat **Claude Fable 5/5.1** as a last-resort option on Claude Pro because Anthropic bills them from pay-as-you-go usage credits rather than the normal Pro allowance.
+**Last updated:** 2026-10-12  
+**Previous snapshot:** 2026-10-05  
+**Scope:** OpenAI and Anthropic; practical routing for **ChatGPT Plus** and **Claude Pro (~$20/month US)**.  
+**Cost policy:** **Claude Fable 5/5.1 = last resort** on Pro: usage credits are charged from the first request, outside normal Pro allowance.
 
-> Weekly snapshot, not permanent truth. Before an important routing decision, run a short delta-check after `Last updated` and only for capabilities relevant to the task.
+> Weekly point-in-time snapshot, not a guarantee of account-specific access. Re-check the model picker, `Settings → Usage`, release notes, and costs before unusually expensive or consequential runs. Distinguish Chat, Work/Codex, Claude Chat/Code/Cowork, and API access.
 
 ## Executive summary
 
-**No material model or subscription-routing change since 2026-10-03.** The two changes from the previous full weekly cycle remain the important ones: **GPT-6.1 Sol** is now the main efficiency/capability model for serious ChatGPT Work/Codex tasks below Astra difficulty, and **Claude Sonnet 5.5** is the efficient/default Claude model while **Claude Opus 5.5** remains the stronger choice for difficult open-ended reasoning and judgment.
+**Material changes since 2026-10-05:** (1) **GPT-6 Sol launched in regular ChatGPT** for Plus on 2026-10-07, with Intelligent UI, and becomes the preferred starting point for many difficult *conversational* tasks; (2) **Claude Haiku 5.5 launched** on 2026-10-07 and is a new lower-tier option for small, fast tasks and subagents. A fresh independent **Sonar evaluation** also strengthens the evidence favoring GPT-6.1 Sol over GPT-6 Sol in coding. The strongest Work/Codex and Claude long-running-work defaults **do not change**.
 
-Fresh checks through **2026-10-05** confirm:
+- **Regular ChatGPT Plus:** select **GPT-6 (Sol) Medium/High** as the initial choice; **GPT-5.6 Sol High** remains available as an independent A/B or fallback option. **Extra High and Pro are not included** on Plus. GPT-6 Chat is not the same deployed version as September GPT-6 Sol in Work/Codex.
+- **Work/Codex on Plus:** **GPT-6 Astra Medium** for the hardest high-autonomy work; **GPT-6.1 Sol Medium/High** for serious tasks with allowance pressure; **GPT-6 Luna** for simple high-volume work.
+- **Claude Pro:** **Opus 5.5 High/xhigh** for difficult judgment-heavy work, **Sonnet 5.5 Medium/High** as a strong efficient default, and **Haiku 5.5 Low/Medium** for simple fast tasks, compaction, classification or delegated narrow substeps when available.
+- **Fable 5/5.1:** keep the existing *credits-only, last-resort* rule. No verified Fable 5.5 release as of this check.
+- **No new free API credit for Claude Pro:** the announced monthly API credit is for Claude **Max and Team**, not Pro.
 
-- **ChatGPT Plus:** GPT-6 Astra remains included in Work/Codex but not as GPT-6 Pro in regular Chat. Official Plus estimates remain Astra **5–45**, GPT-6.1 Sol **15–160**, GPT-6 Sol **15–150**, GPT-6 Luna **350–3,000** local messages per five-hour period; weekly limits may also apply.
-- **GPT-6.1 Sol:** still the preferred serious efficiency model in Work/Codex. OpenAI's DevDay recap explicitly makes it available to Plus and positions it as near-Astra intelligence at one-fifth Astra's standard input/output API prices.
-- **Regular ChatGPT Plus:** GPT-5.6 Sol remains the practical high-quality reasoning/preflight model; GPT-6.1 Sol is a Work/Codex model rather than the normal Chat replacement.
-- **Claude Pro:** remains **$20/month in the US**, with a five-hour session-based usage limit and a weekly limit whose actual consumption depends on context, model, files, tools and effort.
-- **Claude Opus 5.5:** remains the strongest practical included Claude Pro choice for difficult work.
-- **Claude Sonnet 5.5:** remains the efficient/default Claude choice.
-- **Claude Fable 5/5.1:** still **not included in normal Pro usage limits** and run on usage credits from the start. With Opus 5.5 and Sonnet 5.5 available, Fable remains a specialist / last-resort choice for this subscription mix.
-- No announced **Fable 5.5** was found in official Anthropic release notes; current internet claims are leaks/rumors and are excluded from routing.
+## Changes since 2026-10-05
 
-## Changes since 2026-10-03
+### 2026-10-07 — GPT-6 in ordinary ChatGPT (material)
 
-### Material model / plan changes
+OpenAI began rolling out October GPT-6 with Intelligent UI in Chat, including **GPT-6 Sol** for paid plans. On **Plus** the usable GPT-6 effort settings are **Instant, Medium, High**; **Extra High and Pro are unavailable on Plus**. The separate **GPT-5.6 Sol** model selection remains available. Plus can use **GPT-6 Astra in Work/Codex**, but *not* GPT-6 Pro in ordinary Chat.
 
-**None found.** No new OpenAI or Anthropic model released in this two-day delta that changes the current Plus/Pro routing.
+**Routing delta:** replace the old "GPT-5.6 Sol High is the only serious default for ordinary Chat" rule with **GPT-6 High first**, keeping GPT-5.6 Sol High as a second opinion. Prefer GPT-6 when Intelligent UI/structured interactive explanations add value. Avoid claiming proven superiority for every technical task: the Chat release has different deployment/training from September Work/Codex GPT-6 Sol, and most independent API benchmarks do not isolate that October Chat version.
 
-### Newly confirmed / clarified
+Sources: https://openai.com/products/release-notes/ ; https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt ; https://deploymentsafety.openai.com/gpt-6-october/jailbreaks
 
-#### OpenAI DevDay product context
+### 2026-10-07 — Claude Haiku 5.5 (material for small tasks)
 
-OpenAI's current DevDay recap confirms several adjacent product changes, but they do **not** alter the Plus model recommendation:
+Anthropic launched **Haiku 5.5**, its first Haiku with adjustable reasoning effort. The model is available in Claude products and as `claude-haiku-5-5` on the API. **Use Low/Medium first** for fast, bounded tasks; reserve High/xhigh/Max for justified hard subproblems, rather than consuming more tokens by default.
 
-- **GPT-6.1 Sol** is explicitly available to Plus, Pro, Business, Enterprise and Edu users as well as API users.
-- **GPT-6 Astra Ultrafast** is a premium speed tier offering up to 8× faster generation in Codex, but in ChatGPT it is currently limited to **Pro 500 and Enterprise**, so it is irrelevant to the user's Plus routing.
-- **GPT-6.1 Sol Ultrafast** is announced as coming soon; no Plus availability should be assumed.
-- **dots**, OpenAI's always-on Astra-powered agents, are available on Pro / Business Premium / Enterprise rather than Plus. They are therefore useful ecosystem context but not a current Plus option.
-- GPT-6.1 Sol also supports **multi-agent mode in beta in the Responses API**. This is relevant to future API/agent architecture, but it does not by itself change the ChatGPT Plus Work/Codex routing.
+Good candidates: summaries, search/extraction, classification, context compaction, database queries, quick computer-use steps and narrow coding subagents. **Do not automatically replace Sonnet 5.5** in substantive coding or long-horizon tasks; the Pro usage tradeoff depends on the actual account allowance and task shape.
 
-#### Claude context / allowance picture remains stable
+**Context by interface:** official paid Claude context table lists Haiku 5.5 at **1M tokens in Chat and Claude Code**, and **500K in Cowork**. Context limit is not a promise that very long context is cost-free or perfectly recalled.
 
-Anthropic's current paid-plan documentation continues to list **1M-token context** for Sonnet 5.5 and Opus 5.5 in paid Claude Chat, Claude Code and Cowork. Automatic context management can summarize earlier material near the context limit when code execution is enabled.
+Official evidence: Anthropic reports **OSWorld 2.1 offline subset 72.4% vs GPT-6 Luna 48.9%**, **Terminal-Bench 4.0 39.2% vs 16.4%** and **FrontierCode 1.1 Main 46.4% vs 42.4%** at its published evaluation configuration. **These are vendor-run benchmarks**, not neutral product-harness A/B results.
 
-Claude Pro still has both a five-hour session limit and a weekly limit. Usage credits can extend work beyond included limits, but API usage remains separate.
+Sources: https://www.anthropic.com/claude-haiku-5-5 ; https://support.claude.com/en/articles/12138966-release-notes ; https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans
 
-## Current subscription context
+### 2026-10-09 — Independent Sonar GPT-6.1 Sol coding evaluation
 
-### ChatGPT Plus
+Sonar's independent test on **544 HumanEval/MBPP tasks** with executable tests: **GPT-6.1 Sol 85.29%**, **GPT-6 Sol 83.09%** pass rate; Sonar's earlier Astra reference is **85.85%**. GPT-6.1 Sol generated **669,155 vs 480,125 lines** (+39.4%): issue *density* decreased, while absolute static-analysis findings rose **9,859 → 12,982** (+31.7%). This is a useful scoped signal, **not proof of better repository-scale agentic completion**. Keep testing/review gates.
 
-#### Regular Chat
+Source: https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
 
-Primary difficult-reasoning option:
-- **GPT-5.6 Sol High**
+### Economics clarification (not a routing reversal)
 
-Best fit:
-- difficult single reasoning nodes;
-- scientific/engineering discussion;
-- preflight before launching Work;
-- independent review without consuming Work/Codex allowance.
+Anthropic reduced **Sonnet 5.5 API cache-read pricing** by **50%**, from $0.20 to $0.10 per million cache-read tokens; this may lower API/agent bills, but **does not automatically increase the Claude Pro subscription allowance**. Monthly Claude Platform API credits newly announced for **Max and Team**, **not Pro**. Fable 5/5.1 remain metered from the first request on Claude Pro.
 
-GPT-6.1 Sol / GPT-6 Sol / GPT-6 Luna are Work/Codex models rather than normal Chat replacements.
+Sources: https://www.anthropic.com/claude-haiku-5-5 ; https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan
 
-#### Work / Codex
+## Subscription availability and usage
 
-| Model | Official Plus estimate / 5h | Practical role |
+### ChatGPT Plus: Chat versus Work/Codex
+
+**Regular Chat:** GPT-6 Sol **Instant, Medium, High**; no Extra High, no Pro. GPT-5.6 Sol is an independent legacy selection. For Plus, `Instant` does **not** silently promote itself to High on a complex query. Chat Thinking limits are dynamic; trust the model picker and in-account reset display, not a generic fixed-message estimate.
+
+**Work and Codex:** share a separate included plan allowance. Plus may have both **five-hour and weekly** constraints. The official **approximate local-message** ranges per five-hour window are:
+
+| Work/Codex model | Plus estimated local messages / 5h | Default role |
 |---|---:|---|
-| GPT-6 Astra | 5–45 | hardest long-horizon autonomous work |
-| GPT-6.1 Sol | **15–160** | serious default when Astra is unnecessary |
-| GPT-6 Sol | 15–150 | mostly superseded by 6.1 Sol |
-| GPT-6 Luna | **350–3,000** | high-volume simple execution |
+| GPT-6 Astra | 5–45 | Hardest autonomous cross-tool tasks |
+| GPT-6.1 Sol | 15–160 | Serious efficiency/capability default |
+| GPT-6 Sol | 15–150 | Usually prefer 6.1 Sol |
+| GPT-6 Luna | 350–3,000 | Simple, high-volume execution |
 
-These are approximate local-message ranges, not guaranteed caps. Cloud tasks can consume more allowance, and weekly limits may also apply. Check **Settings → Usage** for the account's current remaining allowance and reset time.
+**Not guaranteed task/message caps.** Cloud runs, tool usage, context and effort may cost more. Plus may optionally purchase credits for extra eligible Work/Codex usage. **API billing is separate.** Astra and GPT-6.1 Sol **Ultrafast are not available on Plus**. Use `Settings → Usage` for remaining allowance and reset dates.
 
-### Claude Pro (~$20/month)
+Sources: https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex ; https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex ; https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
 
-- US price remains **$20/month**.
-- Includes Claude Code and Cowork/unified Claude capabilities where available.
-- Five-hour session-based usage limit plus weekly usage limit.
-- Consumption varies with conversation length, attached files, model, effort and tool use.
-- API usage is separate.
-- Usage credits can extend eligible use beyond included limits.
+### Claude Pro (~$20/month US)
 
-Current hierarchy for this subscription:
-- **Opus 5.5** → strongest included model for complex work;
-- **Sonnet 5.5** → efficient/default model;
-- **Fable 5.1** → credits-only specialist / last resort.
+Pro includes Claude Chat and Claude Code (and eligible unified Cowork features), but **not ordinary API usage**. It has **five-hour session resets plus an account-specific weekly limit shared across models**; tokens, tool calls, attachments, context, effort, model and product surface affect consumption. Usage credits can extend eligible use past included limits. Do not treat a request count as equivalent across Opus/Sonnet/Haiku.
 
-## Current model landscape
+| Claude model | On Pro | Suggested use |
+|---|---|---|
+| Opus 5.5 | Normal Pro allowance | Hard judgment, research, coding, review |
+| Sonnet 5.5 | Normal Pro allowance | Efficient sustained day-to-day work |
+| Haiku 5.5 | Available in Claude; normal model selection subject to rollout and limits | Narrow, fast and delegated work |
+| Fable 5 / 5.1 | **Usage credits from first request** | Rare specialist, budget-approved escalation |
 
-### OpenAI
+Official context: **Opus 5.5 and Sonnet 5.5: 1M** in paid Chat/Code/Cowork; **Haiku 5.5: 1M Chat/Code, 500K Cowork**. Automatic context management/compaction can apply. This is a context-window specification, not an allowance guarantee.
 
-#### GPT-6 Astra
+Sources: https://support.claude.com/en/articles/8325606-what-is-the-pro-plan ; https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans ; https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan
 
-Best fit:
-- hardest end-to-end autonomous work;
-- long-horizon research and execution;
-- difficult repository work;
-- browser/computer use;
-- multi-tool workflows;
-- high-error-cost artifact production.
+## Reasoning and effort operating rules
 
-**Practical default: Astra Medium.** Raise effort only when reasoning/verification, rather than execution length, is the bottleneck.
+**OpenAI regular Chat (Plus):** `GPT-6 Instant` for easy questions, `Medium` for normal complex work, `High` for difficult technical reasoning/long discussion. **No Extra High / Pro in Plus.** Select a level explicitly: requesting "think harder" in text does not ensure switching the level. The Work/Codex-specific model and effort selection is independent of this Chat picker.
 
-#### GPT-6.1 Sol
+**OpenAI Work/Codex:** `Medium` as the serious default for Astra and GPT-6.1 Sol; `High` when reasoning, verification or a hard subproblem is the bottleneck. Long task ≠ always High; higher effort may burn allowance before execution completes.
 
-**Default serious efficiency/capability model for Work/Codex.**
+**Claude:** models support `Low`, `Medium`, `High`, `xhigh` (where offered), and `Max`. Start **Haiku Low/Medium**, **Sonnet Medium/High**, **Opus High**; try **xhigh** for meaningful long agentic/coding work; reserve **Max** for exceptional analysis with strong expected payoff. Higher effort can consume substantially more usage. **Thinking and effort are separate concepts; thinking cannot be disabled in Claude Chat on Haiku 5.5, Sonnet 5.5 or Opus 5.5.**
 
-Best fit:
-- sustained coding/repository work below Astra difficulty;
-- professional knowledge work;
-- computer use;
-- long agentic tasks where allowance matters;
-- repeated workflows.
+Source: https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings
 
-**Practical default: Medium; High when deeper reasoning materially matters.**
+## Relevant independent benchmarks and comparisons
 
-Independent Artificial Analysis from the previous snapshot remains the relevant same-methodology evidence: GPT-6.1 Sol max scored **52** on its Intelligence Index versus **48** for GPT-6 Sol, with particularly large improvement on Terminal-Bench 4.0 (**56% vs 44%**) and lower measured cost per Intelligence task.
+**Artificial Analysis (independent, same evaluation methodology when comparing the listed configurations):**
 
-#### GPT-6 Luna
+| Comparison | Intelligence Index | Agentic / cost lesson |
+|---|---|---|
+| Haiku 5.5 **Max** vs GPT-6 Luna **Max** | **43 vs 38** | Terminal-Bench 4.0 **33% vs 13%**; Haiku output ~**162k vs 50k** tokens/task and cost **$0.21 vs $0.07** per index task |
+| Haiku 5.5 **High** vs GPT-6 Luna **High** | **38 vs 33** | Terminal-Bench **22% vs 5%**; *AutomationBench-AA reverses* (**34% vs 48%**), so there is no universal winner |
+| GPT-6 Sol **Medium** vs GPT-5.6 Sol **Medium** (API deployments) | **40 vs 39** | AutomationBench **58% vs 51%**, Terminal-Bench **19% vs 15%**; SciCode **54% vs 57%** |
+| Earlier reference: Opus 5.5 Max / Sonnet 5.5 Max / Astra Max / GPT-6.1 Sol Max | **58 / 56 / 53 / 52** | Historical 2026-10-05 snapshot; effort, harness and token budget differ. Not a Plus subscription ranking |
 
-Best fit:
-- extraction/classification;
-- repetitive transformations;
-- inexpensive high-volume agentic execution;
-- simple batch-like workflow steps.
+At **Max**, Haiku 5.5 beats Luna on several intelligence and Terminal-Bench measures but loses to Luna in **AutomationBench (35% vs 53%)**. The enormous Max output budget means **avoid extrapolating Max scores to routine Pro Low/Medium work**. AA API GPT-6 comparisons are not direct tests of the new October ChatGPT GPT-6 deployment.
 
-#### GPT-5.6 Sol
+Sources: https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gpt-6-luna ; https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-high-vs-gpt-6-luna-high ; https://artificialanalysis.ai/models/comparisons/gpt-6-sol-medium-vs-gpt-5-6-sol-medium
 
-Still important because it is available in ordinary ChatGPT Plus Chat. Prefer it for one hard reasoning/review node when Work autonomy is unnecessary.
+**Task-oriented / agentic carryover:** prior Android Bench 2.0 signal favored **Astra + Codex** on that published Android long-horizon harness; **FrontierCode** showed Opus 5.5 competitive with Astra on mergeable engineering tasks; Terminal-Bench and AutomationBench are useful complements, not interchangeable measures. **Harness, tool affordances, model version and token budget must match** before announcing a universal agent winner. No newly verified same-harness head-to-head compels replacing Astra/Opus/Sonnet for hard autonomous work.
 
-### Anthropic
+References: https://developer.android.com/bench ; https://cognition.com/frontiercode ; https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
 
-#### Claude Opus 5.5
+## Practical model routing — 2026-10-12
 
-Primary Claude Pro choice for:
-- difficult knowledge work;
-- complex judgment;
-- demanding coding;
-- scientific/technical reasoning;
-- long-context synthesis;
-- high-error-cost review;
-- open-ended tasks requiring sustained judgment.
+1. **Unknown problem / early technical discussion:** ordinary **ChatGPT GPT-6 Medium**, escalate to **High** if needed; **GPT-5.6 Sol High** is a valuable independent alternative. Decide **environment → model → effort**.
+2. **Difficult scientific/engineering reasoning without autonomous tools:** **GPT-6 High** and/or **Claude Opus 5.5 High**. Use a cross-vendor check for critical conclusions; do not infer correctness from confident agreement alone.
+3. **Hard autonomous Work task, complex artifact, browser/computer use:** **GPT-6 Astra Medium**; raise effort only if justified.
+4. **Sustained coding/repository or Work with tight allowance:** **GPT-6.1 Sol Medium/High**; tests, CI and manual diff review are mandatory for consequential changes.
+5. **Large volumes of simple Work/Codex actions:** **GPT-6 Luna**.
+6. **Difficult Claude Code, judgment-heavy synthesis or review:** **Opus 5.5 High**; `xhigh` for complex long-running agents when necessary.
+7. **Everyday Claude coding/iteration/artifact generation:** **Sonnet 5.5 Medium/High**; prefer this to Opus when capability is adequate.
+8. **Small Claude tasks and subagents:** **Haiku 5.5 Low/Medium**, after checking it is selectable and evaluating output quality on the actual task.
+9. **Disagreements on high-cost scientific or architectural decisions:** compare **Astra** vs **Opus** and a regular ChatGPT **GPT-6 High** review when useful. **Only then consider Fable 5.1** for a bounded paid second opinion, with explicit credit budget.
 
-**Practical default: High** for difficult work; **xhigh** for long agentic/coding sessions; Max only when the extra usage is justified.
+**Do not confuse lower API prices with higher subscription allowance.** Compare completion rate, elapsed time, allowance/credit use, tool calls, review/retry effort and actual artifact quality. Cross-vendor differences may come from Work/Codex/Claude Code harnesses rather than the base model alone.
 
-#### Claude Sonnet 5.5
+## Sources checked / retained (2026-10-12)
 
-Efficient/default Claude model for:
-- well-scoped everyday work;
-- iterative coding and bug fixing;
-- documents/slides/spreadsheets;
-- UI/design refinement;
-- sustained sessions where Opus is unnecessary.
+**OpenAI official:**  
+- https://openai.com/products/release-notes/  
+- https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt  
+- https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex  
+- https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex  
+- https://deploymentsafety.openai.com/gpt-6-october/jailbreaks  
 
-**Practical default: Medium for routine work, High for serious work, xhigh for long agentic/coding work.** Avoid Max by default because token/time use rises sharply.
+**Anthropic official:**  
+- https://www.anthropic.com/claude-haiku-5-5  
+- https://support.claude.com/en/articles/12138966-release-notes  
+- https://support.claude.com/en/articles/8325606-what-is-the-pro-plan  
+- https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan  
+- https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans  
+- https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings  
 
-Independent Artificial Analysis from the previous snapshot remains relevant: Sonnet 5.5 reaches **56** Intelligence Index at Max and **52** at xhigh, with strong Terminal-Bench / AutomationBench results, but Max uses unusually large token budgets. This supports High/xhigh rather than Max as the practical operating point.
+**Independent and task-oriented:**  
+- https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gpt-6-luna  
+- https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-high-vs-gpt-6-luna-high  
+- https://artificialanalysis.ai/models/comparisons/gpt-6-sol-medium-vs-gpt-5-6-sol-medium  
+- https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/  
+- https://cognition.com/frontiercode  
+- https://developer.android.com/bench  
 
-#### Claude Fable 5.1
+## What to re-check next
 
-Keep as a **last resort on Claude Pro** because:
-- it consumes pay-as-you-go usage credits from the start;
-- Opus 5.5 is included in normal Pro usage and covers most difficult work;
-- Sonnet 5.5 covers much of the efficient coding/agentic space.
-
-Use Fable only for a targeted second opinion, unresolved frontier-model disagreement, or a rare correctness-critical task where direct spend is justified.
-
-## Reasoning / effort
-
-### OpenAI
-
-Practical rule:
-- **Low:** straightforward execution / maximize allowance;
-- **Medium:** default serious agentic work;
-- **High:** reasoning- or verification-bound tasks;
-- higher settings where exposed: exceptional cases only.
-
-Do not increase effort merely because a task is long. For one difficult subproblem inside a long Work session, a separate Sol High or cross-vendor review can be more efficient than increasing effort for the entire run.
-
-### Anthropic
-
-Current effort ladder on supported models:
-- Low
-- Medium
-- High
-- xhigh
-- Max
-
-Practical rule:
-- Low/Medium → routine and allowance-efficient;
-- High → general serious-work sweet spot;
-- xhigh → long-running coding/agentic work;
-- Max → deepest analysis with the highest usage.
-
-## Benchmark / eval evidence to retain
-
-### Artificial Analysis
-
-Current routing-relevant same-methodology signals from the latest completed evaluations:
-- **Opus 5.5 max:** Intelligence Index **58**;
-- **Sonnet 5.5 max:** **56**, xhigh **52**;
-- **GPT-6 Astra max:** **53**;
-- **GPT-6.1 Sol max:** **52**.
-
-Do not interpret this as a universal ranking: effort and token budgets differ substantially, and product/harness quality matters for Work, Codex and Claude Code.
-
-### Task-oriented / agentic evidence
-
-Retain the prior signals:
-- **Android Bench 2.0** favored Astra + Codex on the then-published long-horizon Android task set;
-- **FrontierCode** showed Opus 5.5 highly competitive with Astra for mergeable software-engineering work;
-- Artificial Analysis Terminal-Bench / AutomationBench results show strong agentic performance from the 5.5 Claude family and GPT-6.1 Sol.
-
-No newer same-version head-to-head result found in this delta-check is strong enough to change routing. Re-check when GPT-6.1 Sol / Sonnet 5.5 have broader representation in long-horizon suites.
-
-## Practical routing recommendations
-
-### 1. Unknown task / routing preflight
-
-**ChatGPT Chat → GPT-5.6 Sol High**
-
-Use the stable order:
-**environment → model → effort**.
-
-### 2. Hardest autonomous research / artifact / cross-tool task
-
-**ChatGPT Work → GPT-6 Astra Medium**
-
-Astra remains the preferred top-end option when the task is primarily long-horizon execution, browser/computer use, multi-tool work or finished artifact production.
-
-### 3. Serious Work/Codex task with allowance pressure
-
-**GPT-6.1 Sol Medium/High**
-
-This remains the best Plus efficiency/capability compromise below Astra.
-
-### 4. High-volume simple agentic task
-
-**GPT-6 Luna**
-
-### 5. Difficult Claude reasoning / knowledge task
-
-**Claude → Opus 5.5 High**
-
-For long coding/agentic work:
-**Claude Code / unified Claude → Opus 5.5 xhigh**.
-
-### 6. Everyday / sustained Claude task
-
-**Claude Sonnet 5.5 Medium/High**
-
-Use xhigh only when a long coding/agentic session actually benefits from deeper reasoning.
-
-### 7. Hard repository / coding task
-
-Primary candidates:
-- **Codex + Astra Medium** for the hardest long-horizon execution;
-- **Codex + GPT-6.1 Sol Medium/High** when allowance efficiency matters;
-- **Claude Code + Opus 5.5 High/xhigh** for difficult judgment-heavy work;
-- **Claude Code + Sonnet 5.5 High/xhigh** for efficient iterative implementation.
-
-Choose based on repo/tool integration, session continuity, task shape and allowance pressure rather than assuming a universal coding winner.
-
-### 8. Scientific / engineering work with high error cost
-
-Recommended pattern:
-1. primary work with **Opus 5.5 High** or **Astra Medium**, based on tool/autonomy needs;
-2. independent cross-vendor review with the other system;
-3. use **Fable 5.1 only if a material disagreement remains** and direct credits are justified.
-
-For mostly reasoning-heavy scientific work, Opus 5.5 deserves at least equal consideration to Astra. For tool-heavy autonomous workflows, Astra remains the safer first choice.
-
-### 9. Fable policy
-
-**Do not route to Fable by default.**
-
-Use Fable 5.1 only when a specific task/eval profile gives it a clear advantage, Astra and Opus 5.5 disagree materially, and the decision value justifies direct usage credits.
-
-## Sources checked on 2026-10-05
-
-### Official OpenAI
-- https://openai.com/index/devday-2026-recap/
-- https://openai.com/products/release-notes/
-- https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
-- https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex
-- https://developers.openai.com/api/docs/changelog
-
-### Official Anthropic
-- https://support.claude.com/en/articles/12138966-release-notes
-- https://support.claude.com/en/articles/8325606-what-is-the-pro-plan
-- https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan
-- https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans
-- https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings
-- https://www.anthropic.com/claude-opus-5-5
-- https://www.anthropic.com/claude-sonnet-5-5
-
-### Independent / task-oriented evidence
-- https://artificialanalysis.ai/models/gpt-6-1-sol
-- https://artificialanalysis.ai/articles/claude-sonnet-5-5
-- https://cognition.com/frontiercode
-- https://developer.android.com/bench
-
-## Uncertainties / re-check before important decisions
-
-- Work/Codex usage figures are estimated ranges, not guaranteed message caps; cloud tasks and high effort can consume substantially more allowance.
-- Claude Pro usage is dynamic; session and weekly limits depend on context, model, tools and task shape.
-- Ultrafast is not currently a Plus feature; do not route around it unless plan availability changes.
-- GPT-6.1 Sol multi-agent mode is currently an API beta signal, not a reason to assume identical orchestration in Plus Work/Codex.
-- Fable 5.5 has not been officially announced as of this check; exclude leaks from current routing.
-- Artificial Analysis Max-effort scores can involve very large token budgets and should not be treated as everyday operating points.
-- FrontierCode and Android Bench are harness-sensitive; compare same benchmark versions and agent configurations when possible.
+- October **GPT-6 Chat** on realistic scientific/research discussion versus explicitly selected **GPT-5.6 Sol**, preferably with independent same-interface tests rather than September API benchmarks.
+- **Haiku 5.5 Low/Medium** output quality and *real Claude Pro allowance consumed* versus Sonnet Medium in repeatable narrow subagent tasks.
+- New matched-harness long-horizon comparisons of **Astra, GPT-6.1 Sol, Opus 5.5, Sonnet 5.5** and improvements in tool reliability.
+- Per-account Plus Work/Codex and Claude Pro usage reset and credit rules; whether any new model or feature changes plan eligibility.
+- Fable policy only if Anthropic changes Pro inclusion/credit economics or independent task-level advantage becomes compelling; exclude leaks such as unannounced Fable 5.5.
