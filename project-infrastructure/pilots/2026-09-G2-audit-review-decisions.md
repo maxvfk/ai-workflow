@@ -681,3 +681,55 @@ In the pilot, the artifact-only report listed four broken links while later full
 ### Implementation batching
 
 Implement as a concise clarification in the G2 artifact-only reconciliation guidance together with Package C (F-03, F-06, F-07).
+
+
+---
+
+## F-09 — Recommended Project ID format
+
+Status: **ACCEPT**
+
+### Decision
+
+Standardize one **recommended format for new Project IDs** across Project Infrastructure:
+
+`UPPERCASE-ASCII-HYPHENATED`
+
+Examples:
+
+- `TOK-COST`
+- `SP-LAB-GRANT`
+- `PROJECTS-REGISTRY`
+
+Recommended conventions:
+
+- use ASCII Latin uppercase letters `A-Z`;
+- digits are allowed;
+- separate semantic segments with hyphens;
+- avoid spaces, underscores, slashes, dots, and other punctuation;
+- keep IDs reasonably short while still recognizable;
+- an organizational/domain prefix such as `TOK-` may be used when it naturally groups related projects, but is not mandatory.
+
+A useful descriptive pattern is:
+
+`[A-Z0-9]+(?:-[A-Z0-9]+)*`
+
+Treat this as a naming convention, not a hard validator.
+
+### Stability rule
+
+Existing stable Project IDs are **not renamed automatically** merely to match the preferred format.
+
+Project ID stability across folder moves, repository renames, and scenario migrations remains more important than cosmetic normalization. Renaming an existing ID is an explicit migration because it may affect manifests, registry entries, SOURCES, cross-project references, issues/handoffs, and other project metadata.
+
+### Standard cleanup
+
+Package D should:
+
+1. add the recommended new-ID format to `COMMON.md`;
+2. replace the conflicting lowercase G2 example `tokamak-cost-study` with a conforming example such as `TOK-COST`;
+3. check nearby standard examples for the same inconsistency without mass-renaming established real project IDs.
+
+### Implementation batching
+
+Implement with Package D together with F-10, F-11, F-12 and F-14.
