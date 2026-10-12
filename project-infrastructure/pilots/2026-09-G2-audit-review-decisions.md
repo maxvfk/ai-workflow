@@ -773,3 +773,45 @@ Do not translate already initialized bootstrap/runtime files merely for cosmetic
 ### Implementation batching
 
 Implement with Package D together with F-09, F-11, F-12 and F-14.
+
+
+---
+
+## F-11 — Cold-start validation mode
+
+Status: **MODIFY / mostly already addressed**
+
+### Decision
+
+The standard already contains the important behavioral requirement:
+
+- validate from the perspective of a fresh agent;
+- when an independent fresh-agent run is available and proportionate, use it;
+- otherwise perform the same validation explicitly using only installed runtime and scenario-defined entry resources;
+- validate effective startup behavior, not mere file presence.
+
+G2 already provides a scenario-specific cold-start checklist. Do **not** add a duplicate checklist.
+
+The remaining gap is reporting clarity: distinguish the **method/strength of validation** actually used.
+
+Recommended labels:
+
+- `independent-agent` — a genuinely separate fresh agent/session with no originating-chat context performed the startup path;
+- `checklist/simulated-fresh` — the current agent deliberately re-ran the startup path using only installed entry resources/runtime and did not rely on its originating context;
+- `partial` or `not run` — the startup path could not be fully exercised; record the limitation/reason.
+
+Do not describe a self-check as an independent fresh-agent validation.
+
+### Effective-behavior requirement
+
+A checklist/simulated-fresh validation must exercise the actual startup route far enough to show that a future agent can recover the project from the installed entry points. File existence alone is insufficient.
+
+For G2 this means following the installed path from the local bootstrap into the canonical GitHub runtime/project memory and resolving representative artifact/runtime constraints as already specified by the existing G2 cold-start checklist.
+
+### Practical policy
+
+An independent-agent run is stronger evidence, but it is not mandatory for every bootstrap when unavailable or disproportionate. The checklist/simulated-fresh mode is an acceptable normal validation method as long as it is reported accurately.
+
+### Implementation batching
+
+Implement with Package D together with F-09, F-10, F-12 and F-14.
