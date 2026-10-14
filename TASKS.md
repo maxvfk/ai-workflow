@@ -17,7 +17,7 @@ Evidence: GitHub issues #1, #3–#11.
 ## T-003 — Первый real-project pilot
 Status: active
 
-Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Package A внедрён в 0.8.7, Package B — в 0.8.8, Package C — в 0.8.9. До завершения pilot нужно разобрать и внедрить только согласованные пункты Package D.
+Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Packages A/B/C/D внедрены в 0.8.7/0.8.8/0.8.9/0.8.10. Осталась финальная сверка аудита и PR.
 
 Evidence: GitHub issue #2; G2 pilot audit 2026-09.
 
@@ -115,3 +115,11 @@ Status: done
 По G2 pilot audit реализован Package C. Exact-content verified redundant/stale copies могут быть отделены от неизвестного competing state при intact/unambiguous canonical, но не удаляются автоматически. Artifact-only агент обязан оставить воспроизводимый handoff; при необходимости exact helper files сохраняются минимальным noncanonical payload в `_LOCAL_AGENT_HANDOFF/` до full reconciliation. Brownfield/migration hygiene проверяет только обоснованные inherited execution leftovers, а `_LOCAL_AGENT_REPORT.md` трактуется как scope-limited evidence из-за отсутствия у reporting agent GitHub control-plane context.
 
 Evidence: Project Infrastructure 0.8.9; G2 pilot audit F-03, F-06, F-07, F-08.
+
+
+## T-016 — G2 audit small clarifications
+Status: done
+
+Реализован Package D G2 pilot audit. Для новых Project IDs принят рекомендуемый uppercase ASCII hyphenated format без автоматического переименования существующих IDs. Project-owned bootstrap/runtime prose следует установленному Project-memory language, а stable infrastructure keys остаются в English forms. Cold-start validation явно маркирует метод `independent-agent`, `checklist/simulated-fresh`, `partial` или `not run`. Для escape-sensitive programmatic/API text writes добавлена persisted-result verification. F-12 закрыт без изменения стандарта как разовая environment-specific Git configuration issue.
+
+Evidence: Project Infrastructure 0.8.10; G2 pilot audit F-09, F-10, F-11, F-12, F-14.
