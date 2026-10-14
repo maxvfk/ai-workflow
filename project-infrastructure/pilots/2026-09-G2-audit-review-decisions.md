@@ -815,3 +815,22 @@ An independent-agent run is stronger evidence, but it is not mandatory for every
 ### Implementation batching
 
 Implement with Package D together with F-09, F-10, F-12 and F-14.
+
+
+---
+
+## F-12 — Git identity in Mode B
+
+Status: **NO CHANGE / environment-specific**
+
+### Decision
+
+The pilot failure was caused by one-time machine/environment setup: Git commit identity (`user.name` / `user.email`) was not configured yet.
+
+After Git was configured normally, the issue ceased to be a Project Infrastructure/G2 problem.
+
+Do not add a G2-specific Git-identity rule or turn the standard into a general Git setup guide.
+
+The existing G2 guidance already prefers Mode A for small project-memory edits and Mode B only when a working tree/Git workflow materially helps. That remains sufficient.
+
+The pilot finding may remain as environment evidence, but it does not require a standard change.
