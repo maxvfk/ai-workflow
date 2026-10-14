@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.9  
+**Standard version:** 0.8.10  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -86,6 +86,8 @@ Version **0.8.7** adds the complementary optional G2 **control-plane-only fallba
 Version **0.8.8** hardens the lightweight multi-project workspace model from the G2 pilot. Dedicated Project Registry workspaces use verified GitHub-issue registration/update handoffs instead of child projects writing `PROJECTS.md` directly; significant cross-project dependencies keep `Project ID + source-relative path` as durable identity while embedded relative links remain navigation hints; and single-project sessions should prefer the active-project root. Automatically discovered instructions from external/source projects do not activate them or expand write scope, while their source-specific preservation semantics still apply.
 
 Version **0.8.9** implements the G2 pilot operational-hardening package. Sync conflicts may distinguish exact-content verified redundant/stale copies from unknown competing state without auto-deleting them; artifact-only work may retain a minimal noncanonical `_LOCAL_AGENT_HANDOFF/` payload when a report alone cannot preserve reproducibility; brownfield adoption/migration performs only bounded hygiene for inherited execution leftovers; and `_LOCAL_AGENT_REPORT.md` is explicitly interpreted as scope-limited evidence because the reporting agent lacked the GitHub control plane.
+
+Version **0.8.10** closes the small-clarification package from the G2 pilot audit. New Project IDs use a recommended uppercase ASCII hyphenated convention without renaming established IDs; project-owned bootstrap prose follows the installed project-memory language while stable infrastructure keys stay in their defined English forms; cold-start reports distinguish independent-agent validation from checklist/simulated-fresh validation; and programmatic/API text writes with escape-sensitive syntax verify the persisted content. The pilot's missing Git commit identity was classified as one-time environment setup and does not add a G2 rule.
 
 ## Bootstrap contract
 
