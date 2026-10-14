@@ -13,6 +13,8 @@ Package B implementation: **Project Infrastructure 0.8.8**, standard commit `3c6
 
 Package C implementation: **Project Infrastructure 0.8.9**, standard commit `ead9eebcfd8b0e253b9c1b6230dd3dd71a78def4`. Implemented: F-03, F-06, F-07, F-08.
 
+Package D implementation: **Project Infrastructure 0.8.10**, standard commit `4e342ba168a3e6edc881bf1b6ff653ba10b0e4d5`. Implemented: F-09, F-10, F-11, F-14. F-12 closed with no standard change (environment-specific).
+
 ## Decision statuses
 
 - `ACCEPT` — accept the finding and implement the agreed change.
