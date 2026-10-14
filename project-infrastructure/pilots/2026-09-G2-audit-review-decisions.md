@@ -22,6 +22,7 @@ Package D implementation: **Project Infrastructure 0.8.10**, standard commit `4e
 - `ALREADY ADDRESSED` — the issue is already sufficiently covered by later work.
 - `REJECT` — do not change the standard for this finding.
 - `NEEDS MORE EVIDENCE` — keep under observation before standardizing.
+- `NO CHANGE` — finding recorded, but no standard change is required.
 
 ---
 
