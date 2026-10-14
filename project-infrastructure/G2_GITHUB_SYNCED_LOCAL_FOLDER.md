@@ -165,10 +165,10 @@ Do not add GitHub project-memory files, infrastructure snapshots, plans, or deci
 
 ## 7. Project identity and local bootstrap `AGENTS.md`
 
-Every G2 project has a stable **Project ID**, preferably a short slug such as:
+Every G2 project has a stable **Project ID**. For new projects, follow the COMMON recommended uppercase ASCII hyphenated convention, for example:
 
 ~~~text
-tokamak-cost-study
+TOK-COST
 ~~~
 
 The same Project ID must appear in the GitHub infrastructure manifest and the local artifact-root `AGENTS.md`.
@@ -182,6 +182,7 @@ Recommended minimal local bootstrap `AGENTS.md` for a new artifact root:
 Project: <human-readable project name>
 Project ID: <stable-project-id>
 Scenario: G2
+Project-memory language: <ru/en/...>
 
 Canonical project control:
 https://github.com/<owner>/<repo>
@@ -211,6 +212,8 @@ In artifact-only mode:
 Do not create duplicate project-memory files in this folder.
 <!-- project-infrastructure:end -->
 ~~~
+
+Generate the bootstrap's human-facing headings/instructions in the installed **Project-memory language** (normally `ru` by default). Keep stable infrastructure field labels/keys such as `Project ID`, `Scenario`, `Project-memory language`, and `Canonical project control`, plus filenames/IDs/codes, in their defined English forms. The English prose shown in the semantic template above may therefore be translated when materializing a project-local bootstrap.
 
 Keep the local bootstrap `AGENTS.md` intentionally small and stable. Do not put active tasks, current state, source inventories, credentials, machine-specific absolute paths, or other volatile data into it. Shared/general runtime rules belong in the canonical GitHub `AGENTS.md`; the local file contains only the minimum needed to locate and enter that runtime plus any genuinely local artifact-root instructions.
 
@@ -814,6 +817,7 @@ Use the common completion/handoff expectations. For G2 infrastructure work or su
 - Project ID and artifact-root/control-repo mapping;
 - control-repository access mode used;
 - local bootstrap `AGENTS.md` created/updated/preserved;
+- cold-start validation method/result (`independent-agent`, `checklist/simulated-fresh`, `partial`, or `not run`) for infrastructure bootstrap/repair/migration work;
 - important artifacts registered with relative paths;
 - temporary-workspace route used when applicable;
 - sync-sanity/conflict result;
