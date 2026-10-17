@@ -1,15 +1,40 @@
 # AI Model Current State
 
-**Last updated:** 2026-10-12  
-**Previous snapshot:** 2026-10-05  
+**Last updated:** 2026-10-17  
+**Previous snapshot:** 2026-10-12  
 **Scope:** OpenAI and Anthropic; practical routing for **ChatGPT Plus** and **Claude Pro (~$20/month US)**.  
 **Cost policy:** **Claude Fable 5/5.1 = last resort** on Pro: usage credits are charged from the first request, outside normal Pro allowance.
 
 > Weekly point-in-time snapshot, not a guarantee of account-specific access. Re-check the model picker, `Settings → Usage`, release notes, and costs before unusually expensive or consequential runs. Distinguish Chat, Work/Codex, Claude Chat/Code/Cowork, and API access.
 
+## Weekly delta check: 2026-10-17 (vs 2026-10-12)
+
+**No material change to the Plus / Pro model-routing recommendations was verified for 2026-10-13 through 2026-10-17.** This is a dated delta check, not a claim that no product functionality changed. The substantive GPT-6 Chat and Haiku 5.5 changes from the 2026-10-12 snapshot remain active.
+
+**Official model / plan checks:**
+- OpenAI's current ChatGPT model-availability documentation still identifies GPT-6 Sol Instant/Medium/High for Plus, with Extra High and Pro excluded, and GPT-5.6 Sol remaining separately selectable. GPT-6 Astra remains a Work/Codex option on Plus, not GPT-6 Pro in ordinary Chat.
+- OpenAI's Oct 15 ChatGPT/voice release notes announced **GPT-Live-1.1** (and GPT-Live-1.1 Quip on Free) with updated voices. This affects Voice experience, not text GPT-6 model routing. On Oct 16 the API gained **prompt-to-voice** and nine new GPT-Live voices; this is an API audio feature, not a new general-purpose reasoning model or a Plus allowance increase. Oct 15 also removed the fixed count limit for creating Sites on Plus/Pro, with usage/storage limits still applying; this does not change agent routing.
+- Anthropic's official Claude release notes still identify **Oct 7 Haiku 5.5** as the most recent October model release. No verified Oct 13–17 release of a new Opus/Sonnet/Haiku/Fable model was found. Pro remains a ~US$20/month subscription with dynamic five-hour/weekly usage, and API usage remains separate.
+- No new verified Plus/Pro allowance or credit policy change was found sufficient to amend the estimates and caveats below. These are product-dependent and should be checked within the user's actual account. Claude Fable 5/5.1 remain **last resort due to metered usage credits from the first request** on Pro.
+
+**Independent benchmark / agentic delta:** Reviewed independent benchmark comparisons, including Artificial Analysis' same-effort GPT-6/Claude comparisons and the Sonar GPT-6.1 Sol coding evaluation retained below. No newly verified, matched-version/harness **Oct 13–17** head-to-head result was strong enough to reverse the prior task-oriented guidance. Existing benchmark numbers are historical evidence, not claimed fresh measurements.
+
+**Routing decision — unchanged:** ChatGPT GPT-6 Medium/High for normal difficult chat; GPT-5.6 Sol High for A/B review; GPT-6 Astra Medium for the hardest autonomous Work; GPT-6.1 Sol Medium/High for efficient serious Work/Codex; GPT-6 Luna for simple high-volume runs; Claude Opus 5.5 High/xhigh for demanding reasoning and coding; Sonnet 5.5 Medium/High for efficient sustained use; Haiku 5.5 Low/Medium for narrow/fast tasks; Fable only after explicit cost justification.
+
+**Sources checked on 2026-10-17:**
+- https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+- https://help.openai.com/en/articles/6825453-chatgpt-release-notes
+- https://openai.com/products/release-notes/
+- https://support.claude.com/en/articles/12138966-release-notes
+- https://support.claude.com/en/articles/8325606-what-is-the-pro-plan
+- https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan
+- https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gpt-6-luna
+- https://artificialanalysis.ai/models/comparisons/gpt-6-sol-medium-vs-gpt-5-6-sol-medium
+- https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
+
 ## Executive summary
 
-**Material changes since 2026-10-05:** (1) **GPT-6 Sol launched in regular ChatGPT** for Plus on 2026-10-07, with Intelligent UI, and becomes the preferred starting point for many difficult *conversational* tasks; (2) **Claude Haiku 5.5 launched** on 2026-10-07 and is a new lower-tier option for small, fast tasks and subagents. A fresh independent **Sonar evaluation** also strengthens the evidence favoring GPT-6.1 Sol over GPT-6 Sol in coding. The strongest Work/Codex and Claude long-running-work defaults **do not change**.
+**Historical material changes from the 2026-10-05 → 2026-10-12 snapshot (retained for context; no additional routing change on 2026-10-17):** (1) **GPT-6 Sol launched in regular ChatGPT** for Plus on 2026-10-07, with Intelligent UI, and becomes the preferred starting point for many difficult *conversational* tasks; (2) **Claude Haiku 5.5 launched** on 2026-10-07 and is a new lower-tier option for small, fast tasks and subagents. A fresh independent **Sonar evaluation** also strengthens the evidence favoring GPT-6.1 Sol over GPT-6 Sol in coding. The strongest Work/Codex and Claude long-running-work defaults **do not change**.
 
 - **Regular ChatGPT Plus:** select **GPT-6 (Sol) Medium/High** as the initial choice; **GPT-5.6 Sol High** remains available as an independent A/B or fallback option. **Extra High and Pro are not included** on Plus. GPT-6 Chat is not the same deployed version as September GPT-6 Sol in Work/Codex.
 - **Work/Codex on Plus:** **GPT-6 Astra Medium** for the hardest high-autonomy work; **GPT-6.1 Sol Medium/High** for serious tasks with allowance pressure; **GPT-6 Luna** for simple high-volume work.
@@ -17,7 +42,7 @@
 - **Fable 5/5.1:** keep the existing *credits-only, last-resort* rule. No verified Fable 5.5 release as of this check.
 - **No new free API credit for Claude Pro:** the announced monthly API credit is for Claude **Max and Team**, not Pro.
 
-## Changes since 2026-10-05
+## Historical changes: 2026-10-05 to 2026-10-12
 
 ### 2026-10-07 — GPT-6 in ordinary ChatGPT (material)
 
@@ -114,7 +139,7 @@ Sources: https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gp
 
 References: https://developer.android.com/bench ; https://cognition.com/frontiercode ; https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
 
-## Practical model routing — 2026-10-12
+## Practical model routing — reaffirmed 2026-10-17
 
 1. **Unknown problem / early technical discussion:** ordinary **ChatGPT GPT-6 Medium**, escalate to **High** if needed; **GPT-5.6 Sol High** is a valuable independent alternative. Decide **environment → model → effort**.
 2. **Difficult scientific/engineering reasoning without autonomous tools:** **GPT-6 High** and/or **Claude Opus 5.5 High**. Use a cross-vendor check for critical conclusions; do not infer correctness from confident agreement alone.
@@ -128,7 +153,7 @@ References: https://developer.android.com/bench ; https://cognition.com/frontier
 
 **Do not confuse lower API prices with higher subscription allowance.** Compare completion rate, elapsed time, allowance/credit use, tool calls, review/retry effort and actual artifact quality. Cross-vendor differences may come from Work/Codex/Claude Code harnesses rather than the base model alone.
 
-## Sources checked / retained (2026-10-12)
+## Sources checked / retained (baseline 2026-10-12; current delta sources above)
 
 **OpenAI official:**  
 - https://openai.com/products/release-notes/  
