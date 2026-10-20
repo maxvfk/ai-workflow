@@ -12,7 +12,7 @@ Status: todo
 
 После dogfood перепроверить corrective/refactor изменения и только затем решать, какие audit issues можно закрыть.
 
-Evidence: GitHub issues #1, #3–#11.
+Evidence: GitHub issues #1, #3–#11; G2 adversarial review (Codex + проверка Claude): `_ai/research/2026-10-20-g2-adversarial-review.md`.
 
 ## T-003 — Первый real-project pilot
 Status: active
