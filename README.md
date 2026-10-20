@@ -20,6 +20,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 - `project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md` — special G2 profile for maintaining a personal `PROJECTS/PROJECTS.md` catalog from a dedicated GitHub control repo without placing parent runtime files in `PROJECTS/`.
 - `project-infrastructure/ROADMAP.md` — deferred ideas intentionally outside the active scenario set.
 - `skills/model-router/SKILL.md` — reusable Agent Skill for applying the routing memo/current-state snapshot.
+- `skills/codex-delegate/` — Agent Skill for delegating tasks from Claude Code to Codex via the openai-codex plugin: reliable launch procedure on Windows, monitoring, usage readout, verification. Install by copying to `~/.claude/skills/codex-delegate/`.
 
 ## Project infrastructure
 
