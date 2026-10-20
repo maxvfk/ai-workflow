@@ -2,14 +2,81 @@
 
 **Last updated:** 2026-10-20  
 **Previous snapshot:** 2026-10-17  
-**Scope:** OpenAI and Anthropic; practical routing for **ChatGPT Plus** and **Claude Pro (~$20/month US)**.  
-**Cost policy:** **Claude Fable 5/5.1 = last resort** on Pro: usage credits are charged from the first request, outside normal Pro allowance.
+**Scope:** OpenAI, Anthropic and DeepSeek; practical routing for **ChatGPT Plus**, **Claude Pro (~$20/month US)** and **prepaid DeepSeek API credit balance (no DeepSeek subscription)**.  
+**Cost policy:** **Claude Fable 5/5.1 = last resort** on Pro: usage credits are charged from the first request, outside normal Pro allowance. **DeepSeek API usage is metered and deducted from prepaid credit**, not from ChatGPT/Claude subscription allowances.
 
 > Weekly point-in-time snapshot, not a guarantee of account-specific access. Re-check the model picker, `Settings → Usage`, release notes, and costs before unusually expensive or consequential runs. Distinguish Chat, Work/Codex, Claude Chat/Code/Cowork, and API access.
 
+## DeepSeek addendum: 2026-10-20 — new provider added to routing
+
+**This is a material expansion of the scope of the 2026-10-20 snapshot, not a claim of an OpenAI/Anthropic model change since 2026-10-17.** User now also uses a **prepaid DeepSeek API balance**. Previous snapshots only considered ChatGPT Plus and Claude Pro, so the old "no material changes" findings below remain valid for the *previous two-vendor scope*.
+
+### Model versions, access and lifecycle
+
+- **Preferred DeepSeek default: DeepSeek-V4.1-Flash-1017**, released **2026-10-17**; use the production API identifier `deepseek-flash`. The 1017 update replaces the September V4.1 Flash behind this alias and its legacy aliases. **Do not use September V4.1 Flash benchmark results to describe the 1017 model**.
+- **DeepSeek-V4-Pro-0813**, API identifier `deepseek-v4-pro`, remains separately accessible **as of 2026-10-20**. Though the Sept 10 announcement proposed redirecting V4 Pro traffic to Flash from Sept 14, DeepSeek subsequently reversed that plan **in response to demand**. The currently published pricing and model table explicitly lists distinct Pro and Flash versions. Therefore do **not** claim the Pro API is merely a Flash alias.
+- Both models support a **1M-token context**, up to **384K output** (API maximum, not a prudent default generation budget), JSON output, tools, Responses API, and Anthropic-compatible API. **Flash supports native image input; V4 Pro does not**. OpenAI-compatible base URL `https://api.deepseek.com`; Anthropic-compatible base URL `https://api.deepseek.com/anthropic`. Integrations with **Claude Code, Codex, OpenCode and DeepSeek Harness** are documented. An integration does **not** mean DeepSeek inherits the same coding/agent quality or included allowance from OpenAI/Anthropic.
+- The model is **open-weight** (MIT on Hugging Face): **552B total MoE / about 8B input-active, 16B output-active** per DeepSeek. Active parameter count is **not** the total weights to load. This is **not a practical local model on a 12 GB VRAM laptop**; assess it here primarily as hosted API service.
+
+Official: https://api-docs.deepseek.com/news/news261017/ ; https://api-docs.deepseek.com/quick_start/pricing/ ; https://api-docs.deepseek.com/quick_start/pricing/?helper=penn&method=individual ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### API reasoning and effort: actual controls, not ChatGPT/Claude labels
+
+DeepSeek's **thinking mode is enabled by default**; default reasoning effort is **high**. Disable explicitly with `thinking: {type: "disabled"}` on OpenAI-format Chat Completions when deep reasoning is unnecessary. With thinking enabled, use `reasoning_effort: "low" | "high" | "max"`; effective mapping is **minimal/low → low; medium/high/xhigh → high; max/ultra → max**. Do **not** assume that requesting "medium" gives a distinct Medium mode; it maps to High. Practical default **low** for simple/throughput work, **high** for real coding/reasoning, **max** for carefully bounded hard tasks when the additional tokens pay off. Compare elapsed time and cost across settings. In thinking mode `temperature`, `presence_penalty`, `frequency_penalty` are ignored. When calling tools, the integration must preserve prior `reasoning_content` according to API rules to avoid errors.
+
+Source: https://api-docs.deepseek.com/guides/thinking_mode/
+
+### Pay-as-you-go pricing for a topped-up balance (USD per 1M tokens; checked 2026-10-20)
+
+| Model | Input cache miss off-peak / peak | Input cache hit off-peak / peak | Output off-peak / peak |
+|---|---:|---:|---:|
+| **V4.1 Flash 1017** (`deepseek-flash`) | **$0.15 / $0.30** | **$0.003 / $0.006** | **$0.60 / $1.20** |
+| **V4 Pro 0813** (`deepseek-v4-pro`) | **$0.66 / $1.32** | **$0.022 / $0.044** | **$1.98 / $3.96** |
+
+- Peak hours: **01:00–04:00 and 06:00–10:00 UTC, Monday–Friday, excluding Chinese public holidays**; other times including weekends / Chinese public holidays are off-peak (50% of peak). Rate schedule can change: verify before spending.
+- DeepSeek deducts charges from **granted balance first, then topped-up prepaid balance**; this is **not** a fixed monthly allowance. Reasoning/output tokens and context replay are metered according to the API invoice.
+- Example, assuming **1M uncached input + 250K output**, no tools/extra calls: **Flash $0.30 off-peak / $0.60 peak**, versus **Pro $1.155 off-peak / $2.31 peak**. This is an illustration of usage charges, *not* end-to-end agent cost or expected consumption per task. Long agent runs may repeat context many times; caching, tool retries and effort substantially change the result.
+- Newly added DeepSeek **Search and Fetch APIs** each cost **$0.75 / 1,000 successful requests**. Server-side calls from DeepSeek Harness / Claude Code / Codex are temporarily free with **billing beginning Nov 1 2026, 00:00 Beijing time (= Oct 31 16:00 UTC)**, per DeepSeek's current documentation; these are separate from generation token charges and can alter the economics of research-heavy agents.
+
+Source: https://api-docs.deepseek.com/quick_start/pricing/ ; https://api-docs.deepseek.com/guides/search/
+
+### Independent benchmarks: 1017 only; compare like-for-like efforts and harnesses
+
+**Artificial Analysis (API, Max setting for each model unless otherwise labeled):**
+
+| Model | Intelligence Index | AutomationBench-AA | Terminal-Bench 4.0 | SciCode |
+|---|---:|---:|---:|---:|
+| **DeepSeek V4.1 Flash 1017 Max** | **45** | **67%** | **34%** | **56%** |
+| DeepSeek V4 Pro 0813 Max | 36 | 57% | 14% | 51% |
+| GPT-6.1 Sol Max | 52 | 65% | 56% | 54% |
+| Claude Sonnet 5.5 Medium | 41 | 55% | 30% | 53% |
+| Claude Sonnet 5.5 High | 47 | 59% | 44% | 54% |
+| Claude Sonnet 5.5 Max | 56 | 72% | 64% | 61% |
+| Claude Opus 5.5 Max | 58 | 70% | 60% | 67% |
+
+- **Key result:** 1017 Flash **beats V4 Pro in most listed tests**, and its Max score falls near **Sonnet High (45 vs 47)**, above Sonnet Medium (45 vs 41), but behind stronger Max Opus/Sonnet and GPT-6.1 Sol. On AA AutomationBench it scores **67%**, slightly ahead of GPT-6.1 Sol Max **65%**, but GPT-6.1 Sol is far stronger on Terminal-Bench **56% vs 34%**. *Do not infer universal coding/agent superiority from one aggregate or sub-benchmark.*
+- AA reports **~225 output tokens/s** and **$0.26/task** for Flash 1017 Max versus **~57 tokens/s** and **$0.72/task** for GPT-6.1 Sol Max under its own deployment, evaluation mix and cost model. Flash uses **~89K output tokens per task** versus Sol **~38K**: very high generated/reasoning-token consumption can erode apparent per-token savings. API-provider/harness throughput is **not** a measurement of ChatGPT Work or Claude Code end-to-end user experience.
+- DeepSeek's **own** model card reports vendor-evaluated 1017 gains over September Flash: **DeepSWE v1.1 77.0 vs 74.2**, **ProgramBench 29.1 vs 20.3**, **Automation-Bench v1.0.6 60.5 vs 54.8**, **Terminal-Bench 4.0 42.3 vs 31.2**. These are **developer claims with their stated harness**, not the same run as AA's 34% Terminal-Bench; preserve both with source labels and do not average them.
+
+Independent: https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-deepseek-v4-pro ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-gpt-6-1-sol ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-claude-sonnet-5-5-high ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-claude-sonnet-5-5-medium ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-claude-sonnet-5-5 ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-claude-opus-5-5
+
+Developer: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### Routing with the third provider — updated decision rules
+
+1. **DeepSeek prepaid API: Flash 1017 is the default DeepSeek choice**, particularly for bulk classification/transformation, repetitive coding agents, independent budget-friendly technical second opinions, vision+text input, and experiments with Claude Code/OpenCode/Codex backed by DeepSeek. Use **Low thinking** for cheap bounded calls, **High thinking** for substantial work; verify output quality and usage with real logs.
+2. **Do not default to V4 Pro** simply because of the "Pro" label. Current independent evals show it behind Flash 1017 on several agentic/coding metrics, with **~3–4.4× higher uncached/token output peak rates**. Use V4 Pro for a narrow verified task-specific advantage, legacy compatibility or deliberate A/B test; otherwise use Flash.
+3. For **hardest autonomous Work/browser/cross-tool artifacts**, continue **GPT-6 Astra Medium on existing Plus allowance**. For heavy repository work choose **GPT-6.1 Sol Medium/High** or **Claude Opus 5.5 High/xhigh** based on agent harness, task shape and included allowance. Flash is a serious extra candidate if repeat cost, speed or remaining allowance dominates; require CI, verification and human diff review.
+4. For **serious but routine Claude work**, **Sonnet 5.5 Medium/High** remains default with existing Claude Pro usage; **Haiku 5.5** is useful for narrower steps. A cheap DeepSeek API call is still **additional money** while these subscription allowances may remain unused. It can nonetheless be the right independent third-provider review and capacity source.
+5. For **scientific/engineering analysis**, seek physical/empirical verification and cross-vendor review (e.g., GPT-6 High or Opus High plus Flash High). Do not presume benchmark leadership implies reliability on the user's experiments, MATLAB, SolidWorks/CAD, technical calculations or long-context evidence synthesis.
+6. **Economics:** first compare marginal prepaid API cost *against the marginal cost of already included Plus/Claude allowance* (often $0 until the allowance is constrained) and then consider hard limits, latency, throughput, automatic operation and optional tool charges. Set a per-project DeepSeek top-up budget and monitor actual cache hit/miss, output/reasoning tokens, retry rate and task success. **Fable 5/5.1 remain last-resort credits-only escalation** in Claude Pro.
+
+**Next check:** confirm aliases and pricing on every cycle; test 1017 Flash High vs GPT-6.1 Sol Medium and Claude Sonnet 5.5 Medium/High **in the same real repository with the same work scope, tests, tool privileges and stopping criteria**. Track effective USD / successfully merged change and engineering review effort. Do not treat Max API leaderboard scores as an outcome for default effort modes.
+
+
 ## Weekly delta check: 2026-10-20 (vs 2026-10-17)
 
-**No material changes in recommended models for ChatGPT Plus and Claude Pro from 2026-10-18 through 2026-10-20.** The prior GPT-6 Chat / GPT-6.1 Sol Work-Codex / Claude Opus-Sonnet-Haiku 5.5 routing remains the best supported default. This is an evidence-limited dated check, not a blanket assertion of no product releases or changes.
+**No material changes in recommended models for the original ChatGPT Plus and Claude Pro scope from 2026-10-18 through 2026-10-20.** DeepSeek was added in a same-day scope expansion above. The prior GPT-6 Chat / GPT-6.1 Sol Work-Codex / Claude Opus-Sonnet-Haiku 5.5 routing remains the best supported default. This is an evidence-limited dated check, not a blanket assertion of no product releases or changes.
 
 ### Product and model availability
 
@@ -29,7 +96,7 @@ No newly confirmed **Oct 18–20 same-harness, same-effort, comparable-token-bud
 
 ### Operational decision — unchanged
 
-**Chat:** GPT-6 Medium/High (Plus), GPT-5.6 Sol High for comparative reviews. **Autonomous Work:** Astra Medium for the highest-stakes long-horizon cross-tool runs; GPT-6.1 Sol Medium/High for efficient serious coding/Work; Luna for simple high-volume jobs. **Claude:** Opus 5.5 High/xhigh for hard judgment/coding, Sonnet 5.5 Medium/High as sustained default, Haiku 5.5 Low/Medium for narrow or delegated substeps. **Fable 5/5.1:** only bounded, explicitly budgeted paid escalation where other models disagree materially or a clear task-level advantage exists. For scientific and repository work, preserve independent review plus external tests, rather than treating the model score as a quality guarantee.
+**Chat:** GPT-6 Medium/High (Plus), GPT-5.6 Sol High for comparative reviews. **DeepSeek prepaid API:** Flash 1017 first, typically Low/High thinking; Pro 0813 only when verified advantageous. **Autonomous Work:** Astra Medium for the highest-stakes long-horizon cross-tool runs; GPT-6.1 Sol Medium/High for efficient serious coding/Work; Luna for simple high-volume jobs. **Claude:** Opus 5.5 High/xhigh for hard judgment/coding, Sonnet 5.5 Medium/High as sustained default, Haiku 5.5 Low/Medium for narrow or delegated substeps. **Fable 5/5.1:** only bounded, explicitly budgeted paid escalation where other models disagree materially or a clear task-level advantage exists. For scientific and repository work, preserve independent review plus external tests, rather than treating the model score as a quality guarantee.
 
 ### Sources checked 2026-10-20
 
@@ -174,7 +241,7 @@ Sources: https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gp
 
 References: https://developer.android.com/bench ; https://cognition.com/frontiercode ; https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
 
-## Practical model routing — reaffirmed 2026-10-20
+## Practical model routing — 2026-10-20 (OpenAI/Anthropic; DeepSeek addendum above)
 
 1. **Unknown problem / early technical discussion:** ordinary **ChatGPT GPT-6 Medium**, escalate to **High** if needed; **GPT-5.6 Sol High** is a valuable independent alternative. Decide **environment → model → effort**.
 2. **Difficult scientific/engineering reasoning without autonomous tools:** **GPT-6 High** and/or **Claude Opus 5.5 High**. Use a cross-vendor check for critical conclusions; do not infer correctness from confident agreement alone.
