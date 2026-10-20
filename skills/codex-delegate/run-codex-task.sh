@@ -48,4 +48,23 @@ echo "codex-delegate: workdir=$WORKDIR prompt=$PROMPT extra=[$*]"
 
 node "$COMPANION" task --cwd "$WORKDIR" --prompt-file "$PROMPT" "$@" 2>&1 \
   | grep -v -e 'DEP0190' -e 'trace-deprecation'
-exit "${PIPESTATUS[0]}"
+RC=${PIPESTATUS[0]}
+
+# Summary for the usage readout. The session ID is not reliably in the task output, so take it
+# from the plugin's status for this exact workdir (latest job first) and read that session file.
+echo
+echo "codex-delegate: ---- summary ----"
+STATUS=$(node "$COMPANION" status --cwd "$WORKDIR" 2>&1 | grep -v -e 'DEP0190' -e 'trace-deprecation')
+echo "$STATUS" | grep -m1 -E 'Duration|Elapsed' | sed 's/^ */codex-delegate: /'
+SID=$(echo "$STATUS" | grep -o '[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}' | head -1)
+echo "codex-delegate: session=${SID:-unknown} exit=$RC"
+if [ -n "$SID" ]; then
+  F=$(grep -rl "$SID" "$HOME/.codex/sessions" 2>/dev/null | head -1)
+  if [ -n "$F" ]; then
+    echo "codex-delegate: session file=$F"
+    grep -o '"total_token_usage":{[^}]*}' "$F" | tail -1 | sed 's/^/codex-delegate: /'
+    grep -o '"primary":{[^}]*}' "$F" | tail -1 | sed 's/^/codex-delegate: 5h window /'
+    grep -o '"secondary":{[^}]*}' "$F" | tail -1 | sed 's/^/codex-delegate: weekly /'
+  fi
+fi
+exit "$RC"
