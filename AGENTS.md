@@ -30,7 +30,7 @@ GitHub default branch: main
 - Для artifact/source locators предпочитай repository-relative paths.
 - Веди project-memory prose на русском. Filenames, record IDs и controlled statuses сохраняй в определённых английских формах.
 - `TASKS.md` — краткий operational index. Подробные ревью/обсуждения остаются в GitHub Issues и не копируются целиком.
-- Репозиторий содержит два связанных, но независимо обновляемых направления: Project Infrastructure и model routing. Версия Project Infrastructure не версионирует автоматически `AI_MODEL_*` и `skills/model-router/`.
+- Репозиторий содержит три связанных, но независимо обновляемых направления: Project Infrastructure, model routing и практика работы с агентами (`skills/codex-delegate/`, `claude-desktop/`). Версия Project Infrastructure не версионирует автоматически `AI_MODEL_*`, `skills/` и `claude-desktop/`.
 - Не сохраняй secrets/credentials в project-memory/infrastructure files.
 - Не загружай installed standard snapshot в обычной сессии.
 - Temporary/intermediate work предпочитай выполнять в harness/local workspace вне canonical repo. Если реально нужен repo-local `_ai/work/` или `_ai/generated/`, сначала добавь соответствующие managed `.gitignore` rules, если эти материалы не должны намеренно version-control'иться.

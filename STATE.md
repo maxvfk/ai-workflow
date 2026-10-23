@@ -1,6 +1,6 @@
 # Текущее состояние
 
-Last updated: 2026-09-22
+Last updated: 2026-10-23
 
 ## Статус
 
@@ -33,13 +33,20 @@ Project Infrastructure: **0.8.6 Draft**, pre-pilot.
 - В 0.8.5 добавлен профиль **G2 / Project Registry**: отдельный GitHub control repo ведёт `PROJECTS/PROJECTS.md`, а в корне `PROJECTS/` намеренно нет parent `AGENTS.md`; дочерние проекты используются как authoritative read-only evidence.
 - В 0.8.6 добавлен G2 artifact-only fallback: локальный/delegated агент без GitHub может выполнять явно заданную bounded работу с artifacts, не имитируя полный project runtime, и оставляет scoped `_LOCAL_AGENT_REPORT.md` для последующего reconciliation.
 
+## После 2026-09-22
+
+- **Пилот G2 на реальном проекте SP-LAB-GRANT** (`maxvfk/SP-Lab-Grant`): отчёты — PR #13 (части 1–2, F-01…F-24) и PR #15 (часть 3, F-25…F-36: память, которую понимает новый агент; 13 предложений к стандарту с черновиками формулировок). Оба PR открыты; разбор — T-014. В проекте пилота память перестроена как локальное отступление от 0.8.6 и проверена независимым агентом (13/13 ответов о решённом из памяти).
+- **Направление «практика работы с агентами»** (см. `PROJECT.md`): skill `skills/codex-delegate/` (2026-10-20; установка на второй машине — PR #14), `claude-desktop/REMOTE_CONTROL_KEEPALIVE.md` (2026-10-22), `claude-desktop/SESSIONS.md` (2026-10-23, PR #16 слит).
+- **Делегированные исполнители** — предложение в `project-infrastructure/ROADMAP.md` и T-013; G2 adversarial review (Codex + проверка Claude) — `_ai/research/2026-10-20-g2-adversarial-review.md`.
+
 ## В работе
 
 - Независимо перепроверить dogfood/runtime и исправления по открытым audit issues перед закрытием.
+- Разобрать предложения пилота G2 SP-LAB-GRANT (PR #13, #15) — T-014.
 
 ## Ближайшие следующие шаги
 
 1. Провести независимый re-review установленного G0 runtime и последних corrective изменений.
-2. Провести первый representative real-project pilot (приоритетно G2 или L1).
+2. Representative real-project pilot G2 идёт (SP-LAB-GRANT); по его отчётам (PR #13, #15) решить, какие предложения принимать в стандарт.
 3. После пилота решить, какие Draft правила требуют упрощения/изменения.
 4. Отдельно решить оставшиеся repository-level вопросы: private bootstrap и граница между infrastructure/model-routing workstreams.
