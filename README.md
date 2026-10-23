@@ -1,32 +1,24 @@
 # ai-workflow
 
-Shared AI workflow notes, routing rules, and project-infrastructure standards.
+Personal knowledge and workflow repository for organizing work with AI agents and AI harnesses: infrastructure standards, model routing, reusable skills, product-specific guidance, operational notes, lessons learned, and experiments.
 
 <!-- project-infrastructure:start -->
 Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STATE.md). Active/next work: [`TASKS.md`](TASKS.md).
 <!-- project-infrastructure:end -->
 
-## Files
+## Repository map
 
-- `AI_MODEL_ROUTING_MEMO.md` — stable routing rules for choosing vendor, environment, model, and effort.
-- `AI_MODEL_CURRENT_STATE.md` — refreshed snapshot of current ChatGPT/Claude models, limits, benchmark evidence, and practical recommendations.
-- `PROJECT_INFRASTRUCTURE.md` — canonical entry point for project-infrastructure bootstrap and migration.
-- `project-infrastructure/COMMON.md` — common project-memory/runtime rules used by all scenarios.
-- `project-infrastructure/G0_GITHUB_REPOSITORY.md` — **Draft** GitHub-only single-store scenario.
-- `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
-- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md` — **Draft** GitHub + synchronized local artifact-folder scenario.
-- `project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md` — special G2 profile for maintaining a personal `PROJECTS/PROJECTS.md` catalog from a dedicated GitHub control repo without placing parent runtime files in `PROJECTS/`.
-- `project-infrastructure/ROADMAP.md` — deferred ideas intentionally outside the active scenario set.
-- `skills/model-router/SKILL.md` — reusable Agent Skill for applying the routing memo/current-state snapshot.
-- `skills/codex-delegate/` — Agent Skill for delegating tasks from Claude Code to Codex via the openai-codex plugin: reliable launch procedure on Windows, monitoring, usage readout, verification. Install by copying to `~/.claude/skills/codex-delegate/`.
-- `claude-desktop/REMOTE_CONTROL_KEEPALIVE.md` — пошаговая настройка «диспетчер + сторож», чтобы сессии Claude Desktop оставались доступны с телефона через Remote Control после автообновлений приложения.
-- `claude-desktop/SESSIONS.md` — как вести сессии: основная и дочерние, форк против дочерней, сжатие контекста, где живёт память Claude и общий раздел для `~/.claude/CLAUDE.md`.
+- **Project Infrastructure** — `PROJECT_INFRASTRUCTURE.md` and `project-infrastructure/`: project memory, canonical stores, bootstrap, handoff and runtime standards.
+- **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, and the reusable `skills/model-router/` skill.
+- **Reusable skills** — `skills/`. Read `skills/README.md` for the current index and placement rules.
+- **Harness/product-specific guidance** — thematic directories such as `claude-desktop/`. Read `claude-desktop/README.md` for the current Claude Desktop materials.
+- **Notes, rules, errors, experiments and lessons learned** — keep them with the thematic area they belong to; create a new top-level category only when a durable independent class of material actually emerges.
+
+Project Infrastructure has its own version. That version does **not** version the whole repository or automatically version model-routing, skills, harness-specific guidance, or other areas unless an explicit dependency says otherwise.
 
 ## Project infrastructure
 
-Current standard version: **0.8.6**  
+Current standard version: **0.8.10**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -44,6 +36,10 @@ Core conventions:
 - users, domain applications, and delegated/local agents may edit canonical artifacts directly; project memory can be reconciled later through an explicit bounded refresh rather than requiring the main orchestrator for every small artifact change.
 - a dedicated G2 Project Registry may maintain `PROJECTS/PROJECTS.md`; its GitHub repo owns runtime/state, while the workspace root gets no parent `AGENTS.md`, and child projects remain authoritative/read-only during registry maintenance.
 - ordinary G2 local/delegated agents without GitHub may perform explicitly bounded artifact-only tasks from sufficient local/user context and leave `_LOCAL_AGENT_REPORT.md` near the changed work for later full-access reconciliation; they do not create substitute project memory or claim full project restoration.
+- G2 may optionally enable a complementary control-plane-only fallback for GitHub-visible/cloud agents without artifact-root access: canonical project memory is read-only by default, handoff uses `_ai/inbox/`, selected text artifacts may be exposed through bounded read-only `_ai/snapshots/`, and an external incoming artifact area is configured only when the user actually needs one.
+- multi-project workspaces keep one active project by default: registry-owned catalogs are updated through verified handoffs rather than child direct writes, important cross-project dependencies use Project ID + source-relative path as durable identity, and auto-loaded sibling instructions never expand write scope.
+- G2 operational hardening distinguishes exact-content verified redundant/stale copies from unresolved conflicts, preserves nontrivial artifact-only build helpers only as minimal `_LOCAL_AGENT_HANDOFF/` staging, and limits temp-leftover hygiene to brownfield/migration events.
+- common small clarifications standardize new Project ID naming, align bootstrap prose with project-memory language, label cold-start validation strength, and require persisted-result verification for escape-sensitive programmatic text writes.
 
 Implemented Draft scenarios — and the complete active pre-pilot scenario set — are:
 
@@ -52,7 +48,7 @@ Implemented Draft scenarios — and the complete active pre-pilot scenario set �
 - **G1 — GitHub + Google Drive:** GitHub is the control/state plane and Drive is the artifact plane; G1 has a ChatGPT Project profile.
 - **G2 — GitHub + Synced Local Folder:** GitHub is the control/state plane, a synchronized ordinary local folder is the artifact root, and control-repo clones never live inside the sync root.
 
-Provider-specific remote storage, remote-only agents, and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios.
+Provider-specific remote-storage scenarios and stronger multi-agent coordination are deferred ideas in `project-infrastructure/ROADMAP.md`, not active/planned scenarios. G2 control-plane-only access is handled as a bounded fallback inside G2 rather than as a separate remote-only scenario.
 
 For bootstrap, migration, or the exact start prompt, read `PROJECT_INFRASTRUCTURE.md`.
 
