@@ -31,7 +31,8 @@ Its responsibilities are intentionally narrow:
 - add/update catalog entries when projects are created, moved, renamed, archived, or migrated between infrastructure scenarios;
 - periodically reconcile the catalog against the projects actually visible under `PROJECTS/`;
 - use each child project's own runtime/manifest/project memory as authoritative evidence;
-- preserve project boundaries and avoid modifying child projects during registry maintenance.
+- preserve project boundaries and avoid modifying child projects during registry maintenance;
+- receive and verify child-project registration/update requests through the configured registry handoff mechanism when one is installed.
 
 The registry is not a portfolio-management system, dependency database, or parent runtime for all projects.
 
@@ -142,7 +143,49 @@ On requests such as “проверь все проекты”, “обнови 
 
 Do not recursively ingest CAD trees, reports, datasets, archives, dependency folders, or other child artifacts merely to reconcile the registry.
 
-## 6. Child-project access policy
+## 6. Registration/update requests from child projects
+
+A child project does **not** directly edit the registry-owned `PROJECTS.md` merely because it is being created, adopted, migrated, moved/renamed, archived, or has registry-relevant metadata changes.
+
+When the workspace is known to use this Project Registry profile and the registry control repository is explicitly configured and writable, the child project's full/bootstrap agent may create a **GitHub Issue in the registry control repository** as a registration/update request.
+
+The reference implementation uses:
+
+`maxvfk/projects-registry`
+
+The issue is a handoff/trigger, not authoritative registry state.
+
+Suggested request fields:
+
+- operation: add / update / move-or-rename / scenario migration / archive;
+- Project ID;
+- human-readable project name;
+- GitHub repository when applicable;
+- scenario/profile;
+- local path hint when known;
+- concise reason/context when useful.
+
+Do not guess the registry repository when it is not explicitly configured/discoverable. If a request cannot be created, project bootstrap remains valid; report registry registration/update as pending.
+
+### Processing a request
+
+The registry agent must not blindly copy issue fields into `PROJECTS.md`.
+
+For each request:
+
+1. read the authoritative child runtime/manifest/project metadata needed to verify identity;
+2. re-read the current `PROJECTS.md`;
+3. verify Project ID, repository, scenario/profile, lifecycle, and other relevant metadata;
+4. verify the local path against the connected workspace when available;
+5. add/update the catalog only after verification;
+6. update registry-owned derived routing metadata when applicable;
+7. close the issue with a concise result, or leave it open when required verification is unavailable.
+
+If the local workspace is unavailable, leave path-dependent registration pending rather than inventing a verified local path.
+
+Child projects also do not directly edit registry-owned derived routing files such as a cloud routing index; the registry agent updates those representations after verifying the request.
+
+## 7. Child-project access policy
 
 Registry maintenance is read-only toward child projects by default.
 
@@ -167,7 +210,7 @@ unless the user's task explicitly includes that child project as a separate modi
 
 Visibility of the whole `PROJECTS/` tree does not grant cross-project write authority.
 
-## 7. Cross-project relationships
+## 8. Cross-project relationships
 
 Do not maintain a central dependency graph in `PROJECTS.md`.
 
@@ -179,7 +222,7 @@ Follow `COMMON.md`:
 
 The registry only resolves Project IDs to current project locations/repositories.
 
-## 8. Registry project memory
+## 9. Registry project memory
 
 The registry project's own state should remain small.
 
@@ -199,7 +242,7 @@ The registry project's own state should remain small.
 
 Do not mirror ordinary child-project tasks into registry `TASKS.md`.
 
-## 9. Sources
+## 10. Sources
 
 If `SOURCES.md` is installed, register at minimum the catalog artifact:
 
@@ -214,7 +257,7 @@ Purpose: Maintained project catalog and Project-ID/location resolver
 
 Child projects themselves normally do not need one source entry each; `PROJECTS.md` is the compact resolver.
 
-## 10. Runtime requirements
+## 11. Runtime requirements
 
 The canonical GitHub `AGENTS.md` for the registry must make these rules discoverable:
 
@@ -227,9 +270,10 @@ The canonical GitHub `AGENTS.md` for the registry must make these rules discover
 - child projects are authoritative for their own metadata and read-only by default;
 - maintenance uses bounded discovery and does not recursively scan child artifacts;
 - `PROJECTS.md` is repaired from child project evidence when stale;
-- unresolved identity/path ambiguity is surfaced rather than guessed.
+- unresolved identity/path ambiguity is surfaced rather than guessed;
+- configured child registration/update requests are treated as handoff evidence to verify, not as authoritative catalog state.
 
-## 11. Bootstrap
+## 12. Bootstrap
 
 Follow `COMMON.md` and base G2 rules except where this profile explicitly overrides the local-bootstrap model.
 
@@ -243,9 +287,10 @@ Bootstrap steps:
 6. initialize GitHub runtime/project memory/manifest/snapshot;
 7. perform bounded discovery of current child projects;
 8. populate/reconcile `PROJECTS.md`;
-9. cold-start validate from GitHub runtime + connected `PROJECTS/` workspace.
+9. when the registry control repository supports child registration/update issues, materialize that handoff rule in the registry runtime so child/bootstrap workflows can use it without direct catalog writes;
+10. cold-start validate from GitHub runtime + connected `PROJECTS/` workspace.
 
-## 12. Cold-start validation
+## 13. Cold-start validation
 
 A fresh registry agent must be able to determine:
 
@@ -257,7 +302,7 @@ A fresh registry agent must be able to determine:
 - that child projects are authoritative and read-only by default;
 - how to run bounded catalog reconciliation without traversing all child artifacts.
 
-## 13. Completion reporting
+## 14. Completion reporting
 
 After registry maintenance, report only material outcomes:
 
@@ -265,6 +310,7 @@ After registry maintenance, report only material outcomes:
 - unresolved Project-ID/path/repository ambiguities;
 - projects discovered but not yet registered;
 - stale catalog entries that could not be reconciled safely;
-- whether `PROJECTS.md` was verified after writing.
+- whether `PROJECTS.md` was verified after writing;
+- registration/update requests processed, left pending, or blocked by missing verification.
 
 Do not report unchanged child projects one by one unless the user asks for a full audit table.
