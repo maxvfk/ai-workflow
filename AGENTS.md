@@ -16,7 +16,7 @@ GitHub default branch: main
 
 1. Прочитай `STATE.md` и `TASKS.md`.
 2. Читай `PROJECT.md` и `SOURCES.md`, когда они релевантны задаче.
-3. Загружай стандарты, issues, model-routing документы и другие материалы только по необходимости.
+3. Загружай стандарты, issues, model-routing материалы, skills, harness/product-specific guidance и другие материалы только по необходимости.
 4. Не используй историю чата как источник истины, если она расходится с текущими файлами репозитория.
 
 ## Правила работы
@@ -31,7 +31,11 @@ GitHub default branch: main
 - Для artifact/source locators предпочитай repository-relative paths.
 - Веди project-memory prose на русском. Filenames, record IDs и controlled statuses сохраняй в определённых английских формах.
 - `TASKS.md` — краткий operational index. Подробные ревью/обсуждения остаются в GitHub Issues и не копируются целиком.
-- Репозиторий содержит два связанных, но независимо обновляемых направления: Project Infrastructure и model routing. Версия Project Infrastructure не версионирует автоматически `AI_MODEL_*` и `skills/model-router/`.
+- `ai-workflow` — общий personal knowledge/workflow repository по организации работы с AI-агентами и AI-harnesses; Project Infrastructure — одна из его областей, а не весь проект.
+- Перед созданием нового durable материала выбери существующую тематическую область по `PROJECT.md`/root `README.md`; не складывай всё в Project Infrastructure или корень репозитория.
+- `skills/` — canonical home reusable skills. Ищи существующие skills и добавляй новые в `skills/<skill-name>/`; при изменении состава обновляй `skills/README.md`.
+- Product/harness-specific guidance храни в соответствующем тематическом каталоге, например `claude-desktop/`; актуальный состав области держи в её локальном `README.md`. Новый top-level каталог создавай только при реальной устойчивой потребности.
+- Версия Project Infrastructure относится только к infrastructure standard и явно связанным managed materials; model routing, skills, harness-specific guidance и другие области обновляются независимо, если явная зависимость не задокументирована.
 - Не сохраняй secrets/credentials в project-memory/infrastructure files.
 - Не загружай installed standard snapshot в обычной сессии.
 - Temporary/intermediate work предпочитай выполнять в harness/local workspace вне canonical repo. Если реально нужен repo-local `_ai/work/` или `_ai/generated/`, сначала добавь соответствующие managed `.gitignore` rules, если эти материалы не должны намеренно version-control'иться.

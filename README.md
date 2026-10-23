@@ -1,28 +1,20 @@
 # ai-workflow
 
-Shared AI workflow notes, routing rules, and project-infrastructure standards.
+Personal knowledge and workflow repository for organizing work with AI agents and AI harnesses: infrastructure standards, model routing, reusable skills, product-specific guidance, operational notes, lessons learned, and experiments.
 
 <!-- project-infrastructure:start -->
 Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STATE.md). Active/next work: [`TASKS.md`](TASKS.md).
 <!-- project-infrastructure:end -->
 
-## Files
+## Repository map
 
-- `AI_MODEL_ROUTING_MEMO.md` — stable routing rules for choosing vendor, environment, model, and effort.
-- `AI_MODEL_CURRENT_STATE.md` — refreshed snapshot of current ChatGPT/Claude models, limits, benchmark evidence, and practical recommendations.
-- `PROJECT_INFRASTRUCTURE.md` — canonical entry point for project-infrastructure bootstrap and migration.
-- `project-infrastructure/COMMON.md` — common project-memory/runtime rules used by all scenarios.
-- `project-infrastructure/G0_GITHUB_REPOSITORY.md` — **Draft** GitHub-only single-store scenario.
-- `project-infrastructure/L1_LOCAL_FOLDER.md` — **Draft** local-folder scenario.
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/BASE.md` — **Draft** base GitHub + Google Drive scenario.
-- `project-infrastructure/G1_GITHUB_GOOGLE_DRIVE/CHATGPT_PROJECT.md` — **Draft** ChatGPT Project profile for G1.
-- `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md` — **Draft** GitHub + synchronized local artifact-folder scenario.
-- `project-infrastructure/G2_PROJECT_REGISTRY_PROFILE.md` — special G2 profile for maintaining a personal `PROJECTS/PROJECTS.md` catalog from a dedicated GitHub control repo without placing parent runtime files in `PROJECTS/`.
-- `project-infrastructure/ROADMAP.md` — deferred ideas intentionally outside the active scenario set.
-- `skills/model-router/SKILL.md` — reusable Agent Skill for applying the routing memo/current-state snapshot.
-- `skills/codex-delegate/` — Agent Skill for delegating tasks from Claude Code to Codex via the openai-codex plugin: reliable launch procedure on Windows, monitoring, usage readout, verification. Install by copying to `~/.claude/skills/codex-delegate/`.
-- `claude-desktop/REMOTE_CONTROL_KEEPALIVE.md` — пошаговая настройка «диспетчер + сторож», чтобы сессии Claude Desktop оставались доступны с телефона через Remote Control после автообновлений приложения.
-- `claude-desktop/SESSIONS.md` — как вести сессии: основная и дочерние, форк против дочерней, сжатие контекста, где живёт память Claude и общий раздел для `~/.claude/CLAUDE.md`.
+- **Project Infrastructure** — `PROJECT_INFRASTRUCTURE.md` and `project-infrastructure/`: project memory, canonical stores, bootstrap, handoff and runtime standards.
+- **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, and the reusable `skills/model-router/` skill.
+- **Reusable skills** — `skills/`. Read `skills/README.md` for the current index and placement rules.
+- **Harness/product-specific guidance** — thematic directories such as `claude-desktop/`. Read `claude-desktop/README.md` for the current Claude Desktop materials.
+- **Notes, rules, errors, experiments and lessons learned** — keep them with the thematic area they belong to; create a new top-level category only when a durable independent class of material actually emerges.
+
+Project Infrastructure has its own version. That version does **not** version the whole repository or automatically version model-routing, skills, harness-specific guidance, or other areas unless an explicit dependency says otherwise.
 
 ## Project infrastructure
 

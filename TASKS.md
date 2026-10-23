@@ -1,10 +1,5 @@
 # Задачи
 
-## T-013 — Рассмотреть правило для делегированных исполнителей
-Status: todo
-
-Предложение на рассмотрение по опыту реального G2-проекта (2026-10-20): делегированный исполнитель (Codex через плагин из Claude Code) работает с копией в отдельной рабочей папке и не пишет ни в синхронизируемый artifact root, ни в control repository; переносит результаты и пишет project memory оркестратор после проверки. Описание и открытые вопросы — `project-infrastructure/ROADMAP.md`, раздел «Delegated executors without access to canonical stores». Решить: поднимать ли это в `COMMON.md` или в G2, и как фиксировать происхождение результатов.
-
 ## T-001 — Завершить G0 dogfood
 Status: done
 
@@ -22,9 +17,9 @@ Evidence: GitHub issues #1, #3–#11; G2 adversarial review (Codex + прове�
 ## T-003 — Первый real-project pilot
 Status: active
 
-Две реальные L1 brownfield-установки выполнены и проаудированы; corrective cross-project rule принят в 0.8.2. Representative G2 pilot на `SP-LAB-GRANT` также выполнен и дал отдельный аудит F-01…F-16; Packages A/B/C/D внедрены в 0.8.7/0.8.8/0.8.9/0.8.10. Осталась финальная сверка аудита и PR.
+Две реальные L1 brownfield-установки выполнены и проаудированы. Representative G2 pilot на `SP-LAB-GRANT` дал F-01…F-16; согласованные Packages A/B/C/D внедрены в 0.8.7–0.8.10 и PR #13 merged. Pilot продолжается follow-up материалами F-17…F-36, которые разбираются отдельно в T-018.
 
-Evidence: GitHub issue #2; G2 pilot audit 2026-09.
+Evidence: GitHub issue #2; S-012.
 
 ## T-004 — Решить private-bootstrap strategy
 Status: todo
@@ -34,11 +29,11 @@ Status: todo
 Evidence: GitHub issue #8.
 
 ## T-005 — Уточнить границу infrastructure и model routing
-Status: todo
+Status: done
 
-Решить, достаточно ли явной независимости версий/циклов обновления внутри одного repo или model-routing материалы стоит вынести отдельно.
+Решено расширить identity `ai-workflow`: это общий personal knowledge/workflow repository по организации работы с AI-агентами и harnesses. Project Infrastructure, model routing, reusable skills, product-specific guidance и другие тематические области могут жить в одном repo и иметь независимые циклы обновления. Версия Project Infrastructure не является общей версией репозитория.
 
-Evidence: GitHub issue #11, пункт 2.
+Evidence: PROJECT.md; repository-map update 2026-10-23.
 
 ## T-006 — Пересмотреть default CLAUDE.md adapter позже
 Status: todo
@@ -128,3 +123,27 @@ Status: done
 Реализован Package D G2 pilot audit. Для новых Project IDs принят рекомендуемый uppercase ASCII hyphenated format без автоматического переименования существующих IDs. Project-owned bootstrap/runtime prose следует установленному Project-memory language, а stable infrastructure keys остаются в English forms. Cold-start validation явно маркирует метод `independent-agent`, `checklist/simulated-fresh`, `partial` или `not run`. Для escape-sensitive programmatic/API text writes добавлена persisted-result verification. F-12 закрыт без изменения стандарта как разовая environment-specific Git configuration issue.
 
 Evidence: Project Infrastructure 0.8.10; G2 pilot audit F-09, F-10, F-11, F-12, F-14.
+
+## T-017 — Рассмотреть правило для delegated executors
+Status: todo
+
+Предложение на рассмотрение по опыту реального G2-проекта (2026-10-20): delegated executor (в текущем примере Codex через `skills/codex-delegate/`) работает с копией в отдельной рабочей папке и не пишет напрямую в synchronized artifact root или control repository; перенос результата и project-memory update выполняет оркестратор после проверки.
+
+Описание и открытые вопросы — `project-infrastructure/ROADMAP.md`, раздел «Delegated executors without access to canonical stores».
+
+ID note: задача первоначально появилась параллельно как ещё один `T-013`; после merge PR #13 обнаружена коллизия с уже установленным `T-013 — G2 control-plane-only fallback`. Для дальнейших ссылок используется `T-017`.
+
+Evidence: project-infrastructure/ROADMAP.md; S-009.
+
+## T-018 — Разобрать G2 pilot follow-up F-17…F-36
+Status: todo
+
+Первый пакет G2 pilot F-01…F-16 уже разобран, реализован в Project Infrastructure 0.8.7–0.8.10 и merged через PR #13.
+
+Продолжение:
+- F-17…F-24 — `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-part2.md`;
+- F-25…F-36 — PR #15 и `infrastructure-pilot-findings-part3.md`.
+
+Разбирать findings последовательно/тематическими пакетами: принять, модифицировать, отклонить или признать уже закрытыми; стандарт менять только после явного решения.
+
+Evidence: S-012; PR #15; maxvfk/SP-Lab-Grant.
