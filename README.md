@@ -22,6 +22,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 - `skills/model-router/SKILL.md` — reusable Agent Skill for applying the routing memo/current-state snapshot.
 - `skills/codex-delegate/` — Agent Skill for delegating tasks from Claude Code to Codex via the openai-codex plugin: reliable launch procedure on Windows, monitoring, usage readout, verification. Install by copying to `~/.claude/skills/codex-delegate/`.
 - `claude-desktop/REMOTE_CONTROL_KEEPALIVE.md` — пошаговая настройка «диспетчер + сторож», чтобы сессии Claude Desktop оставались доступны с телефона через Remote Control после автообновлений приложения.
+- `claude-desktop/SESSIONS.md` — как вести сессии: основная и дочерние, форк против дочерней, сжатие контекста, где живёт память Claude и общий раздел для `~/.claude/CLAUDE.md`.
 
 ## Project infrastructure
 
