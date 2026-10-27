@@ -1,11 +1,85 @@
 # AI Model Current State
 
-**Last updated:** 2026-10-20  
-**Previous snapshot:** 2026-10-17  
+**Last updated:** 2026-10-27  
+**Previous snapshot:** 2026-10-20  
 **Scope:** OpenAI, Anthropic and DeepSeek; practical routing for **ChatGPT Plus**, **Claude Pro (~$20/month US)** and **prepaid DeepSeek API credit balance (no DeepSeek subscription)**.  
 **Cost policy:** **Claude Fable 5/5.1 = last resort** on Pro: usage credits are charged from the first request, outside normal Pro allowance. **DeepSeek API usage is metered and deducted from prepaid credit**, not from ChatGPT/Claude subscription allowances.
 
 > Weekly point-in-time snapshot, not a guarantee of account-specific access. Re-check the model picker, `Settings → Usage`, release notes, and costs before unusually expensive or consequential runs. Distinguish Chat, Work/Codex, Claude Chat/Code/Cowork, and API access.
+
+## Weekly delta check: 2026-10-27 (vs 2026-10-20) — MATERIAL: GPT-6.1 Terra; Claude Duet preview
+
+**Summary:** The principal *model-routing* change is the **2026-10-26 GPT-6.1 Terra** release on **ChatGPT Plus Work/Codex**. It introduces a capable, allowance-efficient visual/computer-use mid-tier between high-volume Luna and expensive Sol/Astra for relevant task shapes. **Claude Duet (2026-10-21)** changes the Claude Pro *product* landscape but **is not a new base model**: it is a US-only, invite/waitlist research preview and uses the existing Pro allowance. **DeepSeek API aliases, model versions and peak/off-peak token prices are unchanged** relative to the 2026-10-20 DeepSeek addendum. No new Anthropic general-purpose model was verified, and **Fable on Pro stays credits-only / last resort**.
+
+### 1. OpenAI: GPT-6.1 Terra (2026-10-26; material Plus change)
+
+- **Eligibility/surface:** GPT-6.1 Terra is rolling out in **Work and Codex**, including ChatGPT **Plus**, Pro, Business, Enterprise and Edu where enabled. **Not available in ordinary Chat**, so GPT-6 Sol Medium/High stays the Chat default. Pick from available Work/Codex models (`gpt-6.1-terra` in API). Desktop/client version, rollout and workspace policy can affect availability.
+- **What it does:** visual reasoning over screenshots/photos/technical drawings, interpreting application screens, browser/desktop computer use, routine professional writing, well-scoped document and repetitive coding tasks. **Default recommendation: Terra Medium** for visual/GUI-driven or moderate Work/Codex assignments where allowance and speed matter; escalate to **GPT-6.1 Sol Medium/High** for difficult repository engineering and deeper reasoning, and **GPT-6 Astra Medium** for hardest high-error-cost autonomous work. **Luna** remains the economical choice for truly trivial/high-volume steps. Use a small representative task to validate Terra's actual GUI reliability and artifact quality; a frontier benchmark is not proof of exact workflow capability.
+- **Effort:** OpenAI API `gpt-6.1-terra` supports `reasoning.effort` **none, low, medium (default), high, xhigh, max**; the available levels/presets in **Plus Work/Codex may differ**. Tool calling in the API requires **Responses API**. API context **1,050,000** and max output **128,000** tokens; Work/Codex context/config may be different. These are ceilings, not included-use guarantees.
+- **Allowance:** Work/Codex shares Plus five-hour and potentially weekly allowance. OpenAI states **the same Plus allowance covers more tasks with Terra than with GPT-5.6 Terra, GPT-6.1 Sol or Astra**. **No official Terra messages/5-hour numeric estimate was confirmed** in the Astra-usage guide; do **not** invent a range by extrapolation. Published estimates retained below for Astra/Sol/Luna are not Terra limits. Check `Settings → Usage`.
+- **Separate API economics:** standard API prices **$1 / million input, $0.05 / million cached input, $5 / million output** for `gpt-6.1-terra`; about 50% of GPT-6.1 Sol input/output rates ($2/$10). API pricing does **not** directly price a Plus Work run. The OpenAI API also added optional **12-hour prompt caching** on 2026-10-20, with 12-hour writes at **2.5x input price** and subsequent discounted cache reads: useful for API workflows with recurring context, not an increase in included Plus allowance.
+- **Vendor evaluations (not independent):** at *Max* effort, OpenAI reported **Terminal-Bench 4.0 50.3%** versus **21.5% GPT-5.6 Terra** (published earlier benchmark). It reports stronger Agents' Last Exam, OSWorld 2.1, MMMU-Pro, lower factual error rates on an internal challenge set, and strong Terminal-Bench-Science 0.1 results at lower cost. These are **OpenAI-controlled model/harness/budget comparisons**; do not conflate them with Artificial Analysis results below.
+
+Primary: https://openai.com/index/introducing-gpt-6-1-terra/ ; https://learn.chatgpt.com/docs/whats-new/october-26-30-2026 ; https://learn.chatgpt.com/docs/changelog ; https://developers.openai.com/api/docs/models/gpt-6.1-terra ; https://developers.openai.com/api/docs/changelog ; https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+
+### 2. Independent evals: Terra versus Sol, Flash and subscription alternatives
+
+**Artificial Analysis Intelligence Index v4.3.2 (newly evaluated Oct 26–27; API/AA harness, NOT Plus Work performance)**:
+
+| Model + effort | AA index | AutomationBench-AA | Terminal-Bench 4.0 | SciCode | Cost / AA index task |
+|---|---:|---:|---:|---:|---:|
+| **GPT-6.1 Terra Max** | **48** | **60%** | **56%** | **55%** | **$0.40** |
+| GPT-6.1 Sol Max | 52 | 65% | 56% | 54% | $0.72 |
+| **DeepSeek V4.1 Flash 1017 Max** | 45 | **67%** | 34% | 56% | $0.26 |
+
+**Matched effort (Medium, Terra vs Sol):** Intelligence **41 vs 48**, AutomationBench **58% vs 63%**, Terminal-Bench **32% vs 48%**, SciCode **52% vs 53%**; AA cost/task **$0.10 vs $0.21** and average time/task **63 vs 151 seconds**. Thus Terra offers throughput/allowance efficiency, *not* general reasoning parity with Sol at the everyday Medium operating point. Max effort substantially improves Terra's terminal results but can consume many more tokens. **AA's 56% Terra Max Terminal-Bench is a different evaluation from OpenAI's vendor 50.3%; don't average or conflate them**.
+
+**DeepSeek comparison:** Flash 1017 Max remains cheaper at direct peak API pricing and is competitive on AutomationBench, but is weaker on AA terminal-agent completion than Terra Max (**34% vs 56%**). Flash's **~89K output tokens/task** in AA Max are materially more than Terra's **~35K**, so compare cost per *completed and reviewed task*, not nominal price/token or raw generation speed. DeepSeek Flash still has a clear place for high-volume independent budgeted API runs, especially off-peak; this does not negate already purchased Plus/Claude allowance. **V4 Pro 0813** remains a nondefault option: no newer comparable evidence overturns 1017 Flash's advantage in several prior tasks.
+
+The three Max rows are under AA's evaluation family but harness, provider, cache accounting and token budgets can still vary; **do not substitute Max results for the recommended Medium/High production settings**. No new matched end-to-end same-repository comparison in real ChatGPT Work/Codex vs Claude Code/DeepSeek-backed agents was confirmed during this delta.
+
+Independent: https://artificialanalysis.ai/models/comparisons/gpt-6-1-terra-vs-gpt-6-1-sol ; https://artificialanalysis.ai/models/comparisons/gpt-6-1-terra-medium-vs-gpt-6-1-sol-medium ; https://artificialanalysis.ai/models/gpt-6-1-terra ; https://artificialanalysis.ai/models/comparisons/deepseek-v4-1-flash-1017-vs-gpt-6-1-sol
+
+### 3. Anthropic: Claude Duet preview (2026-10-21; new agent product, not model)
+
+- **Claude Duet** is a proactive background/cloud-computer agent research preview announced **2026-10-21**, available **only to US Claude accounts on Pro or Max and admitted from a waitlist**. The *subscription name alone does not guarantee access*, especially outside the US. This is not a reason to treat Duet as available to an ordinary Netherlands-based Pro user.
+- During the preview Duet has **no additional subscription price**, but its foreground and **background work consume the same Pro five-hour and weekly usage limits**. A one-time full usage-limit reset is granted to admitted preview users, available until **2026-11-30**, not a permanent limit increase or API credit.
+- It works across connected apps and a cloud browser, handles briefings/follow-ups and artifacts; approvals are required for certain consequential actions. No independent comparative coding/research evaluation was verified that makes it a substitute for Work/Codex or Claude Code in the user's current geography.
+- **Base models unchanged:** **Opus 5.5 High/xhigh** for judgment-heavy scientific/coding work; **Sonnet 5.5 Medium/High** for efficient normal work; **Haiku 5.5 Low/Medium** for narrow tasks. Claude Pro remains **~$20/month in US**, with shared variable five-hour and weekly limits; Claude Console API usage is separate.
+- **Fable 5/5.1** remain charged through **pay-as-you-go usage credits from the first request on Pro**; no new Fable 5.5 release or favorable Pro credit economics verified. Continue **last-resort, explicit budget**.
+
+Official: https://support.claude.com/en/articles/12138966-release-notes ; https://support.claude.com/en/articles/17631495-get-started-with-claude-duet ; https://support.claude.com/en/articles/8325606-what-is-the-pro-plan ; https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan
+
+### 4. DeepSeek: aliases, exact versions, billing, effort and tools — unchanged as of 2026-10-27
+
+- **Current live API identifiers:** `deepseek-flash` → **DeepSeek-V4.1-Flash-1017**, and `deepseek-v4-pro` → **DeepSeek-V4-Pro-0813** (two distinct offerings). No confirmed Oct 21–27 alias change or additional production release in official changelog/pricing. Legacy flash aliases route to **1017**, not the retired September revision; **never mix their benchmark results**.
+- **Both:** **1M context, 384K max output**, thinking and non-thinking; tool calls, Responses/Anthropic-compatible APIs; **Flash vision supported / Pro vision unsupported**. Supported `reasoning_effort`: actual **low/high/max**; the accepted compatibility values **medium** and **xhigh** both map to **high**. Thinking is enabled by default at high. Inspect provider protocol/tool history handling (including `reasoning_content`) before attempting long Claude Code/Codex/OpenCode agent runs.
+- **Prepaid API USD / million tokens; off-peak / peak unchanged:**
+
+| Model | Cache-miss input | Cache-hit input | Output |
+|---|---:|---:|---:|
+| Flash 1017 | $0.15 / $0.30 | $0.003 / $0.006 | $0.60 / $1.20 |
+| Pro 0813 | $0.66 / $1.32 | $0.022 / $0.044 | $1.98 / $3.96 |
+
+Peak: **01:00–04:00 and 06:00–10:00 UTC weekdays, excluding Chinese public holidays**. Granted balance is debited before topped-up balance; **not a subscription allowance**. Current model concurrency limits: **Flash 2500 / Pro 500**, separate from Search/Fetch QPS quotas.
+- **Search/Fetch:** **$0.75 per 1,000 successful requests each**. Server-side Search/Fetch tool calls in DeepSeek Harness, Claude Code and Codex using DeepSeek API start being charged **2026-11-01 00:00 Beijing time (2026-10-31 16:00 UTC)**, a material upcoming budget date. Failed/empty requests are not charged under documented terms. Include separate tool calls and retries in total cost projections.
+- **Routing:** retain **Flash 1017 as the preferred DeepSeek API choice**; Low for simple calls, High for coding/research; Max only after testing benefit/cost. **V4 Pro only for demonstrated task-specific edge / compatibility / controlled A/B**. No basis to upgrade the existing Plus/Claude subscriptions or switch core hard-repo work away from Sol/Astra/Opus merely on Flash's API pricing.
+
+Official: https://api-docs.deepseek.com/updates/ ; https://api-docs.deepseek.com/quick_start/pricing/ ; https://api-docs.deepseek.com/guides/thinking_mode/ ; https://api-docs.deepseek.com/guides/search/ ; https://api-docs.deepseek.com/api/list-models/
+
+### 5. Current practical routing — 2026-10-27
+
+1. **Ordinary ChatGPT Plus conversation:** **GPT-6 Sol Medium**, raise to **High** for difficult engineering/scientific reasoning; keep **GPT-5.6 Sol High** as useful independent legacy A/B. Plus has **no Extra High or Pro Chat**.
+2. **Vision / CAD drawing inspection / technical screenshots / browser or GUI workflows in Work:** start **GPT-6.1 Terra Medium**, then move to **Sol High** or **Astra Medium** if multistep correctness, depth or complex autonomy demands it. Verify that the task's computer/browser permissions are actually available; model eligibility does not grant tools.
+3. **Hardest autonomous research / complex repository / high-error-cost artifacts:** **GPT-6 Astra Medium**; **GPT-6.1 Sol Medium/High** for serious coding and agentic execution under allowance pressure. Terra does not supplant them for the hardest work.
+4. **Trivial large-volume Work/Codex:** **GPT-6 Luna**; for *moderate complexity* and strong cost/quality balance, evaluate Terra before spending Sol/Astra allowance.
+5. **Claude Pro:** **Opus 5.5 High/xhigh** for difficult reasoning, code reviews and long-horizon judgment; **Sonnet 5.5 Medium/High** for sustained iterations; **Haiku 5.5 Low/Medium** for narrow delegated work. **Duet only if a US account is invited**, accounting for background usage. **Fable = metered last resort**.
+6. **Budgeted prepaid API / independent third-vendor opinion / bulk automation:** **DeepSeek Flash 1017** (Low/High), schedule flexible heavy usage off-peak where possible; explicitly price reasoning/output and Search/Fetch. **DeepSeek V4 Pro** only after a measured advantage on the actual workload.
+7. **Engineering/scientific high-stakes tasks:** prefer testable reproducible outputs, unit/physical sanity checks, source verification and cross-vendor adversarial review. Compare **success rate, wall-clock time, used Plus/Pro allowance, direct API USD, retries and human correction time** before changing the routing. Do not assume a paid API is economically superior when a sufficient included subscription allowance is available.
+
+**Next checkpoint:** monitor Terra's *real* Plus allowance usage / medium-effort success in Work vs Sol; any head-to-head same-harness Terra vs Flash 1017 vs Claude Sonnet on repository/computer-use tasks; Duet research-preview regional expansion and true usage; DeepSeek **2026-11-01 Search/Fetch billing activation**. Do not infer new subscription credits from API pricing announcements.
+
+---
 
 ## DeepSeek addendum: 2026-10-20 — new provider added to routing
 
@@ -241,7 +315,7 @@ Sources: https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-gp
 
 References: https://developer.android.com/bench ; https://cognition.com/frontiercode ; https://www.sonarsource.com/blog/openai-gpt-6-1-sol-evaluation/
 
-## Practical model routing — 2026-10-20 (OpenAI/Anthropic; DeepSeek addendum above)
+## Historical practical model routing — 2026-10-20 (superseded by current 2026-10-27 section above)
 
 1. **Unknown problem / early technical discussion:** ordinary **ChatGPT GPT-6 Medium**, escalate to **High** if needed; **GPT-5.6 Sol High** is a valuable independent alternative. Decide **environment → model → effort**.
 2. **Difficult scientific/engineering reasoning without autonomous tools:** **GPT-6 High** and/or **Claude Opus 5.5 High**. Use a cross-vendor check for critical conclusions; do not infer correctness from confident agreement alone.
@@ -280,7 +354,7 @@ References: https://developer.android.com/bench ; https://cognition.com/frontier
 - https://cognition.com/frontiercode  
 - https://developer.android.com/bench  
 
-## What to re-check next
+## Historical re-check topics from 2026-10-20 (see current checkpoint above)
 
 - October **GPT-6 Chat** on realistic scientific/research discussion versus explicitly selected **GPT-5.6 Sol**, preferably with independent same-interface tests rather than September API benchmarks.
 - **Haiku 5.5 Low/Medium** output quality and *real Claude Pro allowance consumed* versus Sonnet Medium in repeatable narrow subagent tasks.
