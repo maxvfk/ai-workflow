@@ -5,7 +5,7 @@ description: Delegate a task from Claude Code to OpenAI Codex through the openai
 
 # Codex delegation
 
-Verified on: Windows 11, Claude desktop app (Code tab), openai-codex plugin 1.0.6, Codex CLI 0.163.0, Node 24, Git Bash. Re-verify after updating any of these.
+Verified on: Windows 11, Claude desktop app (Code tab), openai-codex plugin 1.0.6, Codex CLI 0.163.0, Node 24, Git Bash. Re-verify after updating any of these. Two machines so far: the original laptop (2026-10-20, field runs below) and a second desktop set up from scratch with [Setup on a new Windows machine](#setup-on-a-new-windows-machine) (2026-10-21, Node 24.20.0; read-only smoke test with `--effort low`: 12 s, correct output, commands ran inside Codex's `elevated` Windows sandbox).
 
 Field experience (2026-10-20): six sequential background runs on a real project (a pilot, three batches of mechanical checks, one implementation task) — all finished and notified; spot recomputation found no wrong numbers in Codex reports, and Codex found one genuine defect introduced earlier by a Claude subagent. Total cost ≈ 12 % of the weekly Codex allowance; Claude's own cost stayed small (task files, verification, transfer).
 
@@ -14,7 +14,7 @@ Field experience (2026-10-20): six sequential background runs on a real project 
 - The goal is to spread work across the Claude and ChatGPT subscriptions and to get cross-vendor review — not parallel speed. Run Codex tasks **sequentially**, never while Claude edits the same files.
 - Good fits: independent adversarial review, a second diagnosis pass, a bounded implementation in a repo, long mechanical work.
 - Choose model and effort deliberately (see `AI_MODEL_ROUTING_MEMO.md` and `AI_MODEL_CURRENT_STATE.md` in `maxvfk/ai-workflow`) and **tell the user which model and effort you chose** before or when starting.
-- Without `--model`/`--effort`, Codex uses `~/.codex/config.toml` defaults.
+- Without `--model`/`--effort`, Codex uses `~/.codex/config.toml` defaults. These differ between machines — the Codex desktop app writes its own (e.g. `model_reasoning_effort = "high"`) — so pass `--effort` explicitly rather than relying on them.
 - Effort, from experience: `medium` was enough for long mechanical work (run scripts, export data, compare numbers); `high` was used for writing new code (a compatibility library with tests). Raise effort only when a pilot shows subtle failures, not by default.
 
 ## Pilot first, then batches
@@ -39,19 +39,43 @@ This kept the synchronized root safe from half-finished writes and avoided branc
 
 - **GUI programs can hang inside Codex's sandbox** (no interactive desktop): Octave's Qt graphics hung for minutes without any output, while the same command worked in Claude's own shell. Ask Codex for console/headless modes and to **time-box every attempt** (e.g. stop after a few minutes without output and try the next option).
 - A program working in Claude's shell does not prove it works in Codex's sandbox — say so in the task file and let the pilot find out.
+- **Codex runs commands through Windows PowerShell.** If the machine's execution policy blocks scripts (`Restricted`, the Windows client default), every tool whose PATH entry is a `.ps1` shim — `npm`, `npx`, `codex` and other npm-installed CLIs — is expected to fail there with `UnauthorizedAccess`, while `.exe` tools such as `node` work (seen in the user's own PowerShell on 2026-10-21; not yet reproduced inside a Codex task). When the task needs such a tool, tell Codex to call the `.cmd` shim (`npm.cmd`, `npx.cmd`). Check the policy with `powershell -Command Get-ExecutionPolicy`; do not change it on the user's behalf.
 
 ## Preconditions
 
 - `node`, `codex` on PATH; `codex login status` → logged in. The Codex desktop app and Codex CLI share `~/.codex`, so one ChatGPT login serves both, and they draw from the same Codex allowance.
 - Plugin check: `node <companion> setup --json` → `"ready": true`.
+- If any of this is missing, see [Setup on a new Windows machine](#setup-on-a-new-windows-machine).
+
+## Setup on a new Windows machine
+
+Recipe from setting up a second machine from scratch (2026-10-21). Each step lists the trap that cost time.
+
+1. **Node.js LTS** (system-wide, asks for UAC): `winget install --id OpenJS.NodeJS.LTS -e --source winget`.
+2. **Codex CLI via npm, pinned to the verified version**, run by the user in an ordinary Windows terminal (Win+X → Terminal):
+   ```
+   npm.cmd install -g @openai/codex@0.163.0
+   ```
+   - **Not from Claude's own shell or terminal panel.** The Store-installed Claude desktop app is an MSIX package: files its processes create under `%APPDATA%` / `%LOCALAPPDATA%` are redirected into the package's private storage and are invisible outside Claude. That is exactly where `npm -g` puts `codex`.
+   - **`npm.cmd`, not `npm`**: with the default `Restricted` execution policy, PowerShell refuses to run `npm.ps1`. Check from the same kind of shell with `codex.cmd --version`.
+   - **Not `winget install OpenAI.Codex`**: it ships `codex-x86_64-pc-windows-msvc.exe` and exposes it as `codex` only through a symlink in `WinGet\Links`. Without Developer Mode Windows does not allow the symlink, so winget silently falls back to adding the package folder to PATH, and there is still no `codex` command. The plugin calls `codex` by that exact name.
+3. **The plugin.** The desktop app has no `claude` on PATH and its Code tab cannot run `/plugin`, but the app bundles the CLI. Claude runs the newest bundled binary from its own PowerShell tool (Claude Code 2.1.292 or later; it writes only `~/.claude`, which is not virtualized). The bundled CLI itself lives in virtualized storage: inside the app `$env:APPDATA\Claude\claude-code` resolves, while an ordinary terminal finds it under `%LOCALAPPDATA%\Packages\Claude_*\LocalCache\Roaming\Claude\claude-code`.
+   ```powershell
+   $claude = Get-ChildItem "$env:APPDATA\Claude\claude-code" -Recurse -Filter claude.exe | Sort-Object { [version]$_.Directory.Parent.Name } | Select-Object -Last 1
+   & $claude.FullName plugin install codex --marketplace openai/codex-plugin-cc
+   ```
+   This registers the `openai-codex` marketplace in `~/.claude/settings.json` and installs `codex@openai-codex` at user scope. The running session picks the plugin up without a restart.
+4. **This skill**: copy `SKILL.md` and `run-codex-task.sh` from `maxvfk/ai-workflow` into `~/.claude/skills/codex-delegate/`. Keep LF line endings (download the raw files with `gh api ... -H "Accept: application/vnd.github.raw"` or `git` with the repo's `.gitattributes`); Git Bash fails on CRLF.
+5. **Fully restart the Claude desktop app** (quit from the tray icon). Claude Code sessions inherit PATH from the app process, so `node` and `codex` installed in steps 1–2 stay invisible until the app restarts. Before restarting, a test run works only with `export PATH="/c/Program Files/nodejs:$(cygpath -u "$APPDATA")/npm:$PATH"` in the same Bash command.
+6. **Verify**: `codex login status` (already logged in when the Codex desktop app is signed in — they share `~/.codex`), then `node <companion> setup --json` → `"ready": true`, then a tiny read-only task through the primary path below with `--effort low`.
 
 ## Primary path — direct launch from the main session (recommended)
 
 1. **Write the task to a file** (scratchpad), not on the command line. State explicitly: read-only or allowed writes, scope, output format, output language.
-2. **Pick a short workdir.** The session scratch folder of the Store-installed desktop app has very long paths (git clone fails with "Filename too long"). Use a short path such as `C:/Users/maxvf/<name>`. Use forward slashes.
+2. **Pick a short workdir.** The session scratch folder of the Store-installed desktop app has very long paths (git clone fails with "Filename too long"). Use a short path such as `C:/Users/<user>/<name>` (in Bash: `"$(cygpath -m "$USERPROFILE")/<name>"`). Use forward slashes. Keep it outside `AppData`: the desktop app's writes there are virtualized (see Setup, step 2). A long prompt-file path is fine — `cygpath -m` then prints it with a `//?/` prefix, which Node accepts.
 3. **Run with the Bash tool and `run_in_background: true`:**
    ```bash
-   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" [--write] [--model <m>] [--effort <low|medium|high|xhigh>]
+   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/<user>/<workdir>" "<prompt-file>" [--write] [--model <m>] [--effort <low|medium|high|xhigh>]
    ```
    The harness notifies on completion. The final Codex answer is at the end of the output file.
 4. Codex reads most reliably inside its workdir. Point `--cwd` (the script's first argument) at the directory that contains the files Codex must read; reads outside it may fail on the first attempt.
