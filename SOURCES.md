@@ -87,3 +87,10 @@ Location:
 Canonical: yes (pilot evidence); изменения стандарта принимаются отдельно
 Modification: source-dependent; merged history не переписывать, open review materials editable до завершения review
 Purpose: наблюдения real-project G2 pilot и follow-up предложения к стандарту; разбор продолжения — T-018.
+
+## S-013 — Codex Cloud: настройка среды и GitHub workflow
+Storage: GitHub repository
+Path: codex-cloud/README.md; guide: codex-cloud/ENVIRONMENT_SETUP.md
+Canonical: yes
+Modification: editable
+Purpose: практический env/network/GitHub preflight, troubleshooting и cold-start smoke-test по проверенной работе Codex Cloud.
