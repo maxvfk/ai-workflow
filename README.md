@@ -11,7 +11,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 - **Project Infrastructure** — `PROJECT_INFRASTRUCTURE.md` and `project-infrastructure/`: project memory, canonical stores, bootstrap, handoff and runtime standards.
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, and the reusable `skills/model-router/` skill.
 - **Reusable skills** — `skills/`. Read `skills/README.md` for the current index and placement rules.
-- **Harness/product-specific guidance** — thematic directories such as `claude-desktop/`. Read `claude-desktop/README.md` for the current Claude Desktop materials.
+- **Harness/product-specific guidance** — `claude-desktop/` and `codex-cloud/`. See their `README.md` indexes for product-specific operational guidance.
 - **Notes, rules, errors, experiments and lessons learned** — keep them with the thematic area they belong to; create a new top-level category only when a durable independent class of material actually emerges.
 
 Project Infrastructure has its own version. That version does **not** version the whole repository or automatically version model-routing, skills, harness-specific guidance, or other areas unless an explicit dependency says otherwise.
