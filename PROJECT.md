@@ -50,6 +50,7 @@ Canonical files:
 Текущая область:
 
 - `claude-desktop/` — практики, инструкции, известные особенности и решения для Claude Desktop; индекс — `claude-desktop/README.md`.
+- `codex-cloud/` — проверенные практики настройки, диагностики и cold-start Git/GitHub workflow для Codex Cloud; индекс и памятка — `codex-cloud/README.md`.
 
 Новый top-level product/harness каталог создаётся только когда появляется реальный устойчивый набор материалов, а не заранее.
 

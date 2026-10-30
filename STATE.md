@@ -1,6 +1,6 @@
 # Текущее состояние
 
-Last updated: 2026-10-23
+Last updated: 2026-10-30
 
 ## Статус
 
@@ -25,6 +25,7 @@ Project Infrastructure остаётся отдельным версиониру�
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, `skills/model-router/`.
 - **Skills** — canonical area `skills/`; сейчас зарегистрированы `model-router` и `codex-delegate`.
 - **Claude Desktop** — `claude-desktop/`; сейчас есть Remote Control keepalive и guidance по ведению сессий.
+- **Codex Cloud** — `codex-cloud/`; памятка по reusable environment, PATH/network/GitHub preflight и проверенному smoke test 2026-10-30.
 - **G2 pilot follow-up** — F-17…F-24 в SP-LAB-GRANT part2 и F-25…F-36 в PR #15; разбор — T-018.
 
 ## Что уже сделано
