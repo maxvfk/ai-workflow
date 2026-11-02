@@ -147,3 +147,12 @@ Status: todo
 Разбирать findings последовательно/тематическими пакетами: принять, модифицировать, отклонить или признать уже закрытыми; стандарт менять только после явного решения.
 
 Evidence: S-012; PR #15; maxvfk/SP-Lab-Grant.
+
+## T-019 — Pilot risk-gated AI development
+Status: active
+
+Согласован переносимый workflow для high-risk AI code milestones: независимый adversarial design review до реализации; контракт инвариантов, failure modes и отрицательных тестов; реализация ограниченным исполнителем; economical preliminary review; независимый финальный review и focused closure при исправлениях. Роли не зависят от vendor/model; выбор конкретных моделей — задача model routing.
+
+Следующее действие: применить пилот только к отдельно авторизованному high-risk milestone (например, game-calendar Daily Passes PASS-1 после закрытия текущей работы). Сравнить число подтверждённых проблем, повторных reviews, false positives и фактически известное usage; не считать экономию доказанной заранее. Ничего автоматически не запускать.
+
+Evidence: `skills/risk-gated-development/SKILL.md`; решение оператора 2026-11-02.

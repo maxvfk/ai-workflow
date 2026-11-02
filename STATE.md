@@ -1,6 +1,6 @@
 # Текущее состояние
 
-Last updated: 2026-10-30
+Last updated: 2026-11-02
 
 ## Статус
 
@@ -23,7 +23,7 @@ Project Infrastructure остаётся отдельным версиониру�
 
 - **Project Infrastructure** — 0.8.10 Draft; G0/L1/G1/G2; первый G2 audit F-01…F-16 разобран и merged.
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, `skills/model-router/`.
-- **Skills** — canonical area `skills/`; сейчас зарегистрированы `model-router` и `codex-delegate`.
+- **Skills** — canonical area `skills/`; зарегистрированы `model-router`, `codex-delegate` и `risk-gated-development` (pilot).
 - **Claude Desktop** — `claude-desktop/`; сейчас есть Remote Control keepalive и guidance по ведению сессий.
 - **Codex Cloud** — `codex-cloud/`; настройка environment, GitHub CLI, network permissions, диагностика PATH и cold-start smoke test по real-project опыту 30.10.2026.
 - **G2 pilot follow-up** — F-17…F-24 в SP-LAB-GRANT part2 и F-25…F-36 в PR #15; разбор — T-018.
@@ -50,9 +50,11 @@ Project Infrastructure остаётся отдельным версиониру�
 - PR #13 merged: Project Infrastructure 0.8.10 стал canonical на `main`.
 - Scope `ai-workflow` расширен до общей системы организации работы с AI-агентами/harnesses; Project Infrastructure больше не трактуется как весь проект.
 - Зарегистрированы reusable `skills/codex-delegate/`, Claude Desktop keepalive/session guidance и локальные индексы тематических областей.
+- Добавлен vendor-neutral `skills/risk-gated-development/` (pilot): независимый предварительный design review для high-risk задач, отрицательные тесты, независимый финальный review. Реальная экономия ещё не измерена.
 
 ## В работе
 
+- T-019 — испытать vendor-neutral risk-gated-development на следующем отдельно разрешённом high-risk milestone.
 - T-018 — разобрать G2 pilot follow-up F-17…F-36.
 - T-017 — решить, какие общие правила нужны для delegated executors.
 - T-002 — независимый re-review стандарта остаётся открытым.
