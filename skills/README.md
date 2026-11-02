@@ -29,3 +29,11 @@ Path: `skills/codex-delegate/`
 Entry point: `skills/codex-delegate/SKILL.md`.
 
 Helper: `skills/codex-delegate/run-codex-task.sh`.
+
+### risk-gated-development
+
+Path: `skills/risk-gated-development/`.
+
+Vendor-neutral workflow for high-risk AI coding: adversarial design review before implementation, discriminative tests, independent code review, and focused closure. Pilot; model selection remains separate.
+
+Entry point: `skills/risk-gated-development/SKILL.md`.
