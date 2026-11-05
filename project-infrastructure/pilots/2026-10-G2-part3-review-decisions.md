@@ -182,3 +182,38 @@ Do not register every dump in `SOURCES.md` automatically. Register one only when
 
 Structured project memory should remain compact and operational, but long-running projects may occasionally require access to the original conversation to reconstruct reasoning that summaries necessarily compress. A manual raw-transcript archive provides that recovery path without forcing every agent to ingest chat history or turning the repository into an automatic conversation log.
 
+---
+
+## F-28 — Параллельные агенты, форки и дочерние сессии пишут в одну память
+
+**Decision:** ACCEPT WITH SIMPLIFICATION
+
+### Accepted
+
+Any agent working with shared project state must assume that the canonical project state may have changed since it was last read, regardless of who is considered the main project coordinator.
+
+Before modifying shared project-memory/runtime files:
+
+- read the current canonical version;
+- do not treat an earlier local copy or remembered chat context as current state;
+- preserve intervening changes made by other actors;
+- if the new changes cannot be reconciled confidently, do not silently overwrite them.
+
+This applies to the main coordinator as well as any other agent.
+
+### Subagents
+
+If an agent launches subagents, forks, child sessions, or delegated workers, coordination of those workers and reconciliation of their results remains the responsibility of the launching/parent agent.
+
+Project Infrastructure does not need a separate orchestration protocol for those internal subagents by default.
+
+### Simplification relative to the pilot proposal
+
+Do not standardize detailed mechanics such as mandatory surgical edits, push-after-every-change, or a special fork/child-session concurrency model.
+
+The durable rule is simply that no agent should assume it is the only writer to project state.
+
+### Rationale
+
+The user's normal workflow does not intentionally run multiple independent coordinators against the same project at once. A lightweight optimistic-concurrency assumption is therefore sufficient: always ground writes in current canonical state, while leaving subagent coordination to the agent that created those subagents.
+
