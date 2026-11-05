@@ -217,3 +217,36 @@ The durable rule is simply that no agent should assume it is the only writer to 
 
 The user's normal workflow does not intentionally run multiple independent coordinators against the same project at once. A lightweight optimistic-concurrency assumption is therefore sufficient: always ground writes in current canonical state, while leaving subagent coordination to the agent that created those subagents.
 
+---
+
+## F-29 — Временный checkout может исчезнуть вместе с непубликованной работой
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+A harness-provided temporary / ephemeral checkout is disposable and may disappear or become unusable without warning.
+
+Do not treat unpushed commits or working-tree changes that exist only in such a checkout as durable project state.
+
+Work may remain local while a logical step is actively in progress, but once a result needs to survive the current work session / checkpoint, publish it to the canonical repository.
+
+A persistent local clone is not subject to the same assumption of immediate disposability, but the canonical repository remains the durable project store.
+
+### Modification to the pilot proposal
+
+Do **not** require commit + push after every small edit.
+
+The durability boundary is a completed logical step / checkpoint or any point where losing the local workspace would cause loss of work that is expected to persist.
+
+If an ephemeral checkout is lost or damaged:
+
+- recreate it from the canonical repository;
+- treat the repository as authoritative;
+- reconcile any surviving unpersisted working files into the fresh checkout when useful;
+- do not treat the damaged/partial checkout as canonical.
+
+### Rationale
+
+Current G2 already defines GitHub as the permanent canonical control/state store and allows Mode B to use an ephemeral checkout. This finding makes the durability consequence explicit: an ephemeral checkout is execution state, not a safe long-term location for the only copy of completed work.
+
