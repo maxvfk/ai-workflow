@@ -532,3 +532,70 @@ F-35 adds a practical protocol for the strongest `independent-agent` form of val
 
 The pilot demonstrated that an independent fresh agent can reveal defects that are difficult for the authoring coordinator to notice: the agent tested actual discoverability, found settled answers without chat history, and exposed contradictions between memory and working documents. This makes fresh-agent validation a practical acceptance test for whether project memory truly supports continuity.
 
+---
+
+## F-36 — Upgrade стандарта с учётом фактически сложившихся правил проекта
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+A Project Infrastructure upgrade is a **review and adaptation process, not a template reapplication**.
+
+Before proposing changes, the agent must first inspect the project's actual current runtime and memory structure, including relevant files such as:
+
+- `AGENTS.md`;
+- infrastructure metadata / manifest;
+- project-memory files;
+- support/runtime guidance that materially affects ordinary work.
+
+Existing project-specific rules, ordering, workflows, and conventions must be treated as potentially intentional and valuable, even when they are not formally recorded as a local deviation.
+
+The agent must also inspect the new standard/version and determine which changes are actually useful for this project.
+
+### Upgrade proposal before modification
+
+Do not make the upgrade by mechanically replacing or regenerating managed files.
+
+Instead, prepare an explicit upgrade proposal that distinguishes:
+
+- what should be added from the new standard;
+- what should be changed;
+- what should remain as-is;
+- where the new standard conflicts with or overlaps existing project practice;
+- which existing project-specific rules should intentionally be preserved.
+
+Present that proposal to the user / project owner and obtain approval **before modifying project runtime or project-memory files**.
+
+Only the approved subset should then be applied.
+
+### Current project state is authoritative input
+
+Recorded local deviations in `MANIFEST.md` or equivalent infrastructure metadata are useful inputs, but they are not the only source of truth.
+
+The actual current project may contain intentional rules or workflows that evolved after installation and were never formally classified as deviations. Upgrade review must therefore inspect the real project state rather than relying only on the manifest.
+
+### Reconciliation principle
+
+The target of an upgrade is not “make the project match the newest template”.
+
+The target is:
+
+> current project practice + useful improvements from the new standard + explicit user approval → reconciled project runtime
+
+If the new standard and current project practice conflict and the correct choice is not obvious, preserve the current behavior until the user decides.
+
+A mandatory universal three-way merge protocol is not required. Git history, installed-standard snapshots, manifests, diffs, and other evidence may be used when they help reconstruct intent.
+
+### After approval and application
+
+After the approved upgrade is applied:
+
+- update infrastructure metadata to identify the installed standard/version;
+- preserve or document intentional project-specific behavior where doing so will help future upgrades;
+- verify that the resulting runtime still reflects the approved project-specific workflow rather than merely the upstream template.
+
+### Rationale
+
+Project Infrastructure evolves together with real projects. A project may develop better local rules, different ordering, or deliberate exceptions after the original installation. Treating an upgrade as mechanical template replacement risks destroying that accumulated design. A review-first, user-approved adaptation preserves project intent while still allowing useful improvements from the evolving standard to propagate.
+
