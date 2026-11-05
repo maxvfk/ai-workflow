@@ -340,3 +340,43 @@ If `Working with the user` grows large over time, it may move to a support file 
 
 Long-running projects accumulate interaction rules that are neither project facts nor task decisions. Without a durable project-wide home, those rules become scattered across journals and chat history and are repeatedly rediscovered. A bounded `Working with the user` layer preserves continuity without turning project memory into a general personal profile.
 
+---
+
+## F-32 — Правила ведения рабочих документов и `SOURCES.md`
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+Working documents should primarily expose their **current state**. Superseded material should not accumulate in the main body merely to preserve chronology.
+
+Historical context may be preserved through the mechanism that best fits the artifact:
+
+- an explicit history/revision section when useful;
+- the task journal;
+- Git history;
+- project/state archives;
+- another project-defined historical layer.
+
+`SOURCES.md` is a **source/canonical-artifact registry**, not a work log. It should describe what the source/artifact is, where it lives, its canonical/provenance status, modification restrictions, purpose, and other durable source metadata. Chronological work notes should live elsewhere.
+
+For generated/derived artifacts, identify the source of truth. When the artifact is reproducible from that source, the normal workflow is to modify the source and regenerate the derived artifact rather than manually editing the generated output.
+
+Open questions maintained inside a working document should remain consistent with the relevant task's `Open` summary.
+
+Distinguish facts, decisions, assumptions, estimates, and recommendations where that distinction materially affects interpretation or continuation of the work.
+
+### Modification to the pilot proposal
+
+Do not impose one mandatory document format across all artifact types.
+
+In particular, do not require every working document to have a fixed header such as `Revision N, date — change` or an embedded `Revision history` section. Those are useful patterns for some documents, but the standard should define the semantics rather than one universal presentation template.
+
+Do not treat every Excel/PDF/DOCX or script-produced file as permanently non-editable merely because it was generated once. The regeneration rule applies when the file is truly **derived and reproducible** from another source of truth. If a generated artifact later becomes a canonical manually maintained deliverable, its role must be treated accordingly rather than forcing regeneration semantics that no longer match reality.
+
+Dates on individual `Decided` items are optional and should be added when they materially help provenance or interpretation; the task journal already carries the detailed chronology.
+
+### Rationale
+
+The pilot showed the same failure mode in working documents and source records as in `STATE.md` / `TASKS.md`: current information became buried under accumulated chronology. Separating current content from history keeps working artifacts usable while preserving provenance in the appropriate historical layer. Keeping `SOURCES.md` declarative also prevents it from becoming a second task journal.
+
