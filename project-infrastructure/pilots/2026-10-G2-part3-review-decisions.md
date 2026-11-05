@@ -479,3 +479,56 @@ Do not require a permanent glossary pointer in `Now`; use one when it materially
 
 The pilot showed that a fresh agent can understand project state yet still misinterpret the work because internal abbreviations and notation are undocumented. A lightweight, need-driven glossary closes that gap without creating empty infrastructure in projects where terminology is already obvious.
 
+---
+
+## F-35 — Проверка cold-start через независимого fresh agent
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+Independent fresh-agent validation is a useful acceptance test for project memory, especially after bootstrap, migration, or a substantial restructuring of the memory layer.
+
+When proportionate and available, run a genuinely independent agent/session with no originating-chat context and ask representative questions such as:
+
+- where the project currently stands;
+- what has already been decided;
+- what remains open;
+- what the immediate next step is;
+- where key current artifacts/sources live;
+- which runtime/project constraints materially affect the next work.
+
+The fresh agent should:
+
+- answer only from project files and scenario-defined canonical resources;
+- cite or identify where each answer was found;
+- say `not found` / equivalent rather than guess;
+- avoid asking the user during the test, because that would hide memory gaps;
+- surface contradictions, unclear wording, broken references, and missing durable information as findings.
+
+The requesting/coordinating agent should know the expected answers or otherwise have a reliable comparison basis and evaluate the result after the run.
+
+Findings discovered during the test should be treated as ordinary project-memory defects to fix or explicitly leave open.
+
+### Modification to the pilot proposal
+
+Do not require one specific product mechanism such as a child session. Any genuinely independent fresh agent/session is acceptable.
+
+Do not standardize a fixed number of questions such as 13; use a representative set appropriate to the project's complexity and current risks.
+
+Do not require every validation to create a dedicated report file. A durable report is useful when the validation is substantial, diagnostic, or needs later auditability, but a lightweight recorded result may be sufficient for smaller checks.
+
+Re-run independent validation after **substantial memory restructuring or migration**, not after every ordinary project-memory edit.
+
+When an independent run is unavailable or disproportionate, the existing `checklist/simulated-fresh` method remains valid, provided it is reported honestly and exercises the real startup path.
+
+### Relationship to Project Infrastructure 0.8.10
+
+This finding extends the existing COMMON §15 model rather than replacing it. The existing distinction between `independent-agent`, `checklist/simulated-fresh`, `partial`, and `not run` remains useful.
+
+F-35 adds a practical protocol for the strongest `independent-agent` form of validation.
+
+### Rationale
+
+The pilot demonstrated that an independent fresh agent can reveal defects that are difficult for the authoring coordinator to notice: the agent tested actual discoverability, found settled answers without chat history, and exposed contradictions between memory and working documents. This makes fresh-agent validation a practical acceptance test for whether project memory truly supports continuity.
+
