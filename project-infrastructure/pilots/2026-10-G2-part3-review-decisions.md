@@ -380,3 +380,61 @@ Dates on individual `Decided` items are optional and should be added when they m
 
 The pilot showed the same failure mode in working documents and source records as in `STATE.md` / `TASKS.md`: current information became buried under accumulated chronology. Separating current content from history keeps working artifacts usable while preserving provenance in the appropriate historical layer. Keeping `SOURCES.md` declarative also prevents it from becoming a second task journal.
 
+---
+
+## F-33 — Operational know-how и «подводные камни» теряются в контексте чата
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+Durable operational know-how discovered during project work should not remain only in chat context or compaction summaries.
+
+When a finding is **local to the current project** and is clearly useful for future work, record it promptly in the project in the place closest to the affected area, for example:
+
+- `tools/README.md` or a tool-specific README for scripts/tooling behavior;
+- a workflow/support file for a specific project workflow;
+- `AGENTS.md` when the rule affects ordinary work across the project;
+- the relevant task journal when the finding is still task-scoped;
+- another domain-specific project file when that is the natural canonical home.
+
+Typical durable findings include non-obvious tool quirks, failure modes, dangerous/repeat-prone mistakes, ordering constraints, API/application behavior, site-specific limitations, and other knowledge that materially improves reproducibility or prevents future errors.
+
+### Local findings: write directly
+
+If the finding is clearly project-local and belongs in the current project's existing write scope, record it **in the same session once its durable value is clear**. Do not postpone it merely because the current chat still remembers the context.
+
+Do not document every incidental observation; promote findings that are likely to recur, prevent a real mistake, or materially affect continuation/reproducibility.
+
+### Potentially reusable findings: propose promotion
+
+If a finding appears to be broader than the current project — for example:
+
+- general cross-project operational knowledge;
+- reusable agent workflow;
+- model-routing lesson;
+- harness/product-specific guidance;
+- candidate reusable skill or common Project Infrastructure rule;
+
+do **not** silently promote/copy it into `ai-workflow` or another project.
+
+Instead, surface an explicit proposal to the user / project coordinator to preserve or promote it in the appropriate shared area, such as:
+
+- `ai-workflow` general notes/rules;
+- `skills/`;
+- a harness/product-specific directory such as `claude-desktop/`;
+- model-routing materials;
+- Project Infrastructure, when the finding is genuinely infrastructure-wide.
+
+The current project may keep a local note/reference meanwhile when needed for continuity.
+
+### Placement principle
+
+Store operational know-how as close as practical to the area where it is used. `tools/README.md` is a useful pattern, not a mandatory universal destination.
+
+If a local rule later proves broadly reusable, it may be promoted through the explicit proposal/review path rather than duplicated indefinitely across projects.
+
+### Rationale
+
+The pilot showed that valuable operational knowledge disappears when it lives only in chat history. Writing project-local findings promptly preserves continuity. Requiring an explicit promotion proposal for broader findings keeps shared repositories curated and prevents agents from expanding cross-project guidance or harness rules without user review.
+
