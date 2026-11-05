@@ -3,7 +3,7 @@
 Date started: 2026-11-02  
 Source review: `project-infrastructure/pilots/2026-10-G2-SP-LAB-GRANT-part3.md`  
 Scope: F-25…F-36  
-Status: in progress
+Status: completed (F-25…F-36 agreed; source standard 0.9.0 merged via PR #15 on 2026-11-05)
 
 This file records review decisions separately from the original pilot report so that the report remains unchanged as evidence. Findings are added here after explicit review with the project owner. Standard changes are implemented separately after the relevant decision is accepted.
 
