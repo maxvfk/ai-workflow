@@ -302,3 +302,41 @@ The standard should define the information hierarchy and progressive-disclosure 
 
 The pilot showed that a technically complete `AGENTS.md` can become harder to use when rare infrastructure cases dominate the entry path. At the same time, over-aggressive extraction can hide rules that agents need. An adaptive progressive-disclosure model preserves both fast startup and discoverability.
 
+---
+
+## F-31 — Нет места для устойчивых правил работы с конкретным пользователем
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+Projects may keep a dedicated **Working with the user** section in `AGENTS.md` for durable project-wide interaction rules that should affect ordinary work across many tasks and future sessions.
+
+Typical examples include:
+
+- do not interpret silence or an unanswered question as approval;
+- do not proactively remind about parked/deferred work unless asked;
+- preserve rather than delete when the project has an established archive workflow;
+- do not modify an artifact that the user has explicitly said they are currently reviewing;
+- other durable interaction rules that materially affect work throughout the project.
+
+When a user clearly establishes a durable project-wide working rule, record it in project memory so it survives future sessions.
+
+### Scope boundary
+
+This section is **not** a general profile of the user.
+
+Keep only rules that materially affect work in this project.
+
+Task-specific, document-specific, tool-specific, source-specific, or one-off instructions should remain close to the relevant task/artifact/tool/support file rather than being promoted into the project-wide user-working section.
+
+Do not treat every casual phrasing or one-time request as a durable rule. Promote it when the user explicitly indicates future applicability or when the durable project-wide intent is otherwise clear.
+
+### Progressive disclosure
+
+If `Working with the user` grows large over time, it may move to a support file under the F-30 adaptive-structure principle, provided `AGENTS.md` retains a concise pointer and a clear trigger to read it.
+
+### Rationale
+
+Long-running projects accumulate interaction rules that are neither project facts nor task decisions. Without a durable project-wide home, those rules become scattered across journals and chat history and are repeatedly rediscovered. A bounded `Working with the user` layer preserves continuity without turning project memory into a general personal profile.
+
