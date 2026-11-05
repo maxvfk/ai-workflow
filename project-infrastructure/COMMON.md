@@ -77,6 +77,7 @@ Rules:
 - keep infrastructure filenames stable in their defined English forms (`AGENTS.md`, `PROJECT.md`, `STATE.md`, `TASKS.md`, `ASSUMPTIONS.md`, `SOURCES.md`);
 - keep record IDs in their defined forms (`T-###`, `A-###`, `S-###`, `D-###`, `P-###`);
 - keep controlled machine-like values defined by the standard in English, for example task statuses `todo`, `active`, `blocked`, `done`, `cancelled`, and similar controlled status/priority values;
+- project-owned bootstrap/runtime **human-facing prose** should normally follow the installed project-memory language, while stable infrastructure field labels/keys, filenames, IDs, scenario codes, language codes, and other machine-like values remain in their defined English forms;
 - the language of a particular deliverable does **not** change the project-memory language by itself. An English manuscript, cover letter, codebase, or journal submission can live inside a project whose memory remains Russian;
 - do not automatically translate an already initialized project's project-memory files. Preserve the installed language unless the user explicitly requests a language change;
 - when the user explicitly chooses another project-memory language, record that choice in infrastructure metadata and runtime instructions.
@@ -148,6 +149,16 @@ For any read or write that is intended to affect project state or a canonical ar
 
 Tool availability influences **how** to reach the target, not **which target is authoritative**.
 
+### Programmatic text-write integrity
+
+When text is written through an API, connector, script, tool call, or other serialization path, do not assume that escape-sensitive syntax was preserved exactly merely because the write operation succeeded.
+
+For materially important content containing sequences that may be interpreted by intermediate string/serialization layers — for example LaTeX commands, regular expressions, Windows paths, shell/code fragments, or literal backslashes such as `\r`, `\n`, and `\t` — verify the **persisted result** after the write.
+
+Use simpler plain-Unicode notation when it is genuinely equivalent and improves robustness, but do not replace exact syntax with a lossy workaround when the syntax itself matters. In that case preserve the intended syntax and validate the stored file after writing.
+
+A successful transport/API acknowledgement proves that the write request completed; it does not by itself prove textual integrity.
+
 ### Manual, external, and delegated artifact changes
 
 Canonical project artifacts may be changed outside the main/orchestrating agent workflow by the user, a domain application, a local/delegated agent, or another authorized tool. This is normal and does not require every bounded artifact edit to pass through the project orchestrator.
@@ -214,6 +225,9 @@ For a small personal workspace containing multiple related projects, keep cross-
 - assign a stable Project ID when a project participates in a workspace catalog or cross-project references;
 - the ID should remain stable across folder moves, repository renames, and scenario migrations;
 - Project IDs need only be unique within the user's maintained project workspace unless a wider scope is explicitly required;
+- for **new** Project IDs, prefer an uppercase ASCII hyphenated form such as `TOK-COST`, `SP-LAB-GRANT`, or `PROJECTS-REGISTRY`; letters `A-Z` and digits are suitable, semantic segments use `-`, and spaces/underscores/slashes/dots should normally be avoided;
+- treat `[A-Z0-9]+(?:-[A-Z0-9]+)*` as a descriptive naming convention rather than a hard validator;
+- do **not** rename an existing stable Project ID merely to normalize its style; changing an established ID is an explicit migration because references, manifests, registry entries, sources, issues/handoffs, and other metadata may depend on it;
 - when another project's record is referenced, qualify the local record ID as `<ProjectID>/<RecordID>`, for example `TOK-COST/D-001`.
 
 **Optional workspace catalog**
@@ -236,6 +250,8 @@ Organizational folders such as `PROJECTS/Tokamak/` are ordinary grouping folders
 
 Catalog maintenance may be performed by a dedicated maintenance agent on demand or periodically. A maintenance pass should use bounded discovery: inventory likely project folders, inspect project markers/runtime/manifests, compare them with `PROJECTS.md`, and update stale/missing catalog entries. Do not recursively ingest project artifacts merely to reconcile the catalog.
 
+When the catalog is owned by a dedicated registry project, child projects do **not** gain direct write authority to that registry-owned catalog merely because their own metadata changed. If the workspace has an explicitly configured registry handoff mechanism, a child/bootstrap agent may submit a registration/update request to the registry owner; otherwise report registration as pending. Do not guess a registry repository or handoff endpoint.
+
 **Cross-project relationships**
 
 Keep relationship ownership distributed rather than maintaining a central dependency graph:
@@ -257,11 +273,19 @@ Baseline/version: <when provenance matters>
 
 Use `Project ID + source-relative path` as the durable identity. A current filesystem path such as `../SiblingProject/... ` may be used as a session-resolution hint, but should not be the durable cross-project identity.
 
+For materially important cross-project dependencies referenced **inside user artifacts**, the same durable identity rule applies. An embedded relative filesystem link may remain as a clickable/navigation convenience, but it should not be the only durable identity for a dependency that needs to survive workspace restructuring. The durable locator may live in the artifact itself or in the consuming project's `SOURCES.md`/project memory when that is sufficient; do not mechanically duplicate infrastructure annotations beside every link. Ordinary intra-project relative links are unaffected.
+
+The maintained personal-workspace model assumes normal cross-project resources remain inside the managed `PROJECTS/` workspace and participating projects have stable Project IDs. Legacy/exceptional resources outside that workspace continue to use the existing external-source model; do not invent a Project ID merely to repair a link.
+
+When the workspace structure is actually reorganized, or a project move/adoption can affect cross-project paths, perform a **bounded link reconciliation** for affected projects: inspect relevant cross-boundary relative links, resolve important dependencies through Project ID + canonical source-relative path, update navigation links only where the target is clear and the task requires it, and preserve ambiguity rather than mass-rewriting unrelated user documents.
+
 This workspace/catalog layer does not introduce a new infrastructure scenario and does not require every project to share the same scenario.
 
 **Workspace scope and active-project boundary**
 
 An agent workspace may expose a broader filesystem root than the active project, including the whole `PROJECTS/` tree. Broader visibility is an access convenience, not a change in project ownership.
+
+For an ordinary **single-project** task, prefer opening/rooting the execution session at the active project rather than at the shared `PROJECTS/` root when the tool/environment permits it. Broader workspace access may still be granted for reading external/source projects. This is a recommended operational default that reduces accidental discovery of sibling-project instructions; it is not a security boundary or a guarantee, and the user/operator remains responsible for how a local agent session is launched.
 
 When a workspace contains multiple projects:
 
@@ -273,6 +297,20 @@ When a workspace contains multiple projects:
 - do not modify another project's project memory, canonical artifacts, repository, or source records unless the user/task explicitly includes that project as a modification target;
 - when another project is used only as a source, follow the consuming project's recorded dependency/source references and preserve the source project's canonical files;
 - if several projects must be modified in one task, treat each as an explicit canonical target and apply its own runtime/concurrency/write rules rather than treating the workspace root as one combined project.
+
+**Automatically discovered external-project instructions**
+
+Some execution environments may automatically load `AGENTS.md`, `CLAUDE.md`, or other instruction files from an external/source project when files inside that project are accessed. Project Infrastructure cannot rely on preventing that behavior.
+
+If external-project instructions are auto-loaded:
+
+- they do **not** make that project active;
+- they do **not** expand the current session's write scope;
+- they do **not** override the active project's task-control/runtime authority;
+- they remain relevant for interpreting and preserving that external project's own source semantics, canonical locations, provenance, immutable/read-only constraints, and other source-specific safety rules;
+- if that external project later becomes an explicit modification target, its own runtime governs writes to that project under the multi-project-write rule above.
+
+Product-specific permission, exclusion, or workspace settings may be used as defense in depth, but correctness must not depend on a particular vendor setting or on successfully suppressing instruction auto-loading. Project-local tool-configuration directories such as `.claude/` may exist when useful; they are tool configuration, not project memory merely because they live in the project tree.
 
 A useful session declaration is:
 
@@ -438,6 +476,7 @@ Every scenario's **canonical full-runtime `AGENTS.md`** must materialize the com
 - progressive disclosure/startup order;
 - proportional task path (read-only / bounded small edit / full scenario transaction);
 - canonical-target-first tool routing: identify the authoritative store/artifact before choosing connector, filesystem, browser, or workspace operations;
+- programmatic/API text writes with materially important escape-sensitive syntax must verify the persisted result rather than treating write acknowledgement as proof of textual integrity;
 - installed project-memory language rule;
 - canonical/source preservation and one-canonical-copy rule;
 - secrets/credentials prohibition;
@@ -516,6 +555,14 @@ Validate from the perspective of a fresh agent that has only the scenario-define
 When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed runtime and scenario-defined entry resources.
 
 Validate **effective behavior**, not merely file presence. If the active product does not expose all loaded instruction files in its memory/context UI, confirm the startup/instruction announcement when available or ask the fresh agent to state the project/scenario/runtime rules it actually received. Do not treat a file existing on disk as proof that the product loaded it.
+
+Report the validation method accurately:
+
+- `independent-agent` — a genuinely separate fresh agent/session without the originating-chat context exercised the startup path;
+- `checklist/simulated-fresh` — the current agent deliberately exercised the startup path using only the installed runtime and scenario-defined entry resources, without relying on originating-context knowledge;
+- `partial` or `not run` — the startup path could not be fully exercised; record the limitation/reason.
+
+Do not describe a self-check as an independent-agent validation. `checklist/simulated-fresh` is an acceptable normal method when an independent run is unavailable or disproportionate, provided it exercises the actual startup route rather than merely confirming that expected files exist.
 
 ## 16. Universal `AGENTS.md` and tool-specific adapters
 
