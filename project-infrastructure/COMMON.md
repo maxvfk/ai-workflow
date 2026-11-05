@@ -572,7 +572,7 @@ Remove accidental duplication instead of preserving repeated rules for historica
 
 When durable project-wide interaction rules exist, keep a bounded **Working with the user / Работа с пользователем** section (or an equivalent support file reached through a clear pointer). It is for durable rules that materially affect work across many tasks in this project, not for a general profile of the user. Task-, document-, tool-, source-, or one-off instructions belong near their relevant scope.
 
-A newly stated rule should be promoted here when the user explicitly indicates future applicability or when its durable project-wide intent is otherwise clear. Do not interpret every casual phrase as a permanent rule.
+A newly stated rule should be promoted here **in the same session once its durable project-wide intent is clear**, especially when the user explicitly indicates future applicability. Do not interpret every casual phrase as a permanent rule.
 
 ### Common runtime baseline
 
@@ -602,7 +602,7 @@ Recommended content: objective; scope; deliverables; constraints; definitions/te
 
 When project-specific terminology, abbreviations, mode names, part labels, stage names, or other notation becomes non-trivial enough to create interpretation risk, keep a durable **Terminology / Словарь** section. Prefer `PROJECT.md` while the glossary is compact; move it to a dedicated support file such as `TERMINOLOGY.md` when growth makes that clearer, leaving an explicit pointer.
 
-Do not create a glossary merely because the project uses the Standard profile, and do not turn it into a dictionary of ordinary domain terminology.
+Do not create a glossary merely because the project uses the Standard profile, and do not turn it into a dictionary of ordinary domain terminology. `STATE.md / Now` may point to the glossary when terminology materially affects understanding of the current work, but that pointer is not mandatory.
 
 If an important project term is unclear, first search authoritative current project documents/registered sources. If it remains unclear, ask the user rather than guess. If asking is not currently appropriate or the user defers the question, record it in the relevant `Open` summary until resolved. Once clarified and likely to matter again, add the durable definition to the glossary.
 
