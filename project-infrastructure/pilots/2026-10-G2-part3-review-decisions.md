@@ -250,3 +250,55 @@ If an ephemeral checkout is lost or damaged:
 
 Current G2 already defines GitHub as the permanent canonical control/state store and allows Mode B to use an ephemeral checkout. This finding makes the durability consequence explicit: an ephemeral checkout is execution state, not a safe long-term location for the only copy of completed work.
 
+---
+
+## F-30 — `AGENTS.md` слишком велик, а главное — не в начале
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+`AGENTS.md` should function primarily as the project's runtime entry point, not as a complete infrastructure encyclopedia.
+
+Order and placement should favor information needed in ordinary work:
+
+- startup / where to begin;
+- current project-memory workflow;
+- common working rules;
+- rules for maintaining project memory and documents;
+- end-of-work synchronization;
+- ordinary scenario-specific runtime rules.
+
+Rare or special-case procedures may move to support files when that makes the main runtime easier to use.
+
+A rule may be moved out of `AGENTS.md` only if `AGENTS.md` still contains:
+
+- a concise mandatory summary of the rule when needed for safe behavior;
+- an explicit pointer to the support file;
+- a clear trigger explaining when that support file must be read.
+
+Compact runtime/infrastructure identity should remain easy to find near the beginning, for example scenario, project-memory profile/language, canonical control/store, and installed standard metadata. There is no requirement to move all Infrastructure metadata to the bottom.
+
+Remove accidental duplication such as repeated `Project-memory language` fields.
+
+### Adaptive structure
+
+The exact layout of `AGENTS.md` is not fixed permanently.
+
+As the project evolves, content may move between `AGENTS.md` and support files according to actual use:
+
+- frequently needed guidance may be promoted closer to the runtime entry path;
+- rarely needed or bulky guidance may be moved to a support file;
+- moved content must remain discoverable through an explicit trigger/pointer;
+- restructuring should improve progressive disclosure without making important rules invisible.
+
+### Modification to the pilot proposal
+
+Do not standardize one rigid section order or require `Infrastructure` to be physically last.
+
+The standard should define the information hierarchy and progressive-disclosure principle, while allowing project-specific ordering to evolve with observed usage.
+
+### Rationale
+
+The pilot showed that a technically complete `AGENTS.md` can become harder to use when rare infrastructure cases dominate the entry path. At the same time, over-aggressive extraction can hide rules that agents need. An adaptive progressive-disclosure model preserves both fast startup and discoverability.
+
