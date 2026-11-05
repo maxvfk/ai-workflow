@@ -438,3 +438,44 @@ If a local rule later proves broadly reusable, it may be promoted through the ex
 
 The pilot showed that valuable operational knowledge disappears when it lives only in chat history. Writing project-local findings promptly preserves continuity. Requiring an explicit promotion proposal for broader findings keeps shared repositories curated and prevents agents from expanding cross-project guidance or harness rules without user review.
 
+---
+
+## F-34 — Словарь обозначений и проектной терминологии
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+When a project develops non-trivial internal terminology, abbreviations, part labels, mode names, stage names, or other project-specific notation, keep a durable **Terminology / Словарь** section.
+
+Default placement:
+
+- keep a compact glossary in `PROJECT.md` while it remains small;
+- if it grows enough to reduce usability, move it to a dedicated support file such as `TERMINOLOGY.md` and keep an explicit pointer from the project entry/memory layer.
+
+A glossary is required when project-specific terminology has become materially important for correct continuation, not merely because the project uses the Standard profile.
+
+The glossary should explain project-specific meanings and non-obvious notation that a fresh coordinator may otherwise misunderstand. It should not become a dictionary of ordinary domain terms that are already unambiguous in context.
+
+`STATE.md / Now` may point to the glossary when terminology is important for understanding the current work, but such a pointer is not mandatory for every project/session.
+
+### Unknown terminology
+
+When an agent encounters an important project term or notation whose meaning is not known with sufficient confidence:
+
+1. first look for an authoritative explanation in the project's canonical/current documents or registered sources;
+2. if the meaning is still unclear, ask the user rather than guess;
+3. if asking is not currently appropriate or the user defers the question, record it in the relevant `Open` summary until resolved.
+
+Once clarified and likely to matter again, add the durable definition to the glossary.
+
+### Modification to the pilot proposal
+
+Do not make a glossary mandatory for every Standard-profile project. Introduce it when the project's terminology is non-trivial enough to create continuity or interpretation risk.
+
+Do not require a permanent glossary pointer in `Now`; use one when it materially improves startup for the current work.
+
+### Rationale
+
+The pilot showed that a fresh agent can understand project state yet still misinterpret the work because internal abbreviations and notation are undocumented. A lightweight, need-driven glossary closes that gap without creating empty infrastructure in projects where terminology is already obvious.
+
