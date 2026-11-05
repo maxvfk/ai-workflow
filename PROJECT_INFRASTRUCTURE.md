@@ -1,6 +1,6 @@
 # Project Infrastructure
 
-**Standard version:** 0.8.10  
+**Standard version:** 0.9.0  
 **Lifecycle:** Draft  
 **Purpose:** Entry point for reusable project-memory and handoff rules across different storage and execution environments.
 
@@ -20,14 +20,17 @@ A project records the standard version and, when available, the exact Git commit
 
 Projects do **not** automatically follow changes on `main`. The installed runtime remains authoritative for ordinary work until the user explicitly requests infrastructure validation, repair, or migration/upgrade.
 
-When upgrading an initialized project:
+When upgrading an initialized project, treat the operation as a **review and adaptation**, not as template reapplication:
 
-1. read its infrastructure manifest and installed standard snapshot;
+1. read the project's actual current runtime/project memory, infrastructure manifest/snapshot, and relevant support guidance;
 2. read the explicitly selected target standard;
-3. compare installed and target behavior;
-4. migrate non-destructively according to `COMMON.md` and the active scenario;
-5. preserve project-specific rules, state, identifiers, language, canonical-store relationships, and user-owned content;
-6. update the manifest and local snapshot only after migration is applied.
+3. identify useful target-standard improvements, current project-specific behavior, and any conflicts/overlaps;
+4. prepare an explicit upgrade proposal describing what to add/change, what to preserve, and what conflicts require a choice;
+5. obtain user/project-owner approval **before modifying project runtime or project-memory files**;
+6. apply only the approved subset non-destructively according to `COMMON.md` and the active scenario;
+7. update the manifest/local snapshot after application and verify that the resulting runtime still reflects the approved project-specific workflow.
+
+The manifest is useful evidence, but it is not the only source of local intent: current project rules/workflows may have evolved without being formally recorded as deviations. If the new standard conflicts with established project practice and the correct resolution is not obvious, preserve current behavior until the user decides.
 
 ### Draft 0.3 compatibility note
 
@@ -88,6 +91,10 @@ Version **0.8.8** hardens the lightweight multi-project workspace model from the
 Version **0.8.9** implements the G2 pilot operational-hardening package. Sync conflicts may distinguish exact-content verified redundant/stale copies from unknown competing state without auto-deleting them; artifact-only work may retain a minimal noncanonical `_LOCAL_AGENT_HANDOFF/` payload when a report alone cannot preserve reproducibility; brownfield adoption/migration performs only bounded hygiene for inherited execution leftovers; and `_LOCAL_AGENT_REPORT.md` is explicitly interpreted as scope-limited evidence because the reporting agent lacked the GitHub control plane.
 
 Version **0.8.10** closes the small-clarification package from the G2 pilot audit. New Project IDs use a recommended uppercase ASCII hyphenated convention without renaming established IDs; project-owned bootstrap prose follows the installed project-memory language while stable infrastructure keys stay in their defined English forms; cold-start reports distinguish independent-agent validation from checklist/simulated-fresh validation; and programmatic/API text writes with escape-sensitive syntax verify the persisted content. The pilot's missing Git commit identity was classified as one-time environment setup and does not add a G2 rule.
+
+### Draft 0.9 note
+
+Version **0.9.0** implements the second G2 pilot memory/continuity package (reviewed F-25…F-36). It introduces layered current/history memory: compact `STATE.md / Now`, current task `Decided`/`Open`, low-threshold task journals, meaningful state-history archives, and manual-only raw chat dumps for deep reconstruction. `AGENTS.md` becomes an adaptive runtime entry point with bounded project-wide `Working with the user` guidance; project terminology gains a need-driven glossary; working documents and `SOURCES.md` are explicitly current-state/registry oriented; durable local operational know-how is recorded promptly while broader reusable findings are proposed for promotion rather than silently copied. Shared-state rules now emphasize that no agent assumes it is the only writer and that parent agents own delegated-worker reconciliation. Independent fresh-agent cold-start validation is formalized as the strongest project-memory acceptance test. G2 ephemeral checkouts receive an explicit durability boundary. Standard upgrades are review/adaptation tasks: inspect real project practice, propose useful changes, and obtain user approval before modifying runtime/project-memory files.
 
 ## Bootstrap contract
 

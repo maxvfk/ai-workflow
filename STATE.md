@@ -1,12 +1,12 @@
 # Текущее состояние
 
-Last updated: 2026-10-30
+Last updated: 2026-11-05
 
 ## Статус
 
 `ai-workflow` — активный personal knowledge/workflow repository для организации работы с AI-агентами и AI-harnesses.
 
-Project Infrastructure: **0.8.10 Draft**, pilot-review; PR #13 с разбором F-01…F-16 merged в `main`.
+Project Infrastructure source standard: **0.9.0 Draft candidate** в PR #15 по согласованным F-25…F-36. Установленный G0 runtime самого `ai-workflow` остаётся **0.8.10** до отдельного review/adaptation upgrade. PR #13 с разбором F-01…F-16 merged в `main`.
 
 Project Infrastructure остаётся отдельным версионируемым workstream внутри более широкого `ai-workflow`.
 
@@ -21,12 +21,12 @@ Project Infrastructure остаётся отдельным версиониру�
 
 ## Текущие области
 
-- **Project Infrastructure** — 0.8.10 Draft; G0/L1/G1/G2; первый G2 audit F-01…F-16 разобран и merged.
+- **Project Infrastructure** — upstream/source standard 0.9.0 Draft candidate в PR #15; установленный runtime этого репозитория 0.8.10; G0/L1/G1/G2; первый G2 audit F-01…F-16 разобран и merged.
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, `skills/model-router/`.
 - **Skills** — canonical area `skills/`; сейчас зарегистрированы `model-router` и `codex-delegate`.
 - **Claude Desktop** — `claude-desktop/`; сейчас есть Remote Control keepalive и guidance по ведению сессий.
 - **Codex Cloud** — `codex-cloud/`; настройка environment, GitHub CLI, network permissions, диагностика PATH и cold-start smoke test по real-project опыту 30.10.2026.
-- **G2 pilot follow-up** — F-17…F-24 в SP-LAB-GRANT part2 и F-25…F-36 в PR #15; разбор — T-018.
+- **G2 pilot follow-up** — F-25…F-36 полностью разобраны, решения зафиксированы и реализованы как candidate 0.9.0 в PR #15; F-17…F-24 из SP-LAB-GRANT part2 остаются на последующий разбор в T-018.
 
 ## Что уже сделано
 
@@ -50,16 +50,17 @@ Project Infrastructure остаётся отдельным версиониру�
 - PR #13 merged: Project Infrastructure 0.8.10 стал canonical на `main`.
 - Scope `ai-workflow` расширен до общей системы организации работы с AI-агентами/harnesses; Project Infrastructure больше не трактуется как весь проект.
 - Зарегистрированы reusable `skills/codex-delegate/`, Claude Desktop keepalive/session guidance и локальные индексы тематических областей.
+- По G2 pilot part3 F-25…F-36 последовательно согласованы review decisions; в PR #15 собран Project Infrastructure 0.9.0 candidate: layered current/history memory, adaptive AGENTS, Working with the user, document/source rules, operational know-how promotion, terminology, fresh-agent validation, G2 ephemeral-checkout durability и review-first standard upgrade.
 
 ## В работе
 
-- T-018 — разобрать G2 pilot follow-up F-17…F-36.
+- T-018 — завершить follow-up review: F-25…F-36 реализованы в PR #15 / candidate 0.9.0; F-17…F-24 ещё не разобраны.
 - T-017 — решить, какие общие правила нужны для delegated executors.
 - T-002 — независимый re-review стандарта остаётся открытым.
 
 ## Ближайшие следующие шаги
 
-1. Последовательно разобрать F-17…F-36 и принимать изменения стандарта только после отдельного решения по каждому тематическому пакету.
-2. Разобрать T-017 delegated executors с учётом реального `codex-delegate` workflow.
-3. Провести независимый re-review установленного G0 runtime и последних corrective изменений.
-4. После follow-up pilot review оценить, какие Draft правила требуют упрощения или повторной проверки на реальном проекте.
+1. Провести финальный review candidate 0.9.0 в PR #15 и решить, готов ли пакет F-25…F-36 к merge.
+2. После этого вернуться к ещё не разобранным F-17…F-24 в T-018.
+3. Разобрать T-017 delegated executors с учётом реального `codex-delegate` workflow.
+4. Провести независимый re-review установленного G0 runtime и отдельно решить, нужен ли самому `ai-workflow` upgrade с 0.8.10 на 0.9.0 по review/adaptation процедуре.

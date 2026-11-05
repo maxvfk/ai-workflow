@@ -18,7 +18,7 @@ Project Infrastructure has its own version. That version does **not** version th
 
 ## Project infrastructure
 
-Current standard version: **0.8.10**  
+Current standard version: **0.9.0**  
 Lifecycle: **Draft**
 
 `PROJECT_INFRASTRUCTURE.md` is the **single canonical entry point** for scenario selection, bootstrap/offline requirements, and invocation prompts. README intentionally does not duplicate those commands.
@@ -31,6 +31,7 @@ Core conventions:
 - project-memory prose defaults to Russian (`ru`) unless another language is explicitly selected/established;
 - `COMMON.md` owns shared runtime, preservation, bounded-discovery, concurrency, proportional-work, canonical-target-first tool routing, security, and cold-start rules;
 - scenario files contain only environment/storage-specific deltas.
+- 0.9.0 adds layered continuity memory: compact `STATE.md / Now`, task `Decided`/`Open`, low-threshold task journals, meaningful state-history archives, and manual-only chat dumps for deep reconstruction; standard upgrades are review/adaptation tasks that require an explicit proposal and user approval before changing an installed project's runtime/project memory.
 - small personal multi-project workspaces may use one optional `PROJECTS/PROJECTS.md` catalog; projects remain authoritative, organizational group folders remain plain folders by default, and cross-project dependencies use stable Project IDs.
 - a workspace may expose the whole `PROJECTS/` tree while one project remains active; sibling/other projects are external read-only sources by default, and `PROJECTS.md` is only a resolver/catalog, not a combined runtime.
 - users, domain applications, and delegated/local agents may edit canonical artifacts directly; project memory can be reconciled later through an explicit bounded refresh rather than requiring the main orchestrator for every small artifact change.

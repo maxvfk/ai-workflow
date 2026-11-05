@@ -106,8 +106,14 @@ Use one of these modes per session/task:
 - place/discover the checkout **outside the synchronized artifact root** and preferably outside any cloud-sync root;
 - a harness-provided temporary workspace is suitable for an ephemeral checkout; a persistent local clone is also acceptable;
 - the checkout's absolute path is machine/session-local context and is never canonical project state;
+- treat a harness-provided temporary/ephemeral checkout as **disposable**: unpushed commits and working-tree changes that exist only there are not durable project state;
+- work may remain local while one logical step is actively in progress, but once a result is expected to survive the current session/checkpoint, publish it to the canonical repository;
+- a persistent local clone is not assumed to disappear immediately, but the canonical repository remains the durable store and completed work must not depend on one machine-local clone;
+- if an ephemeral checkout is lost or damaged, recreate it from the canonical repository and reconcile any surviving unpersisted working files only when useful; never treat the damaged/partial checkout as canonical;
 - before publishing, fetch/pull/rebase/merge according to the repository's established policy and reconcile concurrent changes;
 - push normally; if push/merge is rejected, refresh and reconcile rather than force-pushing unless the user explicitly requests a destructive history operation.
+
+This is a **durability boundary, not a push-after-every-edit rule**. Do not require a commit/push after every small change; persist completed logical steps/checkpoints at the point where losing the workspace would lose work that is expected to survive.
 
 **Never clone the control repository inside the synchronized artifact root.** This would mix `.git` and project-memory files into the artifact sync plane, violate the G2 separation of roles, and create avoidable sync/conflict risk.
 
