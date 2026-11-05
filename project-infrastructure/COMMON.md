@@ -253,6 +253,8 @@ Chat dumps are historical evidence/raw context, not current structured project m
 
 If durable information recovered from a dump becomes operationally relevant again, reconcile/promote it into the appropriate current project-memory layer.
 
+Do not register every chat dump in `SOURCES.md` automatically. Register one only when it is itself an important provenance/evidence source. Journals, decision records, or archived state snapshots may link to a dump when that materially helps reconstruction.
+
 Do not create parallel `HANDOFF.md`, `LATEST_CONTEXT.md`, `CURRENT.md`, or `SESSION_SUMMARY.md` files by default.
 
 ## 5. Facts, decisions, assumptions, recommendations, and tasks## 5. Facts, decisions, assumptions, recommendations, and tasks
@@ -429,7 +431,7 @@ The target is:
 
 > current project practice + useful improvements from the new standard + explicit user approval → reconciled project runtime
 
-Before updating any existing root/project-instruction file:Before updating any existing root/project-instruction file:
+Before updating any existing root/project-instruction file:
 
 1. read it first;
 2. identify user-maintained/project-specific content;
