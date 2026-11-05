@@ -111,7 +111,8 @@ Do not apply the heaviest synchronization/publication procedure to every task. U
 **Read-only or informational task**
 - read the canonical `AGENTS.md` and only the project/source files needed for the answer;
 - do not update project memory merely because a read occurred;
-- do not run publication or write-synchronization procedures.
+- if the user nevertheless establishes a new durable project/task decision or answer that materially changes an active task, record that durable information in the same session;
+- do not run publication or write-synchronization procedures unless such a durable update actually requires a write.
 
 **Bounded small edit**
 - use for a low-risk edit to one clearly identified canonical artifact or one small project-memory change;
@@ -179,15 +180,82 @@ A local/delegated agent performing an artifact-only task does not need to update
 
 Do not add mandatory filesystem watchers, per-file change logs, or mutable hashes merely to detect such edits. Use explicit reconciliation when continuity or downstream work requires it.
 
-## 4. Current state is not a session log
+## 4. Current state, task continuity, and historical layers
 
-`STATE.md` is the default handoff snapshot. It describes the **present**, not a chronological diary.
+Project memory should make the **current position fast to recover** while preserving enough deeper history to reconstruct how the project arrived there.
 
-When information stops being current, replace or remove it. Historical context belongs in version history, scenario-defined decision/completed-plan locations, or optional archives when they add real value.
+### `STATE.md / Now`
+
+`STATE.md` is the default project-wide handoff snapshot. It describes the **present**, not a chronological diary.
+
+For non-trivial projects, begin `STATE.md` with a compact **Now / Сейчас** section that is rewritten as the project changes. It should normally expose only what a fresh coordinator needs first:
+
+- active streams/current phase;
+- current position and immediate next steps;
+- important current outputs/artifacts;
+- pointers to relevant task `Decided`/`Open`, journals, decision records, or other deeper context.
+
+Treat “about 15 lines” as a useful compactness target, not a hard limit.
+
+When information stops being current, replace or remove it from the current snapshot rather than appending chronology.
+
+### Historical state archive
+
+Meaningful superseded project-state snapshots should be preserved when they materially help reconstruct project evolution. The default location is:
+
+```text
+_ai/archive/state/
+```
+
+or the scenario-equivalent durable archive area when a scenario uses another namespace.
+
+Preserve enough fidelity to recover earlier priorities, transitions, and project context. Do not create a separate snapshot for trivial wording/format-only edits.
+
+The current `STATE.md` may point to the archive but should not duplicate it.
+
+### Task journals
+
+A task that extends beyond a **single bounded work session / working pass** and is expected to continue later should normally have a dedicated journal.
+
+Default location:
+
+```text
+_ai/journal/T-###.md
+```
+
+The task journal is chronological / append-oriented (**oldest → newest**) and preserves meaningful working history such as:
+
+- important steps and intermediate results;
+- rationale and transitions;
+- failed approaches;
+- checks/validation;
+- context needed to reconstruct the work later.
+
+It is not a chat transcript.
+
+A truly one-pass bounded task does not need a journal merely because it has a task ID. Once the task continues into later work, a journal becomes the default.
+
+`TASKS.md` should remain the current summary and link to the journal when one exists.
+
+### Manual chat dumps
+
+Raw/full conversation transcripts may be preserved as a separate historical-evidence layer under:
+
+```text
+_ai/archive/chats/
+```
+
+This is **manual / explicit-request only**. Do not automatically archive every conversation, session, fork, or child session.
+
+Create a dump only when the user directly provides/creates it or explicitly asks the agent to preserve/export the conversation. When useful, add lightweight metadata such as date/period, harness/product, topic/title, completeness (`full` or `partial`), and provenance/export method. An incomplete dump must be marked `partial`.
+
+Chat dumps are historical evidence/raw context, not current structured project memory and not a substitute for `STATE.md`, `TASKS.md`, journals, decision records, or state archives. Ordinary startup does not load them. Use them only for deeper reconstruction when structured memory is insufficient.
+
+If durable information recovered from a dump becomes operationally relevant again, reconcile/promote it into the appropriate current project-memory layer.
 
 Do not create parallel `HANDOFF.md`, `LATEST_CONTEXT.md`, `CURRENT.md`, or `SESSION_SUMMARY.md` files by default.
 
-## 5. Facts, decisions, assumptions, recommendations, and tasks
+## 5. Facts, decisions, assumptions, recommendations, and tasks## 5. Facts, decisions, assumptions, recommendations, and tasks
 
 Agents should distinguish explicitly:
 
@@ -332,7 +400,36 @@ If another copy exists for transport, conversion, review, local processing, or p
 
 Infrastructure initialization and migration must be **non-destructive and idempotent by default**.
 
-Before updating any existing root/project-instruction file:
+### Explicit standard upgrades: review before adaptation
+
+An upgrade to a newer Project Infrastructure version is a **review and adaptation process, not a template reapplication**.
+
+Before proposing any upgrade changes:
+
+1. inspect the project's actual current runtime and project-memory structure, including `AGENTS.md`, infrastructure metadata/manifest, current project-memory files, and relevant support/runtime guidance;
+2. treat existing project-specific rules, ordering, workflows, and conventions as potentially intentional and valuable even when they are not formally recorded as local deviations;
+3. inspect the selected target standard and identify which changes are actually useful for this project;
+4. prepare an explicit upgrade proposal that distinguishes:
+   - what should be added;
+   - what should be changed;
+   - what should remain as-is;
+   - where the new standard conflicts with or overlaps existing project practice;
+   - which existing project-specific behavior should intentionally be preserved;
+5. present that proposal to the user/project owner and obtain approval **before modifying project runtime or project-memory files**;
+6. apply only the approved subset;
+7. after application, update infrastructure metadata/snapshots and verify that the resulting runtime reflects the approved project-specific workflow rather than merely the upstream template.
+
+Recorded local deviations in a manifest are useful evidence, but they are not the only source of truth. The actual current project may contain intentional rules/workflows that evolved after installation and were never formally classified as deviations.
+
+If the target standard conflicts with current project practice and the correct choice is not obvious, preserve the current behavior until the user decides.
+
+A mandatory universal three-way-merge protocol is not required. Git history, installed-standard snapshots, manifests, diffs, and other evidence may be used when they help reconstruct intent.
+
+The target is:
+
+> current project practice + useful improvements from the new standard + explicit user approval → reconciled project runtime
+
+Before updating any existing root/project-instruction file:Before updating any existing root/project-instruction file:
 
 1. read it first;
 2. identify user-maintained/project-specific content;
@@ -467,14 +564,24 @@ Installed project-memory files: <actual files>
 
 Do not turn `AGENTS.md` into a full project encyclopedia.
 
+Treat `AGENTS.md` primarily as the **runtime entry point**. Its exact section order is adaptive rather than permanently fixed: guidance used in ordinary work should stay close to the startup/runtime path, while bulky or rare procedures may move to support files. When moving a rule out, keep a concise pointer and a clear trigger that tells a fresh agent when the support file must be read. Frequently used guidance may later be promoted back toward the entry path.
+
+Remove accidental duplication instead of preserving repeated rules for historical reasons.
+
+When durable project-wide interaction rules exist, keep a bounded **Working with the user / Работа с пользователем** section (or an equivalent support file reached through a clear pointer). It is for durable rules that materially affect work across many tasks in this project, not for a general profile of the user. Task-, document-, tool-, source-, or one-off instructions belong near their relevant scope.
+
+A newly stated rule should be promoted here when the user explicitly indicates future applicability or when its durable project-wide intent is otherwise clear. Do not interpret every casual phrase as a permanent rule.
+
 ### Common runtime baseline
 
 Every scenario's **canonical full-runtime `AGENTS.md`** must materialize the common rules needed during ordinary work. At minimum it must make discoverable:
 
 - installed scenario, standard version/commit when known, project-memory profile/language, installed project-memory files, and infrastructure metadata path;
 - canonical project/runtime authority and the rule that remembered chat context is non-authoritative when it conflicts with project files;
-- progressive disclosure/startup order;
+- progressive disclosure/startup order, with `STATE.md / Now` and the current task summary as the fast path;
 - proportional task path (read-only / bounded small edit / full scenario transaction);
+- current task-memory semantics: `Decided` / `Open` when meaningful and task journals for work that continues beyond one bounded work pass;
+- durable project-wide user-working rules when such rules exist;
 - canonical-target-first tool routing: identify the authoritative store/artifact before choosing connector, filesystem, browser, or workspace operations;
 - programmatic/API text writes with materially important escape-sensitive syntax must verify the persisted result rather than treating write acknowledgement as proof of textual integrity;
 - installed project-memory language rule;
@@ -491,13 +598,36 @@ Scenario files must list **only their additional runtime requirements**, not rep
 
 Recommended content: objective; scope; deliverables; constraints; definitions/terminology; success criteria.
 
+When project-specific terminology, abbreviations, mode names, part labels, stage names, or other notation becomes non-trivial enough to create interpretation risk, keep a durable **Terminology / Словарь** section. Prefer `PROJECT.md` while the glossary is compact; move it to a dedicated support file such as `TERMINOLOGY.md` when growth makes that clearer, leaving an explicit pointer.
+
+Do not create a glossary merely because the project uses the Standard profile, and do not turn it into a dictionary of ordinary domain terminology.
+
+If an important project term is unclear, first search authoritative current project documents/registered sources. If it remains unclear, ask the user rather than guess. If asking is not currently appropriate or the user defers the question, record it in the relevant `Open` summary until resolved. Once clarified and likely to matter again, add the durable definition to the glossary.
+
 ### `STATE.md`
 
-Recommended content: last updated; current phase/status; completed; in progress; blocked/waiting; current canonical outputs; key current conclusions; immediate next actions.
+Recommended content: a compact `Now / Сейчас` current snapshot first, followed as needed by last updated; current phase/status; completed context that is still operationally relevant; in progress; blocked/waiting; current canonical outputs; key current conclusions; immediate next actions; pointers to deeper task/history layers.
+
+Rewrite the current snapshot instead of appending a session log. Preserve meaningful superseded project-state snapshots under the historical-state rules in §4.
 
 ### `TASKS.md`
 
 Use stable `T-###` IDs. Controlled task statuses are `todo`, `active`, `blocked`, `done`, `cancelled`.
+
+For a **non-trivial active task**, when meaningful content exists, keep:
+
+- `Decided` — current durable decisions and user answers that govern continuation;
+- `Open` — unresolved questions that may affect continuation.
+
+Do not add empty `Decided`/`Open` sections to trivial tasks.
+
+`Decided` is **current state, not decision history**. Remove superseded/cancelled items from the current summary; preserve rationale/history in the task journal or a `D-###` record when needed.
+
+Before asking the user a question that may already have been settled, check the task's `Decided` summary first, then relevant journal/decision records if necessary.
+
+If the user provides a new durable answer/decision during any session and it materially changes or clarifies an active task, record it in `Decided` in the same session, even when the original request was informational/read-only.
+
+When a task continues beyond one bounded work session/pass, link its dedicated journal as defined in §4.
 
 `TASKS.md` is an active working set, not a permanent ledger. Keep active/blocked/todo tasks plus recently completed items that still provide useful context. Periodically archive older `done`/`cancelled` entries under the scenario-defined task archive while preserving IDs and evidence references.
 
@@ -507,7 +637,33 @@ For engineering, scientific, cost-estimation, research, planning, and analytical
 
 ### `SOURCES.md`
 
+`SOURCES.md` is a **source/canonical-artifact registry, not a work log**.
+
 Register important authoritative information/artifacts. Record when useful: `S-###` ID, title/name, type, canonical location/path/URL/ID, canonical status, provenance, purpose, modification restrictions, version/date.
+
+Do not accumulate chronological work notes there. Put working history in the relevant task journal/history layer.
+
+### Working documents and derived artifacts
+
+Working documents should primarily expose their **current state**. Superseded material should not accumulate in the main body merely to preserve chronology.
+
+Preserve history through the mechanism that best fits the artifact: an explicit revision/history section when useful, the task journal, Git history, project/state archives, or another defined historical layer. Do not impose one mandatory header/revision-history template across all artifact types.
+
+Open questions maintained inside a working document should remain consistent with the relevant task's `Open` summary.
+
+For generated/derived artifacts, identify the source of truth. When an artifact is truly **derived and reproducible** from another source, the normal workflow is to modify the source and regenerate the derived output rather than manually editing the generated file. Do not apply that rule mechanically to every PDF/DOCX/XLSX or file that happened to be generated once; if such an artifact becomes a canonical manually maintained deliverable, treat its current role accordingly.
+
+Distinguish facts, decisions, assumptions, estimates, and recommendations where that distinction materially affects interpretation or continuation.
+
+### Operational know-how and pitfalls
+
+Durable operational knowledge discovered during project work should not remain only in chat context.
+
+If a finding is clearly **local to the current project** and is likely to recur, prevent a real mistake, or materially improve reproducibility/continuation, record it promptly in the same session once its durable value is clear. Store it as close as practical to the area where it is used: tool-specific README, workflow/support file, `AGENTS.md`, relevant task journal, or another domain-specific project file.
+
+Do not document every incidental observation.
+
+If a finding appears broader than the current project — for example cross-project operational knowledge, reusable agent workflow, model-routing lesson, harness/product-specific guidance, candidate reusable skill, or common infrastructure rule — do **not** silently copy/promote it into a shared repository or another project. Surface an explicit proposal to the user/project coordinator to preserve/promote it in the appropriate shared area. A local note/reference may remain meanwhile when needed for continuity.
 
 ## 12. Decisions and plans
 
@@ -522,35 +678,58 @@ Before ending substantial work:
 1. re-read every shared project-memory file you intend to modify;
 2. reconcile concurrent changes instead of overwriting them;
 3. update installed current-state/task/source/assumption files as relevant;
-4. record significant decisions;
-5. archive stale completed/cancelled tasks when `TASKS.md` becomes noisy;
-6. preserve the installed project-memory language;
-7. leave the project continuable without the previous chat or external standard.
+4. record significant decisions and durable user answers in the current task summary;
+5. update the task journal when work will continue beyond the current bounded pass;
+6. record newly discovered durable **project-local** operational know-how when its value is clear;
+7. archive stale completed/cancelled tasks when `TASKS.md` becomes noisy;
+8. preserve the installed project-memory language;
+9. leave the project continuable without the previous chat or external standard.
 
 ## 14. Concurrent agents and shared-state writes
 
-Use optimistic concurrency for shared project state:
+Use optimistic concurrency for shared project state. **No agent, including the primary/project-coordinator agent, may assume it is the only writer.**
 
-- immediately before writing a shared canonical/runtime file, re-read the current file;
-- if it changed, reconcile newer content; never blindly overwrite stale state;
-- avoid assigning two active agents to the same task/canonical artifact unless coordinated;
-- for parallel work, prefer separate task IDs/work areas and deliberate merge;
-- when a conflict cannot be reconciled confidently, preserve both contributions in a non-canonical work area and surface the conflict.
+Before modifying a shared canonical/runtime/project-memory file:
 
-A dedicated multi-agent scenario may later add stronger coordination/locking rules.
+- re-read the current canonical version immediately before the write;
+- do not treat an earlier local copy or remembered chat content as current;
+- if the file changed, reconcile newer content and preserve intervening work;
+- if reconciliation is not reliable, do not silently overwrite; preserve the conflict and surface it.
+
+Avoid assigning two active agents to the same task/canonical artifact unless coordinated. For parallel work, prefer separate task IDs/work areas and deliberate reconciliation.
+
+If an agent launches subagents, forks, child sessions, or delegated workers, **coordination and reconciliation remain the launching/parent agent's responsibility**. The standard does not require a separate locking/orchestration protocol merely because delegated work exists.
+
+When a conflict cannot be reconciled confidently, preserve both contributions in a non-canonical work area and surface the conflict.
+
+A dedicated multi-agent scenario may later add stronger coordination/locking rules if a real project demonstrates the need.
 
 ## 15. Cold-start validation
 
-A bootstrap, repair, or migration is not complete merely because files were created.
+A bootstrap, repair, migration, or substantial memory restructuring is not complete merely because files were created or edited.
 
-Validate from the perspective of a fresh agent that has only the scenario-defined project entry resources/canonical-store access and no originating chat. The agent must be able to discover or enter the canonical `AGENTS.md` runtime (directly or through a thin scenario/product adapter) and determine at least:
+Validate from the perspective of a **fresh agent** that has only the scenario-defined project entry resources/canonical-store access and no originating-chat context. The agent should be able to discover or enter the canonical `AGENTS.md` runtime (directly or through a thin scenario/product adapter) and answer representative questions such as:
 
-- installed scenario/profile/project-memory language;
-- current phase/status;
-- nearest active/next tasks;
-- important canonical sources/outputs when source tracking is installed;
-- scenario/runtime constraints;
-- where temporary/generated work belongs.
+- where the project currently stands;
+- what has already been decided for the relevant active work;
+- what remains open;
+- what the immediate next step is;
+- where key current artifacts/sources live;
+- which scenario/runtime constraints materially affect the next work.
+
+For an `independent-agent` validation, the fresh agent should:
+
+- answer only from project files and scenario-defined canonical resources;
+- identify/cite where each answer was found;
+- say `not found` (or equivalent) rather than guess;
+- **not ask the user during the test**, because that would hide memory gaps;
+- surface contradictions, unclear wording, broken references, and missing durable information as findings.
+
+The requesting/coordinating agent should know the expected answers or otherwise have a reliable comparison basis and evaluate the result after the run.
+
+There is no fixed mandatory number of questions and no universal requirement to create a dedicated report file. Use a representative set appropriate to the project's complexity and current risks. Preserve a durable report when the validation is substantial/diagnostic or later auditability matters.
+
+Re-run independent validation after **substantial memory restructuring or migration**, not after every ordinary project-memory edit.
 
 When an independent fresh-agent run is available and proportionate, use it. Otherwise perform the same check explicitly using only the installed runtime and scenario-defined entry resources.
 
@@ -564,7 +743,9 @@ Report the validation method accurately:
 
 Do not describe a self-check as an independent-agent validation. `checklist/simulated-fresh` is an acceptable normal method when an independent run is unavailable or disproportionate, provided it exercises the actual startup route rather than merely confirming that expected files exist.
 
-## 16. Universal `AGENTS.md` and tool-specific adapters
+Findings from cold-start validation are ordinary project-memory defects: fix them, or leave them explicitly open when resolution is deferred.
+
+## 16. Universal `AGENTS.md` and tool-specific adapters## 16. Universal `AGENTS.md` and tool-specific adapters
 
 `AGENTS.md` is the **canonical vendor-neutral instruction convention** for this standard. Each project has one **canonical full-runtime `AGENTS.md`** in its scenario-defined runtime/control store.
 
