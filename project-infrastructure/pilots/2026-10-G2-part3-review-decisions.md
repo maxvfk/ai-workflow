@@ -77,3 +77,41 @@ Current `STATE.md` should point to the historical-state archive without duplicat
 ### Rationale
 
 The pilot demonstrated that a current-state file can satisfy the standard syntactically yet still fail as an entry point when historical sections accumulate. At the same time, discarding old state would remove context needed by future coordinators. A compact current snapshot plus preserved historical states provides both fast startup and reconstructable project history.
+
+---
+
+## F-27 — Где вести журнал длительной задачи
+
+**Decision:** ACCEPT WITH MODIFICATION
+
+### Accepted
+
+A task that extends beyond a single bounded work session / working pass and is expected to continue later should have a dedicated journal.
+
+Default location:
+
+`_ai/journal/T-###.md`
+
+The threshold is intentionally low: do not wait until the task becomes large or complicated. If a task has already become longitudinal enough that a future session or coordinator may need to understand what happened before, create the journal.
+
+`TASKS.md` remains the current operational summary and should normally keep:
+
+- task status;
+- `Decided` when there are durable decisions/answers;
+- `Open` when unresolved questions remain;
+- a link to the journal.
+
+The journal preserves the meaningful working history of the task: important steps, intermediate results, rationale, failed approaches, checks, transitions, and context needed to reconstruct how the current state was reached. It is not a transcript of the chat.
+
+### Modification to the pilot proposal
+
+This is a **common Project Infrastructure mechanism**, not a G2-specific one. Scenarios may define a different locator only when their storage model genuinely requires it; otherwise `_ai/journal/T-###.md` is the normal default.
+
+The journal should be **chronological / append-oriented (oldest to newest)** rather than newest-first. Current state is already available through `TASKS.md` and `STATE.md / Now`; the journal's primary role is historical reconstruction.
+
+A task that is truly completed in one bounded working pass does not need a journal merely because every task has an ID. Once a task continues into later work, the journal becomes the default.
+
+### Rationale
+
+The project needs both fast current-state access and recoverable reasoning/history. Creating journals early for tasks that persist across work sessions prevents important context from being lost before anyone notices that the task has become “long-running”, while keeping one-pass tasks lightweight.
+
