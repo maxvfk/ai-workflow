@@ -115,3 +115,70 @@ A task that is truly completed in one bounded working pass does not need a journ
 
 The project needs both fast current-state access and recoverable reasoning/history. Creating journals early for tasks that persist across work sessions prevents important context from being lost before anyone notices that the task has become “long-running”, while keeping one-pass tasks lightweight.
 
+---
+
+## Cross-cutting decision — Manual chat dumps
+
+**Decision:** ACCEPT
+
+Raw/full chat transcripts may be preserved as a separate historical-evidence layer when the user explicitly creates them or asks an agent to create them.
+
+Default location:
+
+`_ai/archive/chats/`
+
+### Creation policy
+
+Chat dumps are **manual / explicit-request only**.
+
+Do not automatically archive every conversation, session, fork, or child session. Create a chat dump only when:
+
+- the user creates/provides it directly; or
+- the user explicitly asks an agent to preserve/export the conversation.
+
+This mechanism must not become an automatic logging system.
+
+### Suggested naming and metadata
+
+Use a date plus a short descriptive slug when practical, for example:
+
+`_ai/archive/chats/2026-11-05-chatgpt-g2-review.md`
+
+A dump should preserve the available original conversation content with minimal transformation.
+
+When useful, include lightweight metadata such as:
+
+- date / covered period;
+- harness/product;
+- conversation/session title or topic;
+- completeness: `full` or `partial`;
+- source/export method when provenance matters.
+
+If the available transcript is incomplete, mark it explicitly as `partial`; do not silently present a partial export as the full conversation.
+
+### Role in project memory
+
+Chat dumps are **historical evidence / raw context**, not current structured project memory and not a replacement for:
+
+- `STATE.md / Now`;
+- `TASKS.md / Decided / Open`;
+- task journals under `_ai/journal/`;
+- decision records `D-###`;
+- historical project-state snapshots under `_ai/archive/state/`.
+
+Ordinary startup should not load chat dumps.
+
+Read a chat dump only when deeper historical reconstruction is needed — for example, to recover detailed rationale, intermediate discussion, wording, or context that was intentionally condensed out of the current summaries/journals.
+
+When a chat dump contains durable information that becomes operationally relevant again, promote/reconcile that information into the appropriate current structured memory rather than making ordinary project operation depend on repeatedly reading the raw transcript.
+
+### References and source registration
+
+A task journal, decision record, or historical-state snapshot may link to a relevant chat dump when that improves traceability.
+
+Do not register every dump in `SOURCES.md` automatically. Register one only when it has become an important provenance/evidence source for the project.
+
+### Rationale
+
+Structured project memory should remain compact and operational, but long-running projects may occasionally require access to the original conversation to reconstruct reasoning that summaries necessarily compress. A manual raw-transcript archive provides that recovery path without forcing every agent to ingest chat history or turning the repository into an automatic conversation log.
+
