@@ -144,9 +144,10 @@ Status: active
 - F-25…F-36 — полностью разобраны; review decisions зафиксированы в `project-infrastructure/pilots/2026-10-G2-part3-review-decisions.md`;
 - согласованный пакет F-25…F-36 реализован в source standard Project Infrastructure **0.9.0 Draft** (PR #15 merged 2026-11-05);
 - дополнительное решение по manual/on-request chat dumps также включено;
-- F-17…F-24 — `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-part2.md`, пока намеренно отложены и ещё не разобраны.
+- F-17 — ACCEPT WITH MODIFICATION (agreed 2026-11-06), review decision recorded in `project-infrastructure/pilots/2026-10-G2-part2-review-decisions.md`; source standard changes not yet implemented;
+- F-18…F-24 — `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-part2.md`, pending review.
 
-Следующий шаг по задаче: отдельно разобрать F-17…F-24.
+Следующий шаг по задаче: разобрать F-18 (binary artifact snapshots/versioning and retention), затем F-19…F-24. Реализацию согласованных решений оформить отдельным scoped изменением стандарта после review.
 
 Важно: source standard 0.9.0 находится в `main` после merge PR #15, но установленный G0 runtime самого `ai-workflow` остаётся 0.8.10 до отдельного review/adaptation upgrade с явным согласованием.
 
