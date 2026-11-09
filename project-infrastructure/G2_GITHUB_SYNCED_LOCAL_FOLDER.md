@@ -351,6 +351,14 @@ Default control-only permissions are deliberately conservative:
 - the agent must not claim that unseen artifact-root content is current, verified, or unchanged;
 - an explicit user request for a specific ordinary control-plane edit may authorize that edit under normal GitHub concurrency rules, but such a write is outside the fallback's default permissions and does not broaden the rest of the session.
 
+#### Authorized GitHub work without local artifacts
+
+GitHub permissions and local artifact access are **independent**. The default control-only fallback above remains restricted, but an agent explicitly authorized by the user or installed project runtime to write GitHub files may do so within its scope even without the synchronized artifact root. Normal revision/concurrency and contribution rules still apply; no report in `_ai/inbox/` is required for an ordinary authorized GitHub edit.
+
+Such an agent may read selected project texts published in `_ai/snapshots/` and, when a text copy is expressly marked **collaborative**, edit the GitHub copy as a proposed change to the local source. It must not claim to have edited or verified the inaccessible local original. Applying a proposed local change and rebuilding dependent artifacts remain tasks for an artifact-capable agent. A read-only copy is not edited as if it were the source.
+
+An initialized project may describe its authorized remote agents, permitted GitHub edits and selected text-copy collaboration in its own `AGENTS.md`. No new G2 scenario, agent product profile or blanket permission escalation is required.
+
 #### Optional external incoming artifact area
 
 A control-only project may additionally configure a writable **external incoming area** for artifacts that cannot or should not live in the GitHub control repository.
@@ -422,32 +430,29 @@ During later full-access reconciliation, validate both the result **and its prem
 reconcile = validate result + validate premises + reconcile state impact
 ~~~
 
-#### Optional read-only artifact snapshots
+#### Selected project text copies in GitHub (`_ai/snapshots/`)
 
-When repeated control-only work needs selected text documents from the artifact root, G2 may use `_ai/snapshots/` as a bounded read-only context mechanism.
+The G2 synchronized artifact root may contain important texts (calendar/schedule plans, current reports, Markdown used to generate DOCX, requirements) that remote GitHub-only agents need to read or discuss. The **full-access G2 agent should know this option exists**, suggest publishing a selected text when it would help collaboration, and publish/update it when asked or when an established project policy authorizes it.
 
-Snapshots are **derived representations**, not a second canonical artifact store and not a mirror of the artifact root.
+Use the existing `_ai/snapshots/` path and optional `README.md` index; preserve existing files and layouts. This is a **selective, lightweight** mechanism, not a requirement to mirror the artifact root, migrate existing documents, export all data formats or run watchers.
 
-Each snapshot must clearly record at least:
+Each published text needs a clear canonical original locator (relative to the artifact root, or GitHub if intentionally canonical there), last capture/sync date or revision, and one of two roles:
 
-- that it is a read-only derived copy;
-- the canonical source path relative to the artifact root;
-- capture date;
-- the full SHA-256 fingerprint of the canonical original at capture time;
-- an explicit statement that the original in the artifact root remains canonical.
+- **Read-only snapshot:** noncanonical context; update only from the original. Remote agents may discuss it or submit proposed changes separately.
+- **Collaborative text copy:** an explicitly designated GitHub Markdown/text copy that an authorized GitHub-writing agent may edit. When the **local original remains canonical**, edits to its GitHub copy are **pending proposed changes** until a full-access agent reviews them against the current original, resolves concurrent modifications and applies them. A remote edit does not update the local original or generated outputs automatically.
 
-Source record ID/revision may also be recorded when useful.
+If a particular GitHub Markdown source is explicitly designated canonical by the project owner, work directly with that source and regenerate the local derivative through the project's normal pipeline; do not silently change the source-of-truth relationship of existing documents.
 
-If snapshots are enabled, `_ai/snapshots/README.md` should index them and state the rules. A short derived summary may be included for navigation, but it is optional, may become stale, and never outranks an individual snapshot or its canonical original.
+A GitHub-only agent must use the last-sync context and must not assume a captured text is currently identical to the local original. For partial text extraction, identify material omissions. Exact hashes or complex manifests can help sensitive/version-critical workflows but are **not mandatory** for each plain text copy. Do not publish source content contrary to repo visibility, confidentiality or established authorization.
 
-Snapshot lifecycle:
+**Simple lifecycle:**
 
-- a full-access G2 agent creates a snapshot only from the actual canonical original;
-- snapshot selection remains deliberate and bounded; do not mirror the artifact root automatically;
-- the control-only agent reads but does not edit snapshots;
-- when a relevant snapshot is reconciled and the original is available, the full agent may compare the recorded source fingerprint; if the snapshot is still needed and stale, replace it as a whole rather than editing it as an independent document;
-- removing or replacing a snapshot never implies deletion/modification of the canonical original;
-- do not register snapshots as separate `SOURCES.md` sources when the canonical original is already the source of record.
+1. A full-access agent suggests or selects a genuinely useful text, publishes it with its original path and read-only/collaborative designation, and notes when it was captured.
+2. Remote agents use GitHub within their assigned rights. In collaborative mode, their changes are proposals for the local source.
+3. On request or at a relevant checkpoint, a full-access agent compares the GitHub copy with the **current** local original. It must not overwrite either side blindly if both changed or there are pending edits. Reconcile/ask only where needed.
+4. Apply accepted changes to the canonical source, regenerate dependent deliverables (e.g., DOCX from MD) where appropriate, and update the GitHub text or sync note. A read-only snapshot is refreshed from its original rather than collaboratively edited.
+
+Do not force a particular number of files, format conversions, extraction pipeline, scheduled refresh, per-save synchronization or a separate pilot as a prerequisite. More detail and a concrete report example: [`proposals/G2-ARTIFACT-VIEWS.md`](proposals/G2-ARTIFACT-VIEWS.md). The installed project runtime should convey the working rules itself, without needing the external standard during ordinary work.
 
 #### Full-access reconciliation of control-only work
 
@@ -772,7 +777,7 @@ G2-specific additions:
 - use the proportional G2 sync-sanity check before canonical artifact writes;
 - after moving an existing synchronized tree, account for the possibility that another device may later publish an older location/state; when practical, verify that relevant devices have synchronized or no longer publish the old state, without making an all-device check mandatory;
 - prefer an external/harness temporary workspace when temporary processing is needed;
-- always make the optional control-plane-only capability discoverable in the canonical GitHub runtime, but leave it disabled/unconfigured unless there is a real user need;
+- always make optional control-plane-only work and the **selected GitHub text-copy** mechanism discoverable in the canonical GitHub runtime; do not automatically publish artifacts or enable elevated remote write permissions during bootstrap;
 - when the user explicitly asks to enable control-only/cloud work, configure its canonical `AGENTS.md` section plus only the justified support areas (`_ai/inbox/`, optional `_ai/snapshots/`, optional external incoming area); never create external storage merely because the capability exists.
 
 Already initialized G2 reconciles only what is needed and preserves IDs/state/source registrations/project language. Uninitialized brownfield preserves both existing planes. Greenfield starts Minimal unless known complexity justifies Standard.
@@ -792,6 +797,7 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - never silently resolve sync conflicts or overwrite suspicious/stale targets;
 - prefer an external/harness temporary workspace outside the synchronized folder when needed; any in-root fallback is non-canonical/disposable;
 - substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization;
+- the installed GitHub `AGENTS.md` must make selective text publication **discoverable to a full-access agent**: it may suggest publishing key local text to `_ai/snapshots/`, or publish/update it when requested or authorized by project policy, with clear original path, read-only/collaborative role, and reconciliation route; never automatically mirror the artifact tree;
 - if GitHub control access is unavailable, an explicitly assigned bounded artifact-only task may proceed from the local bootstrap plus sufficient user/local context, without pretending full project state was restored;
 - artifact-only agents do not create local substitute project memory and leave a scoped `_LOCAL_AGENT_REPORT.md` after delegated changes;
 - artifact-only reports are scope-limited because the reporting agent lacked the GitHub control plane; full-access reconciliation combines them with canonical artifacts/project memory before project-level conclusions;
@@ -799,7 +805,7 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - verified redundant/stale copies proven by exact-content comparison do not block work on an intact, unambiguous canonical target, but are never auto-deleted solely on that basis;
 - later full-access reconciliation may use local-agent reports as evidence, but actual canonical artifacts and authoritative GitHub project memory remain higher authority;
 - the runtime must state that optional control-plane-only support exists and whether it is currently configured; if disabled, enabling it is an explicit infrastructure task rather than an improvised session behavior;
-- when control-plane-only support is enabled, `AGENTS.md` must self-contain its default read-only project-memory boundary, `_ai/inbox/` handoff rule, any configured external incoming-area locator, snapshot rules when installed, and full-agent reconciliation responsibility.
+- when control-plane-only support is enabled, `AGENTS.md` must distinguish its restricted default from explicit GitHub-writing authorization, and include configured `_ai/inbox/` and external incoming handoff rules. If selected texts are published in `_ai/snapshots/`, describe their read-only/collaborative roles and route to reconciliation with the canonical original.
 
 ## 23. G2 cold-start additions
 
@@ -814,7 +820,8 @@ A fresh G2 agent must additionally be able to:
 - understand the external-workspace preference and G2 sync-sanity/conflict rules;
 - continue without the originating chat or external standard repository;
 - if GitHub is unavailable, recognize artifact-only fallback correctly: perform only explicitly assigned bounded local work, do not claim full restoration, and leave the local handoff report after delegated changes;
-- recognize whether optional control-plane-only support is configured; when it is enabled, a control-only agent can follow the installed `AGENTS.md` without external-standard access, and a full agent can identify/reconcile unresolved `_ai/inbox/` reports.
+- recognize whether optional control-plane-only support is configured; when it is enabled, a control-only agent can follow the installed `AGENTS.md` without external-standard access, and a full agent can identify/reconcile unresolved `_ai/inbox/` reports;
+- when selected GitHub text copies are configured, recognize which are read-only versus collaborative, what was actually synchronized, and when a remote edit remains pending until the local source is reconciled.
 
 ## 24. G2 completion-report additions
 
