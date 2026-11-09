@@ -153,3 +153,26 @@ Status: active
 Важно: source standard 0.9.0 находится в `main` после merge PR #15, но установленный G0 runtime самого `ai-workflow` остаётся 0.8.10 до отдельного review/adaptation upgrade с явным согласованием.
 
 Evidence: S-012; PR #15; `project-infrastructure/pilots/2026-10-G2-part3-review-decisions.md`; maxvfk/SP-Lab-Grant.
+
+## T-019 — G2 Artifact Views + trusted GitHub-only collaborators
+Status: active
+
+Цель: обеспечить содержательную работу доверенных удалённых агентов по общей информации проекта при наличии доступа к GitHub control/state plane и отсутствии прямого доступа к G2 artifact root. Расширить существующие `_ai/snapshots/` до Artifact Views, не создавая второго canonical store, не зеркаля всё дерево и не изменяя самовольно исходные артефакты.
+
+Decided:
+- Пользователь одобрил начало переработки 2026-11-09.
+- Эволюционировать существующий G2 `_ai/snapshots/`, а не создавать новый сценарий/третье хранилище.
+- Разделить **доверенные GitHub write permissions** и **фактический доступ к локальным оригиналам**; restricted control-only остаётся безопасным default.
+- Текстовые и структурированные представления источников остаются `derived/read-only`; точные оригиналы, coverage и свежесть не выводятся из давнего snapshot.
+- Обновлять ключевые представления по значимым checkpoint/reconciliation, не требовать watcher/полный mirror или каждое сохранение.
+
+Open:
+- Пилот на `SP-Lab-Grant` должен получить доступ к фактическому синхронизируемому artifact root; без него не обновлять представления и не выдумывать текущие версии оригиналов.
+- Выбрать 3–5 приоритетных исходных артефактов/типов для пилота (включая structured XLSX/CAD), проверить extraction fidelity и объём допустимой публикации в GitHub.
+- Выполнить независимую проверку GitHub-only agent на реальной задаче; проверить, как он распознаёт outdated/limited representations и откладывает локальные writes.
+- После пилота утвердить версию стандарта и отдельно согласовать адаптацию установленного runtime `SP-Lab-Grant` по review/adaptation процедуре.
+
+Work in progress:
+- Draft design: `project-infrastructure/proposals/G2-ARTIFACT-VIEWS.md`.
+- Candidate G2 scenario changes: `project-infrastructure/G2_GITHUB_SYNCED_LOCAL_FOLDER.md` in dedicated feature branch.
+- Не объединять с T-018 / разбором F-19…F-24. Не считать pilot/standard installation завершёнными до проверки с оригиналами.
