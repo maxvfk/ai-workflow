@@ -797,6 +797,7 @@ In addition to the common runtime baseline from `COMMON.md`, G2 must materialize
 - never silently resolve sync conflicts or overwrite suspicious/stale targets;
 - prefer an external/harness temporary workspace outside the synchronized folder when needed; any in-root fallback is non-canonical/disposable;
 - substantial project-changing work verifies both the canonical artifact result and relevant GitHub project-memory synchronization;
+- the installed GitHub `AGENTS.md` must make selective text publication **discoverable to a full-access agent**: it may suggest publishing key local text to `_ai/snapshots/`, or publish/update it when requested or authorized by project policy, with clear original path, read-only/collaborative role, and reconciliation route; never automatically mirror the artifact tree;
 - if GitHub control access is unavailable, an explicitly assigned bounded artifact-only task may proceed from the local bootstrap plus sufficient user/local context, without pretending full project state was restored;
 - artifact-only agents do not create local substitute project memory and leave a scoped `_LOCAL_AGENT_REPORT.md` after delegated changes;
 - artifact-only reports are scope-limited because the reporting agent lacked the GitHub control plane; full-access reconciliation combines them with canonical artifacts/project memory before project-level conclusions;
