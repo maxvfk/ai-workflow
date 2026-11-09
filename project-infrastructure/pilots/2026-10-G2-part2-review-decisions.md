@@ -5,13 +5,13 @@ Source review: `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-p
 Scope: F-17…F-24  
 Status: in progress (F-17 and F-18 agreed; F-19…F-24 pending)
 
-This is the separate record of project-owner review decisions. The original pilot report remains unchanged as evidence. Decisions are recorded here as they are agreed; changes to the Project Infrastructure source standard are a separate later implementation step.
+This is the separate record of project-owner review decisions. The original pilot report remains unchanged as evidence. Decisions are recorded here as they are agreed; each finding's implementation status distinguishes source-standard changes from installed project-runtime upgrades.
 
 ## F-17 — Совместное редактирование бинарных артефактов человеком и агентом
 
 **Decision:** ACCEPT WITH MODIFICATION  
 **Agreed:** 2026-11-06  
-**Implementation:** pending (to be included in a later scoped standard change; no runtime upgrade authorized by this decision)
+**Implementation:** included in source-standard `COMMON.md` and G2 scenario through PR #25 (installed project runtimes remain unchanged)
 
 ### Accepted
 
@@ -46,7 +46,7 @@ In the SP-Lab-Grant pilot, the original SolidWorks generation scripts could over
 
 **Decision:** ACCEPT WITH MODIFICATION  
 **Agreed:** 2026-11-09  
-**Implementation:** pending (later scoped Project Infrastructure change; no automatic installed-runtime upgrade)
+**Implementation:** included in source-standard `COMMON.md` and G2 scenario through PR #25 (no automatic installed-runtime upgrade)
 
 ### Accepted
 
