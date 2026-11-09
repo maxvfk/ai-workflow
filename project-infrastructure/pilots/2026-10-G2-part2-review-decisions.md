@@ -3,7 +3,7 @@
 Date started: 2026-11-06  
 Source review: `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-part2.md`  
 Scope: F-17…F-24  
-Status: in progress (F-17 agreed; F-18…F-24 pending)
+Status: in progress (F-17 and F-18 agreed; F-19…F-24 pending)
 
 This is the separate record of project-owner review decisions. The original pilot report remains unchanged as evidence. Decisions are recorded here as they are agreed; changes to the Project Infrastructure source standard are a separate later implementation step.
 
@@ -42,6 +42,42 @@ In the SP-Lab-Grant pilot, the original SolidWorks generation scripts could over
 
 ---
 
+## F-18 — Версионирование и хранение точек восстановления бинарных артефактов
+
+**Decision:** ACCEPT WITH MODIFICATION  
+**Agreed:** 2026-11-09  
+**Implementation:** pending (later scoped Project Infrastructure change; no automatic installed-runtime upgrade)
+
+### Accepted
+
+1. **Risk-proportionate recovery, not mandatory per-edit snapshots.** Before a potentially destructive or hard-to-reverse change to important binary/linked artifacts, ensure a sufficiently reliable recovery method. Prefer an existing suitable application version history, backup or version-control mechanism where available. Create an explicit snapshot when no adequate recovery point otherwise exists. Routine bounded/reversible edits do not require a fresh snapshot each time.
+2. **Autonomous safe snapshot creation.** An agent may create an ordinary, safe, authorized recovery snapshot as a preparatory measure **without asking the user for approval each time**. Creation must still respect existing permissions, scope, protected data, storage/security boundaries and application state. If a backup method itself requires an unapproved environment or access change, obtain approval for that boundary change.
+3. **Coherent restoration set.** Include the minimum sufficient dependent files, drawings, linked parts and other materials necessary to restore the affected artifact set coherently. Validate or document practical recovery constraints; a copied CAD assembly may retain absolute references to the live project and must not be assumed safe to open or edit in isolation.
+4. **Location and identity.** Store recovery points in a suitable project-defined location (adjacent archive, separate backup area, application-native version store, etc.), not necessarily inside the synchronized artifact root. Prefer identifiable date/time plus purpose naming where applicable. An archived copy is **not another canonical working artifact**. Avoid inadvertent competing copies or editing live files through archive references.
+5. **Discoverability.** Record the location/identifier and recovery conditions for **meaningful** snapshots where a later agent or user would otherwise struggle to find or restore them (e.g., in a relevant task or support file). No universal registry entry for every incidental backup is required.
+6. **Adaptive retention.** Project policy may preserve a bounded rolling history plus significant milestones, but do not impose a universal fixed `N`, storage location or expiry period. Review accumulation proportionately. Do not automatically delete user-owned recovery snapshots merely because they are old or exceed a count; destructive cleanup requires appropriate authorization and care with synchronized deletion propagation.
+
+### Scope and constraints
+
+- A snapshot may provide rollback for a mistaken edit without being a complete disaster-recovery backup. A copy on the same drive does not by itself protect against physical drive failure.
+- Keep **binary artifact recovery snapshots** in the artifact/backup domain distinct from G2 control-only text/context `_ai/snapshots/`, historical project-state `_ai/archive/state/`, and installed-standard snapshots. Do not treat them as interchangeable or canonical mirrors.
+- The general recovery/risk rule can extend `COMMON.md`; add only synchronization-specific implications to G2 where useful. Actual CAD backup/restore commands, relative/absolute reference handling, and local retention policy belong to project-specific procedures.
+- No mandatory scheduled snapshots, snapshots after every save, universal archive format, per-file live checksums, required Git inclusion, or blanket requirement to confirm each safe snapshot with the user.
+- Do not conflate safe snapshot **creation** with potentially destructive archive **deletion**.
+- Review outcome only: source standard implementation and installed-runtime upgrades remain separate tasks.
+
+### Rationale
+
+The SP-Lab-Grant G2 pilot accumulated seven ~50-file model snapshots within a week. They made rollback possible but consumed synchronized storage and contained SolidWorks references that could point back to live model components. The standard needs an explicit recovery strategy while leaving risk, project tooling, storage cost and retention to the particular project. User-approved autonomy for safe backup creation avoids unnecessary interruptions; archive deletion and sensitive boundary changes remain controlled.
+
+### Evidence
+
+- `maxvfk/SP-Lab-Grant/_ai/research/infrastructure-pilot-findings-part2.md` — F-18, P2.
+- Existing G2 scenario: §§ 13–14 (sync-sanity/conflicts), §17 (direct edit versus temporary copy), §19 (binary artifact versioning is separate from GitHub history).
+- F-17 review decision in this file: proportional recovery and protection of shared work.
+
+---
+
 ## Review queue
 
-F-18…F-24 remain pending, without implied acceptance, rejection, or implementation. Next: **F-18 — Binary artifact snapshots/versioning and retention**.
+F-19…F-24 remain pending, without implied acceptance, rejection, or implementation. Next: **F-19 — Retiring artifacts: deletion versus archival**.
