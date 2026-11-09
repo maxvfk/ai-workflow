@@ -657,6 +657,26 @@ For generated/derived artifacts, identify the source of truth. When an artifact 
 
 Distinguish facts, decisions, assumptions, estimates, and recommendations where that distinction materially affects interpretation or continuation.
 
+### Shared editing of project artifacts (G2 pilot F-17)
+
+For a file that both a person and an agent may edit, determine the **actual current source-of-truth relationship**: generator/script, manually maintained artifact, or another source. This relationship can evolve. The first manual edit does not automatically make a generator obsolete, but do **not** run a regeneration that may discard manual changes unless preservation is assured or the user has agreed on the intended outcome. Discuss ambiguous/destructive changes as collaborators would; do not try to encode every application-specific interaction as a mandatory protocol.
+
+Protect active user work: do not silently close documents, discard unsaved changes, overwrite open files, or disrupt a shared application session in ways that risk losing user changes. Check relevant file/application state before a potentially conflicting operation when possible. If a material risk cannot be ruled out, defer or clarify with the user. Ordinary safe edits should not require a confirmation or ownership handoff every time.
+
+For CAD assemblies and other **linked artifacts**, account for file references, dependent documents, internal IDs and object relationships when editing or replacing components. Prefer editing an existing file/object in place when that better preserves dependencies, but do not impose a universal ban on replacement or new versions. After consequential edits, validate meaningful properties and invariants with appropriate tools; tool-specific validation belongs in the project workflow.
+
+Do not require universal locks, per-edit ownership declarations, reports for every manual change, or a snapshot for every save.
+
+### Proportionate recovery of local/binary artifacts (G2 pilot F-18)
+
+Before a materially destructive or difficult-to-reverse change, ensure an **adequate recovery path**. Use existing application history, backup or versioning when sufficient; otherwise create a bounded recovery snapshot containing the files and dependencies needed for a coherent rollback. A routine low-risk/reversible edit does not require a new snapshot.
+
+An agent may autonomously create an ordinary safe snapshot **without separate user approval each time**, within the task's existing permissions, data/security boundaries and available storage. Do not silently change external access, credentials or protected storage policies just to make a backup.
+
+Choose the location and sensible date/purpose naming according to the project. A recovery snapshot is a noncanonical rollback copy, not another active version. For dependent/linked files, a copied assembly may still reference the live original: do not assume an archived copy is safe to open, inspect or restore without checking its references. Record the locator and relevant restoration limitations for significant snapshots when needed for continuity; do not register every incidental backup.
+
+Use a project-appropriate retention policy rather than a universal count, age or scheduled snapshot cadence. Accumulating backups can consume local/synced storage. Do **not** automatically delete user-owned snapshots because they are old or numerous; destructive cleanup needs appropriate authorization. An on-disk rollback copy is not necessarily a disaster-recovery backup against loss of that disk.
+
 ### Operational know-how and pitfalls
 
 Durable operational knowledge discovered during project work should not remain only in chat context.

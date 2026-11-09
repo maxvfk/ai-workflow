@@ -26,7 +26,7 @@ Project Infrastructure остаётся отдельным версиониру�
 - **Skills** — canonical area `skills/`; сейчас зарегистрированы `model-router` и `codex-delegate`.
 - **Claude Desktop** — `claude-desktop/`; сейчас есть Remote Control keepalive и guidance по ведению сессий.
 - **Codex Cloud** — `codex-cloud/`; настройка environment, GitHub CLI, network permissions, диагностика PATH и cold-start smoke test по real-project опыту 30.10.2026.
-- **G2 pilot follow-up** — F-25…F-36 полностью разобраны и реализованы в source standard 0.9.0 через merged PR #15; F-17…F-24 из SP-LAB-GRANT part2 остаются на последующий разбор в T-018.
+- **G2 pilot follow-up** — F-25…F-36 реализованы в source standard 0.9.0 через PR #15; F-17/F-18 согласованы и реализованы в source `COMMON.md`/G2 через PR #25; F-19…F-24 остаются на разбор в T-018.
 
 ## Что уже сделано
 
@@ -54,12 +54,12 @@ Project Infrastructure остаётся отдельным версиониру�
 
 ## В работе
 
-- T-018 — завершить follow-up review: F-25…F-36 реализованы в source standard 0.9.0 (PR #15 merged); F-17…F-24 ещё не разобраны.
+- T-018 — завершить follow-up review: F-25…F-36 реализованы (PR #15), F-17/F-18 реализованы в source standard (PR #25), F-19…F-24 ожидают разбора.
 - T-017 — решить, какие общие правила нужны для delegated executors.
 - T-002 — независимый re-review стандарта остаётся открытым.
 
 ## Ближайшие следующие шаги
 
-1. Вернуться к ещё не разобранным F-17…F-24 в T-018.
+1. Перейти к F-19…F-24 в T-018; F-17/F-18 уже реализованы в source standard и не требуют повторного рассмотрения.
 2. Разобрать T-017 delegated executors с учётом реального `codex-delegate` workflow.
 3. Провести независимый re-review установленного G0 runtime и отдельно решить, нужен ли самому `ai-workflow` upgrade с 0.8.10 на 0.9.0 по review/adaptation процедуре.

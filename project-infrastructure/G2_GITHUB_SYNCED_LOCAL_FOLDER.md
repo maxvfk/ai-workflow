@@ -694,6 +694,25 @@ Prefer an external temporary workspace/copy when:
 
 A synchronized folder is not automatically a good scratch area.
 
+### Shared CAD/linked artifacts and active application sessions (F-17)
+
+Apply the common shared-editing rules in `COMMON.md`. In G2, the user and agent may work on the **same local binary file and the same live CAD/Office application session**, not only on replicas from different machines:
+
+- Before risk-bearing automation, account for unsaved user work and an actively edited/open document. Do not silently close, overwrite or discard it. If the state is uncertain and changes may be lost, coordinate with the user rather than making a blind edit.
+- If a script originally generated a CAD/Office artifact and manual edits followed, determine whether the script or the current editable file is authoritative for this task. Do not regenerate destructively over manual work without assured preservation or an explicit user decision. No automatic rule that a generator becomes obsolete after the first edit.
+- Preserve meaningful CAD part identities, assembly references and external dependencies. Editing an existing part in place may be preferable to replacing the file; the safe approach depends on the actual application and relationships. Verify material properties/links after substantial edits using project-specific tooling.
+- Do not impose per-operation locks or a mandatory user/agent handoff protocol on ordinary safe work. This supplements, rather than duplicates, G2 sync-sanity and multi-machine concurrency rules.
+
+### Recovery copies of local/binary artifacts (F-18)
+
+A full-access G2 agent should use a **risk-proportionate rollback method** before destructive or hard-to-reverse artifact edits. It may autonomously create a safe bounded backup/snapshot where no adequate version-history mechanism exists, without requesting approval for each snapshot. Copy enough linked parts, drawings or dependency files to make recovery meaningful; avoid unneeded full-tree copies.
+
+Choose a project-appropriate location (adjacent archive, separate backup storage or application versioning); binary rollback copies **need not reside in the synchronized artifact root**. When inside the sync root, account for replication to other devices, storage consumption and propagation of deletion. Prefer date/time + reason when naming a meaningful snapshot and note its recovery path/limitations when needed for future work.
+
+A copied CAD assembly can retain absolute references to live components. Treat rollback copies as **noncanonical recovery material**, not alternate active assemblies; verify reference behaviour before opening or restoring. There is no universal `N` of backups, retention time, scheduled snapshot, per-save copy, or automatic cleanup requirement. Never silently delete user-owned rollback points on age/count alone.
+
+**Do not confuse these binary rollback copies with GitHub `_ai/snapshots/`**: the latter are selected textual context/collaborative representations for remote agents, not backup/version history for local binary artifacts. Likewise `_ai/archive/state/` is history of project memory, not artifact recovery. Keep tool-specific CAD/Office backup/restore instructions in the installed project's support files.
+
 ## 18. Publish/promote transaction
 
 For a bounded low-risk single-artifact edit by a full-access G2 agent, use the proportional small-edit path from `COMMON.md` plus the minimum G2 sync-sanity check above. Do not update GitHub project memory unless the edit materially changes project state, task status, provenance, or a recorded decision.
