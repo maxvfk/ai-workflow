@@ -12,6 +12,7 @@ Agent runtime: [`AGENTS.md`](AGENTS.md). Current project state: [`STATE.md`](STA
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, and the reusable `skills/model-router/` skill.
 - **Reusable skills** — `skills/`. Read `skills/README.md` for the current index and placement rules.
 - **Harness/product-specific guidance** — `claude-desktop/` and `codex-cloud/`. See their `README.md` indexes for product-specific operational guidance.
+- **SolidWorks** — `solidworks/`: how AI agents work with SolidWorks models (rules, MCP server setup, COM API notes, pitfalls). Index: `solidworks/README.md`.
 - **Notes, rules, errors, experiments and lessons learned** — keep them with the thematic area they belong to; create a new top-level category only when a durable independent class of material actually emerges.
 
 Project Infrastructure has its own version. That version does **not** version the whole repository or automatically version model-routing, skills, harness-specific guidance, or other areas unless an explicit dependency says otherwise.

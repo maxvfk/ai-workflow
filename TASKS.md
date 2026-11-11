@@ -170,3 +170,8 @@ Decided:
 Implementation: правила добавлены в G2 scenario и `project-infrastructure/proposals/G2-ARTIFACT-VIEWS.md` через PR #24. Установка/миграция в конкретные проекты и публикация их файлов — только отдельно, когда требуется. Не смешивать с T-018 (F-19…F-24).
 
 Evidence: PR #24; обсуждение 2026-11-09; существующий `SP-Lab-Grant/_ai/snapshots/` и cloud workflow.
+
+## T-020 — Раздел о работе агентов с SolidWorks
+Status: done
+
+Создан `solidworks/`: правила для агентов, установка и подводные камни MCP-сервера `soheil-mp/solidworks-mcp` (проверен на SW 2023 после правки `patches/soheil-mcp-sw2023.patch`), приёмы COM API, сравнение трёх MCP-серверов, скрипты осмотра `tools/*.ps1`. Источники опыта — проекты SP-LAB-GRANT (`tools/README.md`) и PIKAPOMP (`tools/solidworks/`, `_ai/research/solidworks-mcp-2026-11-11.md`).
