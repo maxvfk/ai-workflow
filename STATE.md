@@ -1,6 +1,6 @@
 # Текущее состояние
 
-Last updated: 2026-11-05
+Last updated: 2026-11-11
 
 ## Статус
 
@@ -25,6 +25,7 @@ Project Infrastructure остаётся отдельным версиониру�
 - **Model routing** — `AI_MODEL_ROUTING_MEMO.md`, `AI_MODEL_CURRENT_STATE.md`, `skills/model-router/`.
 - **Skills** — canonical area `skills/`; сейчас зарегистрированы `model-router` и `codex-delegate`.
 - **Claude Desktop** — `claude-desktop/`; сейчас есть Remote Control keepalive и guidance по ведению сессий.
+- **SolidWorks** — `solidworks/` (с 2026-11-11): правила для агентов, установка MCP-сервера `soheil-mp/solidworks-mcp` с правкой под SW 2023, приёмы COM API по опыту SP-LAB-GRANT и PIKAPOMP, скрипты осмотра на PowerShell.
 - **Codex Cloud** — `codex-cloud/`; настройка environment, GitHub CLI, network permissions, диагностика PATH и cold-start smoke test по real-project опыту 30.10.2026.
 - **G2 pilot follow-up** — F-25…F-36 реализованы в source standard 0.9.0 через PR #15; F-17/F-18 согласованы и реализованы в source `COMMON.md`/G2 через PR #25; F-19…F-24 остаются на разбор в T-018.
 

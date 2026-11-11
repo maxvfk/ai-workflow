@@ -53,6 +53,10 @@ Canonical files:
 
 Новый top-level product/harness каталог создаётся только когда появляется реальный устойчивый набор материалов, а не заранее.
 
+### SolidWorks
+
+`solidworks/` — работа AI-агентов с моделями SolidWorks: обязательные правила, установка MCP-сервера, приёмы и подводные камни COM API, переносимые скрипты только для чтения. Индекс — `solidworks/README.md`. Материал вендор-нейтральный (Claude Code, Claude Desktop, Codex и др.).
+
 ### Notes, rules, errors and experiments
 
 Полезные заметки, рабочие правила, выявленные ошибки/anti-patterns, результаты экспериментов и lessons learned также входят в scope `ai-workflow`.
