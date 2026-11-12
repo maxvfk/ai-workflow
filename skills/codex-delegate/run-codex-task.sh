@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# Run one Codex task through the openai-codex Claude Code plugin, safely on Windows/Git Bash.
+# Run one Codex task, safely on Windows/Git Bash: through the openai-codex Claude Code plugin
+# (ChatGPT subscription, default), or with --provider deepseek through `codex exec -p deepseek`
+# (DeepSeek API, pay per token).
 #
 # Usage:
 #   run-codex-task.sh <workdir> <prompt-file> [--write] [--model <model>] [--effort <level>] [--resume-last]
 #                     [--keep-runtime]
+#   run-codex-task.sh <workdir> <prompt-file> --provider deepseek [--write] [--model <model>] [--effort <level>]
 #
 # - <workdir>: directory Codex works in (usually the repo root). Backslashes are normalized.
 # - <prompt-file>: file with the full task text. Never pass the task text on the command line.
 # - Read-only unless --write is given explicitly.
-# - After the run, the plugin's broker for <workdir> (app-server-broker.mjs + codex app-server) is
-#   shut down; the plugin itself would leave it running until reboot. --keep-runtime skips that.
+# - Plugin mode: after the run, the plugin's broker for <workdir> (app-server-broker.mjs + codex
+#   app-server) is shut down; the plugin itself would leave it running until reboot.
+#   --keep-runtime skips that.
+# - DeepSeek mode: needs the `deepseek` Codex profile (setup-deepseek-profile.sh) and the
+#   DEEPSEEK_API_KEY environment variable. Models: deepseek-flash (default), deepseek-v4-pro.
+#   Effort: low | high | max. No broker, no job history: the run is a plain `codex exec`.
 #
 # Run it from the MAIN Claude Code session with the Bash tool's run_in_background, so the
 # harness notifies on completion. Exit code is Codex's exit code.
@@ -17,13 +24,7 @@
 set -uo pipefail
 
 if [ $# -lt 2 ]; then
-  sed -n '2,16p' "$0" >&2
-  exit 2
-fi
-
-COMPANION=$(ls -d "$HOME"/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | sort -V | tail -1)
-if [ -z "$COMPANION" ]; then
-  echo "codex-delegate: openai-codex plugin is not installed (no codex-companion.mjs found)" >&2
+  sed -n '2,22p' "$0" >&2
   exit 2
 fi
 
@@ -31,23 +32,46 @@ WORKDIR=${1//\\//}
 PROMPT=${2//\\//}
 shift 2
 
-# Our own option; everything else goes to the plugin unchanged.
+# Our own options; in plugin mode everything else goes to the plugin unchanged.
 KEEP_RUNTIME=0
+PROVIDER=plugin
 ARGS=()
-for a in "$@"; do
-  if [ "$a" = "--keep-runtime" ]; then KEEP_RUNTIME=1; else ARGS+=("$a"); fi
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --keep-runtime) KEEP_RUNTIME=1 ;;
+    --provider)
+      [ $# -ge 2 ] || { echo "codex-delegate: --provider needs a value" >&2; exit 2; }
+      PROVIDER=$2; shift ;;
+    *) ARGS+=("$1") ;;
+  esac
+  shift
 done
+case "$PROVIDER" in
+  plugin|openai|chatgpt) PROVIDER=plugin ;;
+  deepseek) ;;
+  *) echo "codex-delegate: unknown --provider '$PROVIDER' (use deepseek, or omit it)" >&2; exit 2 ;;
+esac
 
 # Use Windows-form paths (C:/...): with MSYS_NO_PATHCONV set below, Git Bash no longer translates
 # /c/... paths, and Node would read /c/Users as C:\c\Users.
 if command -v cygpath >/dev/null 2>&1; then
-  COMPANION=$(cygpath -m "$COMPANION")
   WORKDIR=$(cygpath -m "$WORKDIR")
   PROMPT=$(cygpath -m "$PROMPT")
 fi
 
 [ -d "$WORKDIR" ] || { echo "codex-delegate: workdir not found: $WORKDIR" >&2; exit 2; }
 [ -f "$PROMPT" ] || { echo "codex-delegate: prompt file not found: $PROMPT" >&2; exit 2; }
+
+if [ "$PROVIDER" = deepseek ]; then
+  exec bash "$(dirname "$0")/run-deepseek-task.sh" "$WORKDIR" "$PROMPT" "${ARGS[@]}"
+fi
+
+COMPANION=$(ls -d "$HOME"/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | sort -V | tail -1)
+if [ -z "$COMPANION" ]; then
+  echo "codex-delegate: openai-codex plugin is not installed (no codex-companion.mjs found)" >&2
+  exit 2
+fi
+command -v cygpath >/dev/null 2>&1 && COMPANION=$(cygpath -m "$COMPANION")
 
 # Stop Git Bash from rewriting slash-arguments into paths (breaks taskkill /PID inside the plugin).
 export MSYS_NO_PATHCONV=1
