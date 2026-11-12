@@ -1,11 +1,11 @@
 ---
 name: codex-delegate
-description: Delegate a task from Claude Code to OpenAI Codex through the openai-codex plugin — to move work onto the ChatGPT subscription, get an independent cross-vendor review, or a second implementation/diagnosis pass. Covers the launch procedure that is reliable on Windows + Git Bash + the Claude desktop app, model/effort choice, monitoring, usage readout, cancelling, and verifying Codex output. Use it instead of improvising calls to codex-companion.mjs or the codex:codex-rescue subagent.
+description: Delegate a task from Claude Code to OpenAI Codex through the openai-codex plugin — to move work onto the ChatGPT subscription, get an independent cross-vendor review, or a second implementation/diagnosis pass — or to DeepSeek models through the same Codex CLI (pay per token). Covers the launch procedure that is reliable on Windows + Git Bash + the Claude desktop app, model/effort choice, monitoring, usage and cost readout, cancelling, and verifying Codex output. Use it instead of improvising calls to codex-companion.mjs, `codex exec` or the codex:codex-rescue subagent.
 ---
 
 # Codex delegation
 
-Verified on: Windows 11, Claude desktop app (Code tab), openai-codex plugin 1.0.6, Codex CLI 0.163.0, Node 24, Git Bash (last checked 2026-11-06, including the broker cleanup). Re-verify after updating any of these.
+Verified on: Windows 11, Claude desktop app (Code tab), openai-codex plugin 1.0.6, Codex CLI 0.167.2, Node 24, Git Bash (last checked 2026-11-13: plugin path with broker cleanup, and the DeepSeek path). Re-verify after updating any of these.
 
 Field experience (2026-10-20): six sequential background runs on a real project (a pilot, three batches of mechanical checks, one implementation task) — all finished and notified; spot recomputation found no wrong numbers in Codex reports, and Codex found one genuine defect introduced earlier by a Claude subagent. Total cost ≈ 12 % of the weekly Codex allowance; Claude's own cost stayed small (task files, verification, transfer).
 
@@ -14,8 +14,11 @@ Field experience (2026-10-20): six sequential background runs on a real project 
 - The goal is to spread work across the Claude and ChatGPT subscriptions and to get cross-vendor review — not parallel speed. Run Codex tasks **sequentially**, never while Claude edits the same files.
 - Good fits: independent adversarial review, a second diagnosis pass, a bounded implementation in a repo, long mechanical work.
 - Choose model and effort deliberately (see `AI_MODEL_ROUTING_MEMO.md` and `AI_MODEL_CURRENT_STATE.md` in `maxvfk/ai-workflow`) and **tell the user which model and effort you chose** before or when starting.
-- Without `--model`/`--effort`, Codex uses `~/.codex/config.toml` defaults.
+- **Never use `gpt-6-astra` unless the user explicitly asks for it in the current task.** It eats the Plus allowance far faster than the other models. This includes the default: `~/.codex/config.toml` may set Astra as `model` (it does on the user's machine as of 2026-11-13), so on the plugin path **always pass `--model` explicitly** and never rely on the config default. Pick by task (see `AI_MODEL_CURRENT_STATE.md`): `gpt-6-luna` for trivial or high-volume steps and smoke tests, `gpt-6.1-terra` (medium) for moderate or visual/GUI work, `gpt-6.1-sol` (medium/high) for serious coding and hard reasoning. If a task seems to need Astra, say so and ask; do not launch it.
+- Without `--effort`, Codex uses the `~/.codex/config.toml` default.
 - Effort, from experience: `medium` was enough for long mechanical work (run scripts, export data, compare numbers); `high` was used for writing new code (a compatibility library with tests). Raise effort only when a pilot shows subtle failures, not by default.
+- Codex may hand work to its own sub-agents: on Codex CLI 0.167.2 `gpt-6-astra` once delegated even a four-line read-only smoke test ("I'll delegate…", `wait` tool calls), roughly doubling the tokens; a second identical run did it itself. For small tasks, say "do it yourself, do not delegate" in the task file.
+- Which backend: the ChatGPT plugin path for anything covered by the subscription allowance; DeepSeek (see below) when the allowance is short, for cheap bulk mechanical work, or as a third independent reviewer — and only for material that may leave for DeepSeek's servers.
 
 ## Pilot first, then batches
 
@@ -44,6 +47,7 @@ This kept the synchronized root safe from half-finished writes and avoided branc
 
 - `node`, `codex` on PATH; `codex login status` → logged in. The Codex desktop app and Codex CLI share `~/.codex`, so one ChatGPT login serves both, and they draw from the same Codex allowance.
 - Plugin check: `node <companion> setup --json` → `"ready": true`.
+- DeepSeek path only: Codex CLI ≥ 0.164, the `deepseek` profile and `DEEPSEEK_API_KEY` (see DeepSeek path).
 
 ## Primary path — direct launch from the main session (recommended)
 
@@ -51,8 +55,9 @@ This kept the synchronized root safe from half-finished writes and avoided branc
 2. **Pick a short workdir.** The session scratch folder of the Store-installed desktop app has very long paths (git clone fails with "Filename too long"). Use a short path such as `C:/Users/maxvf/<name>`. Use forward slashes.
 3. **Run with the Bash tool and `run_in_background: true`:**
    ```bash
-   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" [--write] [--model <m>] [--effort <low|medium|high|xhigh>] [--keep-runtime]
+   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" --model <gpt-6-luna|gpt-6.1-terra|gpt-6.1-sol> [--write] [--effort <low|medium|high|xhigh>] [--keep-runtime]
    ```
+   The script refuses to run without `--model` (the config default may be Astra; see When to delegate) and refuses `gpt-6-astra` unless `--allow-astra` is given — pass that flag only when the user explicitly asked for Astra in the current task.
    The harness notifies on completion. The final Codex answer is at the end of the output file, followed by the summary and a `runtime cleanup done` line: the script shuts down the plugin's broker for the workdir (see Monitoring). `--keep-runtime` leaves the broker running, e.g. for a quick follow-up in the same workdir; stop it by hand afterwards.
 4. Codex reads most reliably inside its workdir. Point `--cwd` (the script's first argument) at the directory that contains the files Codex must read; reads outside it may fail on the first attempt.
 
@@ -108,6 +113,34 @@ grep -o '"rate_limits":{.\{0,400\}' "$F" | tail -1
 ```
 
 `rate_limits.primary` is the 5-hour window, `secondary` the weekly window, as percent used — this covers all Codex use in the window, not only this task. Report both to the user.
+
+DeepSeek runs have no `rate_limits` (the fields are null); the script prints an estimated cost in USD instead (see DeepSeek path).
+
+## DeepSeek path — `--provider deepseek`
+
+DeepSeek officially supports Codex CLI through its OpenAI-compatible Responses API, so the same CLI runs DeepSeek models from a separate **profile**. The plugin cannot pass a profile, so this path calls `codex exec -p deepseek` directly.
+
+**Cost and data.** Pay per token from a prepaid balance at platform.deepseek.com; no subscription. Prices (USD per 1M tokens, peak; off-peak is half — 01–04 and 06–10 UTC Mon–Fri are peak; read 2026-11-12): `deepseek-flash` cache hit 0.006 / miss 0.3 / output 1.2; `deepseek-v4-pro` 0.044 / 1.32 / 3.96. The four-line smoke test cost ≈ $0.002. Requests go to DeepSeek's servers in China: send only material the user is fine with leaving for there, and say so when proposing DeepSeek.
+
+**Setup (once per machine).**
+
+1. Codex CLI ≥ 0.164 (`npm install -g @openai/codex@latest`; the Codex desktop app updates its own bundled copy, not this one).
+2. `bash ~/.claude/skills/codex-delegate/setup-deepseek-profile.sh` writes `~/.codex/deepseek.config.toml` (profile: provider `deepseek`, `wire_api = "responses"`, `env_key = "DEEPSEEK_API_KEY"`, default model `deepseek-flash`, effort `high`) and `~/.codex/deepseek-models.json` (model catalog extracted from DeepSeek's official setup script, which is downloaded as text and never executed). `config.toml` is not touched.
+   - **Do not use DeepSeek's one-click script** (`irm …codex-deepseek-setup-en.ps1 | iex`): it rewrites `config.toml`, making DeepSeek the default for the CLI and the Codex desktop app (ChatGPT delegation breaks), and stores the API key in plain text there.
+3. The user creates an API key (starts with `sk-`) and sets it as the Windows **user** environment variable `DEEPSEEK_API_KEY` (Environment Variables dialog: `rundll32 sysdm.cpl,EditEnvironmentVariables`), not on a command line (it would land in shell history). Claude never types the key. Processes started before that (including the Claude app) do not see it; the script then reads it from the user environment without printing it.
+4. Check: `codex exec -p deepseek …` prints `model: deepseek-flash` / `provider: deepseek`; without the key it stops with `Missing environment variable: DEEPSEEK_API_KEY` before sending anything. Without `-p`, the model list (`codex debug models`) has no DeepSeek entries.
+
+**Launch** — same rules as the primary path (task in a file, short workdir, Bash with `run_in_background: true`):
+
+```bash
+bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" --provider deepseek [--write] [--model deepseek-v4-pro] [--effort <low|high|max>]
+```
+
+- Models: `deepseek-flash` (default; cheap, text and images, web search) and `deepseek-v4-pro` (stronger, text only). Effort levels are `low`, `high`, `max`; DeepSeek maps `minimal`→`low` and `medium`/`xhigh`→`high`.
+- Read-only sandbox unless `--write` (`workspace-write`). The base config's `[windows] sandbox` setting still applies.
+- Output: Codex's stream, then `---- final answer ----` and a summary with duration, session ID, `total_token_usage` and `cost ~$…` (peak/off-peak by the start time in UTC; Chinese public holidays are not modelled).
+- No plugin job: `status`, `result`, `cancel`, `--resume-last` and `--keep-runtime` do not apply, and there is no broker to clean up. To cancel, stop the background Bash task. The thread is a normal Codex session (`~/.codex/sessions`), visible in the Codex desktop app; archive throwaway ones with `codex archive <session-id>`.
+- First run (2026-11-13, `deepseek-flash`, effort `low`): correct answer in 9 s, read the file itself without sub-agents, ≈ 28k input tokens (half cached), ≈ $0.002 off-peak.
 
 ## The codex:codex-rescue subagent
 
