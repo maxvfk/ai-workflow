@@ -4,8 +4,8 @@
 # (DeepSeek API, pay per token).
 #
 # Usage:
-#   run-codex-task.sh <workdir> <prompt-file> [--write] [--model <model>] [--effort <level>] [--resume-last]
-#                     [--keep-runtime]
+#   run-codex-task.sh <workdir> <prompt-file> --model <model> [--write] [--effort <level>] [--resume-last]
+#                     [--keep-runtime] [--allow-astra]
 #   run-codex-task.sh <workdir> <prompt-file> --provider deepseek [--write] [--model <model>] [--effort <level>]
 #
 # - <workdir>: directory Codex works in (usually the repo root). Backslashes are normalized.
@@ -14,6 +14,8 @@
 # - Plugin mode: after the run, the plugin's broker for <workdir> (app-server-broker.mjs + codex
 #   app-server) is shut down; the plugin itself would leave it running until reboot.
 #   --keep-runtime skips that.
+# - Plugin mode needs an explicit --model; gpt-6-astra is refused unless --allow-astra is given,
+#   which is only for when the user explicitly asked for Astra.
 # - DeepSeek mode: needs the `deepseek` Codex profile (setup-deepseek-profile.sh) and the
 #   DEEPSEEK_API_KEY environment variable. Models: deepseek-flash (default), deepseek-v4-pro.
 #   Effort: low | high | max. No broker, no job history: the run is a plain `codex exec`.
@@ -24,7 +26,7 @@
 set -uo pipefail
 
 if [ $# -lt 2 ]; then
-  sed -n '2,22p' "$0" >&2
+  awk 'NR > 1 && /^#/ { print; next } NR > 1 { exit }' "$0" >&2
   exit 2
 fi
 
@@ -64,6 +66,30 @@ fi
 
 if [ "$PROVIDER" = deepseek ]; then
   exec bash "$(dirname "$0")/run-deepseek-task.sh" "$WORKDIR" "$PROMPT" "${ARGS[@]}"
+fi
+
+# Model guard (plugin path). gpt-6-astra burns the Plus allowance fast and may be the config.toml
+# default, so a model must be named explicitly, and Astra needs --allow-astra (only when the user
+# explicitly asked for Astra in the current task).
+MODEL_GIVEN=
+ALLOW_ASTRA=0
+PASS=()
+for ((i = 0; i < ${#ARGS[@]}; i++)); do
+  case "${ARGS[$i]}" in
+    --allow-astra) ALLOW_ASTRA=1; continue ;;
+    --model) MODEL_GIVEN=${ARGS[$((i + 1))]:-} ;;
+    --model=*) MODEL_GIVEN=${ARGS[$i]#--model=} ;;
+  esac
+  PASS+=("${ARGS[$i]}")
+done
+ARGS=("${PASS[@]}")
+if [ -z "$MODEL_GIVEN" ]; then
+  echo "codex-delegate: pass --model explicitly (gpt-6-luna | gpt-6.1-terra | gpt-6.1-sol); the config default may be gpt-6-astra" >&2
+  exit 2
+fi
+if [[ "$MODEL_GIVEN" == *astra* ]] && [ "$ALLOW_ASTRA" = 0 ]; then
+  echo "codex-delegate: $MODEL_GIVEN needs --allow-astra, and only when the user explicitly asked for Astra" >&2
+  exit 2
 fi
 
 COMPANION=$(ls -d "$HOME"/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | sort -V | tail -1)

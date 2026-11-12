@@ -14,7 +14,8 @@ Field experience (2026-10-20): six sequential background runs on a real project 
 - The goal is to spread work across the Claude and ChatGPT subscriptions and to get cross-vendor review — not parallel speed. Run Codex tasks **sequentially**, never while Claude edits the same files.
 - Good fits: independent adversarial review, a second diagnosis pass, a bounded implementation in a repo, long mechanical work.
 - Choose model and effort deliberately (see `AI_MODEL_ROUTING_MEMO.md` and `AI_MODEL_CURRENT_STATE.md` in `maxvfk/ai-workflow`) and **tell the user which model and effort you chose** before or when starting.
-- Without `--model`/`--effort`, Codex uses `~/.codex/config.toml` defaults.
+- **Never use `gpt-6-astra` unless the user explicitly asks for it in the current task.** It eats the Plus allowance far faster than the other models. This includes the default: `~/.codex/config.toml` may set Astra as `model` (it does on the user's machine as of 2026-11-13), so on the plugin path **always pass `--model` explicitly** and never rely on the config default. Pick by task (see `AI_MODEL_CURRENT_STATE.md`): `gpt-6-luna` for trivial or high-volume steps and smoke tests, `gpt-6.1-terra` (medium) for moderate or visual/GUI work, `gpt-6.1-sol` (medium/high) for serious coding and hard reasoning. If a task seems to need Astra, say so and ask; do not launch it.
+- Without `--effort`, Codex uses the `~/.codex/config.toml` default.
 - Effort, from experience: `medium` was enough for long mechanical work (run scripts, export data, compare numbers); `high` was used for writing new code (a compatibility library with tests). Raise effort only when a pilot shows subtle failures, not by default.
 - Codex may hand work to its own sub-agents: on Codex CLI 0.167.2 `gpt-6-astra` once delegated even a four-line read-only smoke test ("I'll delegate…", `wait` tool calls), roughly doubling the tokens; a second identical run did it itself. For small tasks, say "do it yourself, do not delegate" in the task file.
 - Which backend: the ChatGPT plugin path for anything covered by the subscription allowance; DeepSeek (see below) when the allowance is short, for cheap bulk mechanical work, or as a third independent reviewer — and only for material that may leave for DeepSeek's servers.
@@ -54,8 +55,9 @@ This kept the synchronized root safe from half-finished writes and avoided branc
 2. **Pick a short workdir.** The session scratch folder of the Store-installed desktop app has very long paths (git clone fails with "Filename too long"). Use a short path such as `C:/Users/maxvf/<name>`. Use forward slashes.
 3. **Run with the Bash tool and `run_in_background: true`:**
    ```bash
-   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" [--write] [--model <m>] [--effort <low|medium|high|xhigh>] [--keep-runtime]
+   bash ~/.claude/skills/codex-delegate/run-codex-task.sh "C:/Users/maxvf/<workdir>" "<prompt-file>" --model <gpt-6-luna|gpt-6.1-terra|gpt-6.1-sol> [--write] [--effort <low|medium|high|xhigh>] [--keep-runtime]
    ```
+   The script refuses to run without `--model` (the config default may be Astra; see When to delegate) and refuses `gpt-6-astra` unless `--allow-astra` is given — pass that flag only when the user explicitly asked for Astra in the current task.
    The harness notifies on completion. The final Codex answer is at the end of the output file, followed by the summary and a `runtime cleanup done` line: the script shuts down the plugin's broker for the workdir (see Monitoring). `--keep-runtime` leaves the broker running, e.g. for a quick follow-up in the same workdir; stop it by hand afterwards.
 4. Codex reads most reliably inside its workdir. Point `--cwd` (the script's first argument) at the directory that contains the files Codex must read; reads outside it may fail on the first attempt.
 
