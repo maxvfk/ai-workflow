@@ -122,7 +122,7 @@ command = 'C:\Users\<user>\AppData\Local\solidworks-mcp\bin\<версия>\solid
 env = { SWMCP_VBA = "off" }
 ```
 
-(Регистрация в Codex на этой конфигурации не проверялась. В SP-LAB-GRANT прямой COM из
+(На RAIDERMAX сервер добавлен в конфиг Codex 2026-11-13; работа из Codex не проверялась. В SP-LAB-GRANT прямой COM из
 песочницы Codex давал `MK_E_UNAVAILABLE` — если сервер не видит SolidWorks, проверить, не
 запускается ли он в песочнице.)
 

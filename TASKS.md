@@ -175,3 +175,8 @@ Evidence: PR #24; обсуждение 2026-11-09; существующий `SP-
 Status: done
 
 Создан `solidworks/`: правила для агентов, установка и подводные камни MCP-сервера `soheil-mp/solidworks-mcp` (проверен на SW 2023 после правки `patches/soheil-mcp-sw2023.patch`), приёмы COM API, сравнение трёх MCP-серверов, скрипты осмотра `tools/*.ps1`. Источники опыта — проекты SP-LAB-GRANT (`tools/README.md`) и PIKAPOMP (`tools/solidworks/`, `_ai/research/solidworks-mcp-2026-11-11.md`).
+
+## T-021 — Профили машин
+Status: done
+
+Создан `machines/` с профилем `RAIDERMAX.md` (инструменты, MCP-серверы Claude Code и Codex, пути, особенности). Указатели на профиль добавлены в `~/.claude/CLAUDE.md` и `~/.codex/AGENTS.md` этой машины; сервер `solidworks` добавлен в `~/.codex/config.toml`.
